@@ -54,6 +54,9 @@ namespace Inventarverwaltung
                     case "6":
                         UserManager.ZeigeBenutzer();
                         break;
+                        case "7":
+                        Extrafunctions.logwrite();
+                        break;
                     case "0":
                         running = false;
                         break;
