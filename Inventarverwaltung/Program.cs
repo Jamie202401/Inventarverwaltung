@@ -55,7 +55,7 @@ namespace Inventarverwaltung
                         UserManager.ZeigeBenutzer();
                         break;
                         case "7":
-                        Extrafunctions.logwrite();
+                        Extrafunctions.InitializeLog();
                         break;
                     case "0":
                         running = false;
