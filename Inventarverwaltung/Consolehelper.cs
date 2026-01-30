@@ -40,6 +40,11 @@ namespace Inventarverwaltung
             System.Threading.Thread.Sleep(1500);
         }
 
+        public static void logwriter()
+        {
+
+        }
+
         // Menüpunkt anzeigen
         public static void PrintMenuItem(string key, string text)
         {
@@ -125,5 +130,6 @@ namespace Inventarverwaltung
             Console.WriteLine("  " + new string('─', 80));
             Console.ResetColor();
         }
+       
     }
 }

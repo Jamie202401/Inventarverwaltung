@@ -5,10 +5,13 @@ namespace Inventarverwaltung
     
     class Program
     {
+
         static void Main(string[] args)
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
             Console.InputEncoding  = System.Text.Encoding.UTF8;
+
+            
 
             // Dateien vorbereiten und verstecken
             FileManager.HideAllFiles();
@@ -23,6 +26,7 @@ namespace Inventarverwaltung
             DataManager.LoadBenutzer();
             DataManager.LoadMitarbeiter();
             DataManager.LoadInventar();
+            DataManager.LoadLogs();
 
             // Willkommensnachricht anzeigen
             ConsoleHelper.PrintWelcome();
@@ -55,22 +59,23 @@ namespace Inventarverwaltung
                         UserManager.ZeigeBenutzer();
                         break;
                         case "7":
-                        Extrafunctions.InitializeLog();
+                        Extrafunctions.Logwrite();
                         break;
                     case "0":
                         running = false;
                         break;
                     default:
-                        ConsoleHelper.PrintError("Ungültige Auswahl! Bitte wählen Sie eine Zahl von 0-6.");
+                        ConsoleHelper.PrintError("Ungültige Auswahl! Bitte wählen Sie eine Zahl von 0-7.");
                         ConsoleHelper.PressKeyToContinue();
                         break;
                 }
             }
-
+       
             // Abschiedsnachricht
             Console.Clear();
             ConsoleHelper.PrintSuccess("\n✓ Danke für die Nutzung des Inventarverwaltungssystems!\n");
             System.Threading.Thread.Sleep(1500);
         }
+
     }
 }

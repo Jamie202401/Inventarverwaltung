@@ -14,12 +14,16 @@ namespace Inventarverwaltung
         public static List<MID> Mitarbeiter = new List<MID>();
         public static List<Accounts> Benutzer = new List<Accounts>();
         public static List<Anmelder> Anmeldung = new List<Anmelder>();
+        public static List<Logging> Logs = new List<Logging>();
 
         #region Anmeldung - Laden und Speichern
 
         /// <summary>
         /// Lädt alle Anmeldedaten aus der Datei
         /// </summary>
+        /// 
+
+       
         public static void LoadAnmeldung()
         {
             Anmeldung.Clear();
@@ -53,6 +57,29 @@ namespace Inventarverwaltung
         #endregion
 
         #region Mitarbeiter - Laden und Speichern
+
+        public static void LoadLogs()
+        {
+            if (!File.Exists(FileManager.Filepath5))
+            {
+                string[] logs = File.ReadAllLines(FileManager.Filepath5);
+                foreach (var line in logs)
+                {
+                    string[] logData = line.Split(';');
+                    if (logData.Length >= 2)
+                    {
+                        logs.Add(new Logging(logData[0], logData[1]));)
+                    }
+                }
+            }
+        }
+
+        public static void SaveLogsToFile()
+        {
+            ///<summary>
+            ///Hier noch schreiben 
+            /// </summary>
+        }
 
         /// <summary>
         /// Lädt alle Mitarbeiter aus der Datei
