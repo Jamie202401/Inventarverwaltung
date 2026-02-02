@@ -123,7 +123,7 @@ Beispiel eines Log-Eintrags:
 [02.02.2026 14:30:45] [INVENTAR]
   ├─ Benutzer: MaxMustermann
   ├─ Computer: OFFICE-PC-01
-  ├─ IP-Adresse: 192.168.1.100
+  ├─ IP-Adresse: 10.10.10.10
   ├─ Aktion: Neuer Artikel hinzugefügt
   └─ Details: Inv-Nr: INV001 | Gerät: Laptop Dell XPS | Mitarbeiter: Anna Schmidt
 ────────────────────────────────────────────────────────────────────────────
