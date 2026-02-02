@@ -1,8 +1,7 @@
-[README.md](https://github.com/user-attachments/files/24965418/README.md)
-# Inventarverwaltung - Projektstruktur
+# Inventarverwaltung - Projektstruktur mit Logging
 
 ## 🎯 Übersicht
-Das Projekt wurde in mehrere übersichtliche Dateien aufgeteilt, um die Wartbarkeit und Lesbarkeit zu verbessern.
+Das Projekt wurde in mehrere übersichtliche Dateien aufgeteilt und verfügt jetzt über ein **umfassendes Logging-System**, das alle Aktivitäten protokolliert.
 
 ## 📁 Dateistruktur
 
@@ -10,6 +9,7 @@ Das Projekt wurde in mehrere übersichtliche Dateien aufgeteilt, um die Wartbark
 - Enthält die Main-Methode (Einstiegspunkt der Anwendung)
 - Koordiniert den Programmablauf
 - Verwaltet die Hauptschleife und Menüauswahl
+- Initialisiert das Logging-System
 
 ### Models.cs
 - Enthält alle Datenmodelle:
@@ -33,11 +33,13 @@ Das Projekt wurde in mehrere übersichtliche Dateien aufgeteilt, um die Wartbark
 ### MenuManager.cs
 - Zeigt das Hauptmenü mit Icons an
 - Formatiert Menüeinträge übersichtlich
+- **NEU**: Menüpunkte für Log-Anzeige und Report-Erstellung
 
 ### AuthManager.cs
 - Verwaltet die Benutzeranmeldung
 - Erstellt neue Anmeldekonten
 - Prüft bestehende Benutzer
+- **NEU**: Protokolliert alle Anmeldevorgänge
 
 ### DataManager.cs
 - Zentrale Klasse für Datenverwaltung
@@ -46,38 +48,109 @@ Das Projekt wurde in mehrere übersichtliche Dateien aufgeteilt, um die Wartbark
   - Mitarbeitern
   - Benutzern
   - Anmeldungen
-- Verwaltet alle Listen (Inventar, Mitarbeiter, Benutzer, Anmeldung)
+- Verwaltet alle Listen
 
 ### InventoryManager.cs
 - Verwaltet Inventar-Operationen
 - Neuen Artikel erstellen (mit Fehlerbehandlung)
 - Inventar anzeigen (übersichtliche Tabelle)
+- **NEU**: Protokolliert alle Inventar-Änderungen
 
 ### EmployeeManager.cs
 - Verwaltet Mitarbeiter-Operationen
 - Neuen Mitarbeiter hinzufügen (mit Validierung)
 - Mitarbeiter anzeigen
+- **NEU**: Protokolliert alle Mitarbeiter-Änderungen
 
 ### UserManager.cs
 - Verwaltet Benutzer-Operationen
 - Benutzer mit Berechtigungen anlegen
 - Benutzer anzeigen
+- **NEU**: Protokolliert alle Benutzer-Änderungen
 
-## ✨ Neue Verbesserungen
+### 🆕 LogManager.cs (NEU!)
+**Das Herzstück des Logging-Systems**
+- Protokolliert **alle** Systemaktivitäten
+- Speichert Log-Einträge in `System_Log.txt`
+- Erfasst für jeden Eintrag:
+  - ⏰ Zeitstempel (Datum und Uhrzeit)
+  - 👤 Benutzername
+  - 💻 Computername
+  - 🌐 IP-Adresse
+  - 📝 Aktion und Details
+
+## 📊 Was wird geloggt?
+
+### System-Logs
+- Programmstart
+- Programmende
+
+### Anmelde-Logs
+- Erfolgreiche Anmeldungen
+- Fehlgeschlagene Anmeldungen
+- Neue Konto-Erstellungen
+- Benutzername des Anmeldenden
+- Computername und IP-Adresse
+
+### Inventar-Logs
+- Neuer Artikel hinzugefügt (mit allen Details)
+- Inventar angezeigt (mit Anzahl)
+- Duplikat-Versuche verhindert
+
+### Mitarbeiter-Logs
+- Neuer Mitarbeiter hinzugefügt (Name, Abteilung)
+- Mitarbeiterliste angezeigt (mit Anzahl)
+- Duplikat-Versuche verhindert
+
+### Benutzer-Logs
+- Neuer Benutzer angelegt (mit Berechtigung)
+- Benutzerliste angezeigt (mit Anzahl)
+- Duplikat-Versuche verhindert
+
+### Datei-Logs
+- Daten geladen (Typ und Anzahl)
+- Daten gespeichert (Typ und Details)
+
+### Fehler & Warnungen
+- Systemfehler
+- Warnungen
+
+## 📝 Log-Datei Format
+
+Beispiel eines Log-Eintrags:
+
+```
+[02.02.2026 14:30:45] [INVENTAR]
+  ├─ Benutzer: MaxMustermann
+  ├─ Computer: OFFICE-PC-01
+  ├─ IP-Adresse: 192.168.1.100
+  ├─ Aktion: Neuer Artikel hinzugefügt
+  └─ Details: Inv-Nr: INV001 | Gerät: Laptop Dell XPS | Mitarbeiter: Anna Schmidt
+────────────────────────────────────────────────────────────────────────────
+```
+
+## 🔧 Neue Funktionen im Menü
+
+### [7] System-Log anzeigen
+- Zeigt die letzten 50 Log-Einträge an
+- Gibt Auskunft über alle Systemaktivitäten
+- Zeigt Dateipfad und Größe der Log-Datei
+
+### [8] Tagesreport erstellen
+- Erstellt einen Report aller Aktivitäten des aktuellen Tages
+- Speichert als separate Datei: `Report_YYYYMMDD.txt`
+- Perfekt für tägliche Zusammenfassungen
+
+## ✨ Verbesserungen
 
 ### 1. **Intelligente Fehlerbehandlung**
-- Bei falschen Eingaben wird nur die fehlerhafte Eingabe wiederholt
-- Keine komplette Neueingabe mehr nötig
+- Bei falschen Eingaben wird NUR die fehlerhafte Eingabe wiederholt
 - Farbcodierte Fehlermeldungen (rot) und Erfolgsmeldungen (grün)
 
 ### 2. **Schöneres Design**
 - Unicode-Rahmen (╔═══╗) statt einfacher Linien
 - Icons für bessere Übersichtlichkeit (📦, 👤, 👥, 📊, 🔐, etc.)
-- Farbcodierte Ausgaben:
-  - ✓ Grün für Erfolg
-  - ✗ Rot für Fehler
-  - ⚠ Gelb für Warnungen
-  - ℹ Cyan für Informationen
+- Farbcodierte Ausgaben
 
 ### 3. **Bessere Benutzerführung**
 - Hilfreiche Beispiele bei Eingaben
@@ -88,24 +161,24 @@ Das Projekt wurde in mehrere übersichtliche Dateien aufgeteilt, um die Wartbark
 - Prüfung auf leere Eingaben
 - Mindestlänge für Benutzernamen (3 Zeichen)
 - Duplikatsprüfung vor dem Speichern
-- Existenzprüfung bei Zuweisungen
 
 ### 5. **Übersichtliche Tabellen**
 - Einheitliche Tabellenformatierung
 - Nummerierung der Einträge
-- Zusammenfassung am Ende (z.B. "Gesamt: 5 Mitarbeiter")
+- Zusammenfassung am Ende
 
-## 📋 Beispiel-Ablauf
+### 6. **🆕 Vollständiges Audit-Trail**
+- Lückenlose Dokumentation aller Aktionen
+- Nachvollziehbarkeit für Compliance
+- Forensische Analysen möglich
 
-### Neuen Artikel erstellen:
-1. Inventarnummer eingeben
-   - Falls ungültig → nur Inventarnummer erneut eingeben
-2. Gerätename eingeben
-   - Falls ungültig → nur Gerätename erneut eingeben
-3. Mitarbeiter auswählen
-   - Zeigt alle verfügbaren Mitarbeiter an
-   - Falls nicht vorhanden → nur Mitarbeitername erneut eingeben
-4. ✓ Erfolg! Artikel wurde gespeichert
+## 🔒 Sicherheit & Compliance
+
+Das Logging-System bietet:
+- **Audit-Trail**: Alle Änderungen sind nachvollziehbar
+- **Benutzer-Tracking**: Wer hat wann was gemacht?
+- **System-Überwachung**: Fehlererkennung und Diagnose
+- **Compliance**: Erfüllung von Dokumentationspflichten
 
 ## 🎨 Farbschema
 
@@ -116,7 +189,7 @@ Das Projekt wurde in mehrere übersichtliche Dateien aufgeteilt, um die Wartbark
 - **Blau**: Überschriften von Abschnitten
 - **Grau**: Tabellenkopfzeilen
 
-## 💡 Vorteile der Aufteilung
+## 💡 Vorteile
 
 1. **Bessere Übersichtlichkeit**: Jede Datei hat eine klare Verantwortung
 2. **Einfachere Wartung**: Änderungen können gezielt vorgenommen werden
@@ -125,6 +198,9 @@ Das Projekt wurde in mehrere übersichtliche Dateien aufgeteilt, um die Wartbark
 5. **Testbarkeit**: Einzelne Komponenten können isoliert getestet werden
 6. **Benutzerfreundlich**: Keine frustrierenden Komplett-Neueingaben mehr
 7. **Professionell**: Modernes Design mit Icons und Farben
+8. **🆕 Nachvollziehbar**: Vollständige Protokollierung aller Aktivitäten
+9. **🆕 Sicher**: Audit-Trail für Compliance und Sicherheit
+10. **🆕 Analysierbar**: Tagesreports und Log-Auswertungen
 
 ## 🔧 Kompilierung
 
@@ -143,3 +219,15 @@ Oder in Visual Studio: Alle Dateien in ein Projekt einbinden und kompilieren.
 - Aussagekräftige Variablennamen
 - Strukturierte Fehlerbehandlung
 - Benutzerfreundliche Eingabe-Masken
+- **NEU**: Vollständiges Logging aller Aktivitäten
+- **NEU**: Log-Datei wird automatisch erstellt und verwaltet
+- **NEU**: IP-Adresse und Computername werden erfasst
+
+## 🚀 Erste Schritte
+
+1. Alle `.cs` Dateien kompilieren
+2. Programm starten
+3. Mit Benutzernamen anmelden
+4. **Alle Aktionen werden automatisch protokolliert!**
+5. Log anzeigen mit Menüpunkt [7]
+6. Tagesreport erstellen mit Menüpunkt [8]
