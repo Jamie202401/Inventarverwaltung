@@ -14,15 +14,14 @@ namespace Inventarverwaltung
         public static void Anmeldung()
         {
             DataManager.LoadAnmeldung();
-            ConsoleFont.TrySetConsoleFont("Consolas", 20);
 
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine("\n╔════════════════════════════════════════════╗");
-            Console.WriteLine("║          BENUTZERANMELDUNG                  ║");
+            Console.WriteLine("║          🔐 BENUTZERANMELDUNG              ║");
             Console.WriteLine("╚════════════════════════════════════════════╝\n");
             Console.ResetColor();
-            //:keyboar
+
             // Benutzername eingeben (mit Wiederholung)
             string anmeldename;
             while (true)
@@ -32,12 +31,14 @@ namespace Inventarverwaltung
                 if (string.IsNullOrWhiteSpace(anmeldename))
                 {
                     ConsoleHelper.PrintError("Benutzername darf nicht leer sein!");
+                    LogManager.LogAnmeldungFehlgeschlagen("Leerer Benutzername");
                     continue;
                 }
 
                 if (anmeldename.Length < 3)
                 {
                     ConsoleHelper.PrintError("Benutzername muss mindestens 3 Zeichen lang sein!");
+                    LogManager.LogAnmeldungFehlgeschlagen($"Benutzername zu kurz: {anmeldename}");
                     continue;
                 }
 
@@ -51,7 +52,8 @@ namespace Inventarverwaltung
             if (existierenderBenutzer != null)
             {
                 // Benutzer gefunden - erfolgreich angemeldet
-                ConsoleHelper.PrintSuccess($"Willkommen zurück, {anmeldename}! ");
+                ConsoleHelper.PrintSuccess($"Willkommen zurück, {anmeldename}! 👋");
+                LogManager.LogAnmeldungErfolgreich(anmeldename);
             }
             else
             {
@@ -72,12 +74,14 @@ namespace Inventarverwaltung
                         DataManager.Anmeldung.Add(neuerBenutzer);
                         DataManager.SaveIntoNewAccounts();
 
-                        ConsoleHelper.PrintSuccess($"Konto für '{anmeldename}' wurde erfolgreich erstellt! ");
+                        ConsoleHelper.PrintSuccess($"Konto für '{anmeldename}' wurde erfolgreich erstellt! 🎉");
+                        LogManager.LogNeuesKontoErstellt(anmeldename);
                         break;
                     }
                     else if (eingabe == "0")
                     {
                         ConsoleHelper.PrintWarning("Anmeldung abgebrochen.");
+                        LogManager.LogAnmeldungFehlgeschlagen("Benutzer hat Anmeldung abgebrochen");
                         System.Threading.Thread.Sleep(1000);
                         Environment.Exit(0);
                         break;

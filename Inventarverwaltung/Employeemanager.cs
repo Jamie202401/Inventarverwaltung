@@ -64,6 +64,7 @@ namespace Inventarverwaltung
                 {
                     ConsoleHelper.PrintError($"Ein Mitarbeiter mit dem Namen '{vName} {nName}' existiert bereits!");
                     ConsoleHelper.PrintWarning("Bitte geben Sie einen anderen Nachnamen ein.");
+                    LogManager.LogMitarbeiterDuplikat(vName, nName);
                     continue;
                 }
 
@@ -94,6 +95,9 @@ namespace Inventarverwaltung
             // Erfolgsmeldung
             ConsoleHelper.PrintSuccess($"Mitarbeiter '{vName} {nName}' aus der Abteilung '{abteilung}' wurde erfolgreich hinzugefügt!");
 
+            // Logging
+            LogManager.LogMitarbeiterHinzugefuegt(vName, nName, abteilung);
+
             ConsoleHelper.PressKeyToContinue();
         }
 
@@ -123,6 +127,10 @@ namespace Inventarverwaltung
 
             Console.WriteLine();
             ConsoleHelper.PrintInfo($"Gesamt: {DataManager.Mitarbeiter.Count} Mitarbeiter");
+
+            // Logging
+            LogManager.LogMitarbeiterAngezeigt(DataManager.Mitarbeiter.Count);
+
             ConsoleHelper.PressKeyToContinue();
         }
     }

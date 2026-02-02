@@ -2,16 +2,16 @@
 
 namespace Inventarverwaltung
 {
-    
+    /// <summary>
+    /// Hauptprogramm der Inventarverwaltung
+    /// </summary>
     class Program
     {
-
         static void Main(string[] args)
         {
-            Console.OutputEncoding = System.Text.Encoding.UTF8;
-            Console.InputEncoding  = System.Text.Encoding.UTF8;
-
-            
+            // Log-System initialisieren
+            LogManager.InitializeLog();
+            LogManager.LogProgrammStart();
 
             // Dateien vorbereiten und verstecken
             FileManager.HideAllFiles();
@@ -26,7 +26,6 @@ namespace Inventarverwaltung
             DataManager.LoadBenutzer();
             DataManager.LoadMitarbeiter();
             DataManager.LoadInventar();
-            DataManager.LoadLogs();
 
             // Willkommensnachricht anzeigen
             ConsoleHelper.PrintWelcome();
@@ -58,24 +57,30 @@ namespace Inventarverwaltung
                     case "6":
                         UserManager.ZeigeBenutzer();
                         break;
-                        case "7":
-                        Extrafunctions.Logwrite();
+                    case "7":
+                        LogManager.ZeigeLogDatei();
+                        break;
+                    case "8":
+                        LogManager.ErstelleTagesReport();
+                        ConsoleHelper.PressKeyToContinue();
                         break;
                     case "0":
                         running = false;
                         break;
                     default:
-                        ConsoleHelper.PrintError("Ungültige Auswahl! Bitte wählen Sie eine Zahl von 0-7.");
+                        ConsoleHelper.PrintError("Ungültige Auswahl! Bitte wählen Sie eine Zahl von 0-8.");
                         ConsoleHelper.PressKeyToContinue();
                         break;
                 }
             }
-       
+
+            // Programmende protokollieren
+            LogManager.LogProgrammEnde();
+
             // Abschiedsnachricht
             Console.Clear();
             ConsoleHelper.PrintSuccess("\n✓ Danke für die Nutzung des Inventarverwaltungssystems!\n");
             System.Threading.Thread.Sleep(1500);
         }
-
     }
 }

@@ -7,7 +7,9 @@ namespace Inventarverwaltung
     /// </summary>
     public static class UserManager
     {
-        
+        /// <summary>
+        /// Erstellt einen neuen Benutzer mit Berechtigungen
+        /// </summary>
         public static void NeuerBenutzer()
         {
             Console.Clear();
@@ -38,6 +40,7 @@ namespace Inventarverwaltung
                 if (existiert)
                 {
                     ConsoleHelper.PrintError($"Ein Benutzer mit dem Namen '{benutzerName}' existiert bereits!");
+                    LogManager.LogBenutzerDuplikat(benutzerName);
                     continue;
                 }
 
@@ -82,6 +85,9 @@ namespace Inventarverwaltung
             string rollenIcon = berechtigung == Berechtigungen.Admin ? "👑" : "👤";
             ConsoleHelper.PrintSuccess($"Benutzer '{benutzerName}' wurde als {rollenIcon} '{berechtigung}' angelegt!");
 
+            // Logging
+            LogManager.LogBenutzerAngelegt(benutzerName, berechtigung);
+
             ConsoleHelper.PressKeyToContinue();
         }
 
@@ -112,6 +118,10 @@ namespace Inventarverwaltung
 
             Console.WriteLine();
             ConsoleHelper.PrintInfo($"Gesamt: {DataManager.Benutzer.Count} Benutzer");
+
+            // Logging
+            LogManager.LogBenutzerAngezeigt(DataManager.Benutzer.Count);
+
             ConsoleHelper.PressKeyToContinue();
         }
     }

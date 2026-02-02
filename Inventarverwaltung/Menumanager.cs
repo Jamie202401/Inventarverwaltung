@@ -24,7 +24,12 @@ namespace Inventarverwaltung
             ConsoleHelper.PrintMenuItem("4", "📊 Inventar anzeigen");
             ConsoleHelper.PrintMenuItem("5", "🔐 Benutzer anlegen");
             ConsoleHelper.PrintMenuItem("6", "👨‍💼 Benutzer anzeigen");
-            ConsoleHelper.PrintMenuItem("7", "🔄 Extras und andere Funktionen");
+            Console.ResetColor();
+
+            Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            ConsoleHelper.PrintMenuItem("7", "📝 System-Log anzeigen");
+            ConsoleHelper.PrintMenuItem("8", "📄 Tagesreport erstellen");
             Console.ResetColor();
 
             Console.WriteLine();

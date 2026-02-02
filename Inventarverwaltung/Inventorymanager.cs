@@ -32,6 +32,7 @@ namespace Inventarverwaltung
                 if (DataManager.Inventar.Exists(i => i.InvNmr.Equals(invNmr, StringComparison.OrdinalIgnoreCase)))
                 {
                     ConsoleHelper.PrintError($"Die Inventar-Nummer '{invNmr}' existiert bereits!");
+                    LogManager.LogArtikelDuplikat(invNmr, "[noch nicht eingegeben]");
                     continue;
                 }
 
@@ -54,6 +55,7 @@ namespace Inventarverwaltung
                 if (DataManager.Inventar.Exists(i => i.GeraeteName.Equals(geraeteName, StringComparison.OrdinalIgnoreCase)))
                 {
                     ConsoleHelper.PrintError($"Ein Gerät mit dem Namen '{geraeteName}' existiert bereits!");
+                    LogManager.LogArtikelDuplikat("[bereits vergeben]", geraeteName);
                     continue;
                 }
 
@@ -97,6 +99,9 @@ namespace Inventarverwaltung
 
             // Erfolgsmeldung
             ConsoleHelper.PrintSuccess($"Gerät '{geraeteName}' (ID: {invNmr}) wurde erfolgreich dem Mitarbeiter '{mitarbeiterBezeichnung}' zugeordnet!");
+
+            // Logging
+            LogManager.LogArtikelHinzugefuegt(invNmr, geraeteName, mitarbeiterBezeichnung);
 
             ConsoleHelper.PressKeyToContinue();
         }
@@ -146,6 +151,10 @@ namespace Inventarverwaltung
 
             Console.WriteLine();
             ConsoleHelper.PrintInfo($"Gesamt: {DataManager.Inventar.Count} Artikel im Inventar");
+
+            // Logging
+            LogManager.LogInventarAngezeigt(DataManager.Inventar.Count);
+
             ConsoleHelper.PressKeyToContinue();
         }
     }

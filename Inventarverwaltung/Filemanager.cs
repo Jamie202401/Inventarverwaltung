@@ -13,7 +13,6 @@ namespace Inventarverwaltung
         public static string FilePath2 = "Mitarbeiter.txt";  // Mitarbeiterdaten
         public static string FilePath3 = "Accounts.txt";     // Benutzerdaten
         public static string FilePath4 = "Anmelder.txt";     // Anmeldedaten
-        public static string Filepath5 = "logs.app";
 
         /// <summary>
         /// Erstellt eine Datei (falls nicht vorhanden) und versteckt sie
@@ -39,7 +38,6 @@ namespace Inventarverwaltung
             CreateAndHideFile(FilePath2);
             CreateAndHideFile(FilePath3);
             CreateAndHideFile(FilePath4);
-            CreateAndHideFile(Filepath5);
         }
     }
 }
