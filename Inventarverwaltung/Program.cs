@@ -64,11 +64,14 @@ namespace Inventarverwaltung
                         LogManager.ErstelleTagesReport();
                         ConsoleHelper.PressKeyToContinue();
                         break;
+                    case "9":
+                        EncryptionManager.ZeigeVerschluesselungsInfo();
+                        break;
                     case "0":
                         running = false;
                         break;
                     default:
-                        ConsoleHelper.PrintError("Ungültige Auswahl! Bitte wählen Sie eine Zahl von 0-8.");
+                        ConsoleHelper.PrintError("Ungültige Auswahl! Bitte wählen Sie eine Zahl von 0-9.");
                         ConsoleHelper.PressKeyToContinue();
                         break;
                 }

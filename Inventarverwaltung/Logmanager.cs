@@ -1,17 +1,17 @@
 ﻿using System;
 using System.IO;
 using System.Net;
-using System.Net.NetworkInformation;
+using System.Text;
 
 namespace Inventarverwaltung
 {
     /// <summary>
-    /// Verwaltet alle Logging-Operationen des Systems
-    /// Protokolliert alle wichtigen Aktionen mit Zeitstempel, Benutzer und Systeminfo
+    /// Verwaltet alle Logging-Operationen des Systems mit AES-256 Verschlüsselung
+    /// Alle Log-Dateien werden automatisch verschlüsselt gespeichert
     /// </summary>
     public static class LogManager
     {
-        private static string logFilePath = "System_Log.txt";
+        private static string logFilePath = "System_Log.enc";  // .enc für encrypted
         private static string aktuellerBenutzer = "System";
 
         /// <summary>
@@ -23,7 +23,7 @@ namespace Inventarverwaltung
         }
 
         /// <summary>
-        /// Initialisiert die Log-Datei beim Programmstart
+        /// Initialisiert die verschlüsselte Log-Datei beim Programmstart
         /// </summary>
         public static void InitializeLog()
         {
@@ -31,14 +31,21 @@ namespace Inventarverwaltung
             {
                 if (!File.Exists(logFilePath))
                 {
-                    using (StreamWriter sw = new StreamWriter(logFilePath))
+                    StringBuilder sb = new StringBuilder();
+                    sb.AppendLine("╔════════════════════════════════════════════════════════════════════════╗");
+                    sb.AppendLine("║         INVENTARVERWALTUNG - VERSCHLÜSSELTE LOG DATEI                 ║");
+                    sb.AppendLine("║              🔐 AES-256 ENCRYPTED LOG FILE 🔐                         ║");
+                    sb.AppendLine("╚════════════════════════════════════════════════════════════════════════╝");
+                    sb.AppendLine($"Log-Datei erstellt am: {DateTime.Now:dd.MM.yyyy HH:mm:ss}");
+                    sb.AppendLine($"Verschlüsselung: AES-256-CBC mit PBKDF2-SHA256");
+                    sb.AppendLine(new string('═', 76));
+                    sb.AppendLine();
+
+                    // Verschlüsselt speichern
+                    byte[] encrypted = EncryptionManager.EncryptString(sb.ToString());
+                    if (encrypted != null)
                     {
-                        sw.WriteLine("╔════════════════════════════════════════════════════════════════════════╗");
-                        sw.WriteLine("║            INVENTARVERWALTUNG - SYSTEM LOG DATEI                      ║");
-                        sw.WriteLine("╚════════════════════════════════════════════════════════════════════════╝");
-                        sw.WriteLine($"Log-Datei erstellt am: {DateTime.Now:dd.MM.yyyy HH:mm:ss}");
-                        sw.WriteLine(new string('═', 76));
-                        sw.WriteLine();
+                        File.WriteAllBytes(logFilePath, encrypted);
                     }
                 }
             }
@@ -49,36 +56,38 @@ namespace Inventarverwaltung
         }
 
         /// <summary>
-        /// Schreibt einen allgemeinen Log-Eintrag
+        /// Schreibt einen verschlüsselten Log-Eintrag
         /// </summary>
         private static void SchreibeLog(string kategorie, string aktion, string details = "")
         {
             try
             {
-                using (StreamWriter sw = new StreamWriter(logFilePath, true))
+                StringBuilder logEntry = new StringBuilder();
+
+                string zeitstempel = DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss");
+                string computerName = Environment.MachineName;
+                string ip = GetLocalIPAddress();
+
+                logEntry.AppendLine($"[{zeitstempel}] [{kategorie}]");
+                logEntry.AppendLine($"  ├─ Benutzer: {aktuellerBenutzer}");
+                logEntry.AppendLine($"  ├─ Computer: {computerName}");
+                logEntry.AppendLine($"  ├─ IP-Adresse: {ip}");
+                logEntry.AppendLine($"  ├─ Aktion: {aktion}");
+
+                if (!string.IsNullOrWhiteSpace(details))
                 {
-                    string zeitstempel = DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss");
-                    string computerName = Environment.MachineName;
-                    string ip = GetLocalIPAddress();
-
-                    sw.WriteLine($"[{zeitstempel}] [{kategorie}]");
-                    sw.WriteLine($"  ├─ Benutzer: {aktuellerBenutzer}");
-                    sw.WriteLine($"  ├─ Computer: {computerName}");
-                    sw.WriteLine($"  ├─ IP-Adresse: {ip}");
-                    sw.WriteLine($"  ├─ Aktion: {aktion}");
-
-                    if (!string.IsNullOrWhiteSpace(details))
-                    {
-                        sw.WriteLine($"  └─ Details: {details}");
-                    }
-                    else
-                    {
-                        sw.WriteLine($"  └─ Status: Erfolgreich");
-                    }
-
-                    sw.WriteLine(new string('─', 76));
-                    sw.WriteLine();
+                    logEntry.AppendLine($"  └─ Details: {details}");
                 }
+                else
+                {
+                    logEntry.AppendLine($"  └─ Status: Erfolgreich");
+                }
+
+                logEntry.AppendLine(new string('─', 76));
+                logEntry.AppendLine();
+
+                // Verschlüsselt anhängen
+                EncryptionManager.AppendEncrypted(logFilePath, logEntry.ToString());
             }
             catch (Exception ex)
             {
@@ -114,18 +123,12 @@ namespace Inventarverwaltung
 
         #region System-Logs
 
-        /// <summary>
-        /// Protokolliert den Programmstart
-        /// </summary>
         public static void LogProgrammStart()
         {
             SchreibeLog("SYSTEM", "Programm gestartet",
-                $"Version: 1.0 | Betriebssystem: {Environment.OSVersion}");
+                $"Version: 1.0 | Betriebssystem: {Environment.OSVersion} | Verschlüsselung: AES-256");
         }
 
-        /// <summary>
-        /// Protokolliert das Programmende
-        /// </summary>
         public static void LogProgrammEnde()
         {
             SchreibeLog("SYSTEM", "Programm beendet");
@@ -135,9 +138,6 @@ namespace Inventarverwaltung
 
         #region Anmelde-Logs
 
-        /// <summary>
-        /// Protokolliert eine erfolgreiche Anmeldung
-        /// </summary>
         public static void LogAnmeldungErfolgreich(string benutzername)
         {
             aktuellerBenutzer = benutzername;
@@ -145,9 +145,6 @@ namespace Inventarverwaltung
                 $"Benutzername: {benutzername} | Status: Erfolgreich");
         }
 
-        /// <summary>
-        /// Protokolliert die Erstellung eines neuen Anmelde-Kontos
-        /// </summary>
         public static void LogNeuesKontoErstellt(string benutzername)
         {
             aktuellerBenutzer = benutzername;
@@ -155,9 +152,6 @@ namespace Inventarverwaltung
                 $"Benutzername: {benutzername}");
         }
 
-        /// <summary>
-        /// Protokolliert einen fehlgeschlagenen Anmeldeversuch
-        /// </summary>
         public static void LogAnmeldungFehlgeschlagen(string grund)
         {
             SchreibeLog("ANMELDUNG", "Anmeldung fehlgeschlagen", grund);
@@ -167,27 +161,18 @@ namespace Inventarverwaltung
 
         #region Inventar-Logs
 
-        /// <summary>
-        /// Protokolliert das Hinzufügen eines neuen Artikels
-        /// </summary>
         public static void LogArtikelHinzugefuegt(string invNr, string geraeteName, string mitarbeiter)
         {
             SchreibeLog("INVENTAR", "Neuer Artikel hinzugefügt",
                 $"Inv-Nr: {invNr} | Gerät: {geraeteName} | Mitarbeiter: {mitarbeiter}");
         }
 
-        /// <summary>
-        /// Protokolliert das Anzeigen des Inventars
-        /// </summary>
         public static void LogInventarAngezeigt(int anzahl)
         {
             SchreibeLog("INVENTAR", "Inventar angezeigt",
                 $"Anzahl Artikel: {anzahl}");
         }
 
-        /// <summary>
-        /// Protokolliert einen Versuch, einen doppelten Artikel hinzuzufügen
-        /// </summary>
         public static void LogArtikelDuplikat(string invNr, string geraeteName)
         {
             SchreibeLog("INVENTAR", "Duplikat verhindert",
@@ -198,27 +183,18 @@ namespace Inventarverwaltung
 
         #region Mitarbeiter-Logs
 
-        /// <summary>
-        /// Protokolliert das Hinzufügen eines neuen Mitarbeiters
-        /// </summary>
         public static void LogMitarbeiterHinzugefuegt(string vorname, string nachname, string abteilung)
         {
             SchreibeLog("MITARBEITER", "Neuer Mitarbeiter hinzugefügt",
                 $"Name: {vorname} {nachname} | Abteilung: {abteilung}");
         }
 
-        /// <summary>
-        /// Protokolliert das Anzeigen der Mitarbeiterliste
-        /// </summary>
         public static void LogMitarbeiterAngezeigt(int anzahl)
         {
             SchreibeLog("MITARBEITER", "Mitarbeiterliste angezeigt",
                 $"Anzahl Mitarbeiter: {anzahl}");
         }
 
-        /// <summary>
-        /// Protokolliert einen Versuch, einen doppelten Mitarbeiter hinzuzufügen
-        /// </summary>
         public static void LogMitarbeiterDuplikat(string vorname, string nachname)
         {
             SchreibeLog("MITARBEITER", "Duplikat verhindert",
@@ -229,27 +205,18 @@ namespace Inventarverwaltung
 
         #region Benutzer-Logs
 
-        /// <summary>
-        /// Protokolliert das Anlegen eines neuen Benutzers
-        /// </summary>
         public static void LogBenutzerAngelegt(string benutzername, Berechtigungen berechtigung)
         {
             SchreibeLog("BENUTZER", "Neuer Benutzer angelegt",
                 $"Benutzername: {benutzername} | Berechtigung: {berechtigung}");
         }
 
-        /// <summary>
-        /// Protokolliert das Anzeigen der Benutzerliste
-        /// </summary>
         public static void LogBenutzerAngezeigt(int anzahl)
         {
             SchreibeLog("BENUTZER", "Benutzerliste angezeigt",
                 $"Anzahl Benutzer: {anzahl}");
         }
 
-        /// <summary>
-        /// Protokolliert einen Versuch, einen doppelten Benutzer anzulegen
-        /// </summary>
         public static void LogBenutzerDuplikat(string benutzername)
         {
             SchreibeLog("BENUTZER", "Duplikat verhindert",
@@ -260,18 +227,12 @@ namespace Inventarverwaltung
 
         #region Datei-Logs
 
-        /// <summary>
-        /// Protokolliert das Laden von Daten aus einer Datei
-        /// </summary>
         public static void LogDatenGeladen(string dateityp, int anzahl)
         {
             SchreibeLog("DATEI", "Daten geladen",
                 $"Typ: {dateityp} | Anzahl Datensätze: {anzahl}");
         }
 
-        /// <summary>
-        /// Protokolliert das Speichern von Daten in eine Datei
-        /// </summary>
         public static void LogDatenGespeichert(string dateityp, string details)
         {
             SchreibeLog("DATEI", "Daten gespeichert",
@@ -282,17 +243,11 @@ namespace Inventarverwaltung
 
         #region Fehler-Logs
 
-        /// <summary>
-        /// Protokolliert einen Fehler im System
-        /// </summary>
         public static void LogFehler(string bereich, string fehlermeldung)
         {
             SchreibeLog("FEHLER", $"Fehler in {bereich}", fehlermeldung);
         }
 
-        /// <summary>
-        /// Protokolliert eine Warnung
-        /// </summary>
         public static void LogWarnung(string bereich, string warnung)
         {
             SchreibeLog("WARNUNG", bereich, warnung);
@@ -300,15 +255,15 @@ namespace Inventarverwaltung
 
         #endregion
 
-        #region Hilfs-Methoden
+        #region Log-Anzeige
 
         /// <summary>
-        /// Zeigt die Log-Datei an (für Admin-Zugriff)
+        /// Zeigt die entschlüsselte Log-Datei an
         /// </summary>
         public static void ZeigeLogDatei()
         {
             Console.Clear();
-            ConsoleHelper.PrintSectionHeader("System-Log anzeigen", ConsoleColor.DarkCyan);
+            ConsoleHelper.PrintSectionHeader("🔐 Verschlüsseltes System-Log anzeigen", ConsoleColor.DarkCyan);
 
             if (!File.Exists(logFilePath))
             {
@@ -319,27 +274,55 @@ namespace Inventarverwaltung
 
             try
             {
-                string[] logLines = File.ReadAllLines(logFilePath);
+                Console.WriteLine();
+                ConsoleHelper.PrintInfo("🔓 Entschlüssele Log-Datei...");
+                System.Threading.Thread.Sleep(500); // Simuliert Entschlüsselung
+
+                // Log entschlüsseln und lesen
+                string decryptedLog = EncryptionManager.ReadEncryptedFile(logFilePath);
+
+                if (decryptedLog == null)
+                {
+                    ConsoleHelper.PrintError("Fehler beim Entschlüsseln der Log-Datei!");
+                    ConsoleHelper.PressKeyToContinue();
+                    return;
+                }
+
+                string[] logLines = decryptedLog.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
 
                 Console.WriteLine();
+                ConsoleHelper.PrintSuccess("✓ Log-Datei erfolgreich entschlüsselt!");
                 ConsoleHelper.PrintInfo($"Log-Datei: {Path.GetFullPath(logFilePath)}");
+                ConsoleHelper.PrintInfo($"Dateigröße: {new FileInfo(logFilePath).Length} Bytes (verschlüsselt)");
                 ConsoleHelper.PrintInfo($"Anzahl Zeilen: {logLines.Length}");
                 Console.WriteLine();
 
                 ConsoleHelper.PrintSeparator();
 
-                // Die letzten 50 Zeilen anzeigen (oder weniger falls nicht so viele vorhanden)
+                // Die letzten 50 Zeilen anzeigen
                 int startIndex = Math.Max(0, logLines.Length - 50);
 
                 Console.ForegroundColor = ConsoleColor.Gray;
                 for (int i = startIndex; i < logLines.Length; i++)
                 {
-                    Console.WriteLine(logLines[i]);
+                    if (!string.IsNullOrWhiteSpace(logLines[i]))
+                    {
+                        Console.WriteLine(logLines[i]);
+                    }
                 }
                 Console.ResetColor();
 
                 Console.WriteLine();
                 ConsoleHelper.PrintInfo($"Es werden die letzten {Math.Min(50, logLines.Length)} Einträge angezeigt.");
+
+                // Hash zur Integritätsprüfung
+                string hash = EncryptionManager.GetFileHash(logFilePath);
+                if (hash != null)
+                {
+                    Console.WriteLine();
+                    ConsoleHelper.PrintInfo($"Datei-Hash (SHA-256): {hash.Substring(0, 32)}...");
+                }
+
                 ConsoleHelper.PressKeyToContinue();
             }
             catch (Exception ex)
@@ -350,12 +333,12 @@ namespace Inventarverwaltung
         }
 
         /// <summary>
-        /// Erstellt einen täglichen Log-Report
+        /// Erstellt einen verschlüsselten Tagesreport
         /// </summary>
         public static void ErstelleTagesReport()
         {
             string heute = DateTime.Now.ToString("dd.MM.yyyy");
-            string reportPfad = $"Report_{DateTime.Now:yyyyMMdd}.txt";
+            string reportPfad = $"Report_{DateTime.Now:yyyyMMdd}.enc";
 
             try
             {
@@ -365,34 +348,62 @@ namespace Inventarverwaltung
                     return;
                 }
 
-                string[] alleLogs = File.ReadAllLines(logFilePath);
-                int eintraegeHeute = 0;
+                Console.WriteLine();
+                ConsoleHelper.PrintInfo("🔓 Entschlüssele Log-Datei für Report...");
+                System.Threading.Thread.Sleep(500);
 
-                using (StreamWriter sw = new StreamWriter(reportPfad))
+                // Log entschlüsseln
+                string decryptedLog = EncryptionManager.ReadEncryptedFile(logFilePath);
+
+                if (decryptedLog == null)
                 {
-                    sw.WriteLine("╔════════════════════════════════════════════════════════════════════════╗");
-                    sw.WriteLine("║                     TAGESREPORT - ZUSAMMENFASSUNG                      ║");
-                    sw.WriteLine("╚════════════════════════════════════════════════════════════════════════╝");
-                    sw.WriteLine($"Datum: {heute}");
-                    sw.WriteLine($"Erstellt am: {DateTime.Now:HH:mm:ss}");
-                    sw.WriteLine(new string('═', 76));
-                    sw.WriteLine();
-
-                    foreach (string zeile in alleLogs)
-                    {
-                        if (zeile.Contains(heute))
-                        {
-                            eintraegeHeute++;
-                            sw.WriteLine(zeile);
-                        }
-                    }
-
-                    sw.WriteLine();
-                    sw.WriteLine(new string('═', 76));
-                    sw.WriteLine($"Gesamt {eintraegeHeute} Einträge für den {heute}");
+                    ConsoleHelper.PrintError("Fehler beim Entschlüsseln!");
+                    return;
                 }
 
-                ConsoleHelper.PrintSuccess($"Tagesreport erstellt: {reportPfad}");
+                string[] alleLogs = decryptedLog.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+                int eintraegeHeute = 0;
+
+                StringBuilder report = new StringBuilder();
+                report.AppendLine("╔════════════════════════════════════════════════════════════════════════╗");
+                report.AppendLine("║              TAGESREPORT - ZUSAMMENFASSUNG (VERSCHLÜSSELT)            ║");
+                report.AppendLine("╚════════════════════════════════════════════════════════════════════════╝");
+                report.AppendLine($"Datum: {heute}");
+                report.AppendLine($"Erstellt am: {DateTime.Now:HH:mm:ss}");
+                report.AppendLine($"Verschlüsselung: AES-256-CBC");
+                report.AppendLine(new string('═', 76));
+                report.AppendLine();
+
+                foreach (string zeile in alleLogs)
+                {
+                    if (zeile.Contains(heute))
+                    {
+                        eintraegeHeute++;
+                        report.AppendLine(zeile);
+                    }
+                }
+
+                report.AppendLine();
+                report.AppendLine(new string('═', 76));
+                report.AppendLine($"Gesamt {eintraegeHeute} Einträge für den {heute}");
+
+                ConsoleHelper.PrintInfo("🔐 Verschlüssele Report...");
+                System.Threading.Thread.Sleep(500);
+
+                // Report verschlüsseln und speichern
+                byte[] encrypted = EncryptionManager.EncryptString(report.ToString());
+
+                if (encrypted == null)
+                {
+                    ConsoleHelper.PrintError("Fehler beim Verschlüsseln des Reports!");
+                    return;
+                }
+
+                File.WriteAllBytes(reportPfad, encrypted);
+
+                ConsoleHelper.PrintSuccess($"✓ Verschlüsselter Tagesreport erstellt: {reportPfad}");
+                ConsoleHelper.PrintInfo($"Einträge heute: {eintraegeHeute}");
+                ConsoleHelper.PrintInfo($"Dateigröße: {new FileInfo(reportPfad).Length} Bytes");
             }
             catch (Exception ex)
             {

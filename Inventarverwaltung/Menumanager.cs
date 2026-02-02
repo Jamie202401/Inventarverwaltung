@@ -28,8 +28,9 @@ namespace Inventarverwaltung
 
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Cyan;
-            ConsoleHelper.PrintMenuItem("7", "📝 System-Log anzeigen");
-            ConsoleHelper.PrintMenuItem("8", "📄 Tagesreport erstellen");
+            ConsoleHelper.PrintMenuItem("7", "📝 System-Log anzeigen (verschlüsselt)");
+            ConsoleHelper.PrintMenuItem("8", "📄 Tagesreport erstellen (verschlüsselt)");
+            ConsoleHelper.PrintMenuItem("9", "🔐 Verschlüsselungs-Info anzeigen");
             Console.ResetColor();
 
             Console.WriteLine();
