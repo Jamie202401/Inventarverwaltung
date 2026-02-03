@@ -3,19 +3,19 @@
 namespace Inventarverwaltung
 {
     /// <summary>
-    /// Verwaltet alle Benutzer-Operationen
+    /// Verwaltet alle Benutzer-Operationen mit KI-Unterstützung
     /// </summary>
     public static class UserManager
     {
         /// <summary>
-        /// Erstellt einen neuen Benutzer mit Berechtigungen
+        /// Erstellt einen neuen Benutzer mit KI-Unterstützung
         /// </summary>
         public static void NeuerBenutzer()
         {
             Console.Clear();
             ConsoleHelper.PrintSectionHeader("Neuen Benutzer anlegen", ConsoleColor.DarkMagenta);
 
-            // Benutzername eingeben (mit Wiederholung bei Fehler)
+            // Benutzername eingeben
             string benutzerName;
             while (true)
             {
@@ -44,10 +44,10 @@ namespace Inventarverwaltung
                     continue;
                 }
 
-                break; // Eingabe ist gültig
+                break;
             }
 
-            // Berechtigung wählen (mit Wiederholung bei Fehler)
+            // Berechtigung wählen (mit KI-Empfehlung)
             Berechtigungen berechtigung;
             while (true)
             {
@@ -57,6 +57,16 @@ namespace Inventarverwaltung
                 Console.ResetColor();
                 Console.WriteLine("  [1] 👤 User - Kann nur Daten ansehen und hinzufügen");
                 Console.WriteLine("  [2] 👑 Admin - Hat volle Rechte (Löschen, Ändern, etc.)");
+
+                // KI: Empfehlung basierend auf Kontext
+                string aiEmpfehlung = IntelligentAssistant.SchlageBerechtigungVor(benutzerName);
+                if (!string.IsNullOrWhiteSpace(aiEmpfehlung))
+                {
+                    Console.WriteLine();
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine($"   🤖 {aiEmpfehlung}");
+                    Console.ResetColor();
+                }
 
                 string eingabe = ConsoleHelper.GetInput("\nBerechtigungsstufe wählen (1 oder 2)");
 

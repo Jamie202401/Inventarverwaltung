@@ -4,19 +4,29 @@ using System.Linq;
 namespace Inventarverwaltung
 {
     /// <summary>
-    /// Verwaltet alle Mitarbeiter-Operationen
+    /// Verwaltet alle Mitarbeiter-Operationen mit KI-Unterstützung
     /// </summary>
     public static class EmployeeManager
     {
         /// <summary>
-        /// Fügt einen neuen Mitarbeiter hinzu mit intelligenter Fehlerbehandlung
+        /// Fügt einen neuen Mitarbeiter hinzu mit intelligenter KI-Unterstützung
         /// </summary>
         public static void NeuenMitarbeiterHinzufuegen()
         {
             Console.Clear();
             ConsoleHelper.PrintSectionHeader("Neuen Mitarbeiter hinzufügen", ConsoleColor.Magenta);
 
-            // Vorname eingeben (mit Wiederholung bei Fehler)
+            // KI: Zeige Abteilungsverteilung
+            string verteilung = IntelligentAssistant.AnalysiereAbteilungsverteilung();
+            if (!string.IsNullOrWhiteSpace(verteilung))
+            {
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine("\n   🤖 KI-Analyse:");
+                Console.WriteLine(verteilung);
+                Console.ResetColor();
+            }
+
+            // Vorname eingeben
             string vName;
             while (true)
             {
@@ -34,10 +44,10 @@ namespace Inventarverwaltung
                     continue;
                 }
 
-                break; // Eingabe ist gültig
+                break;
             }
 
-            // Nachname eingeben (mit Wiederholung bei Fehler)
+            // Nachname eingeben (mit KI-Prüfung)
             string nName;
             while (true)
             {
@@ -55,6 +65,22 @@ namespace Inventarverwaltung
                     continue;
                 }
 
+                // KI: Prüfe Plausibilität und ähnliche Namen
+                string feedback = IntelligentAssistant.PruefeNamePlausibilitaet(vName, nName);
+                if (!string.IsNullOrWhiteSpace(feedback))
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine("\n   🤖 KI-Feedback:");
+                    Console.WriteLine(feedback);
+                    Console.ResetColor();
+
+                    string weiter = ConsoleHelper.GetInput("Trotzdem fortfahren? (j/n)");
+                    if (weiter.ToLower() != "j" && weiter.ToLower() != "ja")
+                    {
+                        continue;
+                    }
+                }
+
                 // Prüfen ob Mitarbeiter bereits existiert
                 bool existiert = DataManager.Mitarbeiter.Exists(m =>
                     m.VName.Equals(vName, StringComparison.OrdinalIgnoreCase) &&
@@ -68,15 +94,30 @@ namespace Inventarverwaltung
                     continue;
                 }
 
-                break; // Eingabe ist gültig
+                break;
             }
 
-            // Abteilung eingeben (mit Wiederholung bei Fehler)
+            // Abteilung eingeben (mit KI-Vorschlägen)
             string abteilung;
             while (true)
             {
-                ConsoleHelper.PrintInfo("Beispiele: IT, Vertrieb, Buchhaltung, Verwaltung");
-                abteilung = ConsoleHelper.GetInput("Abteilung des Mitarbeiters");
+                // KI: Zeige häufigste Abteilungen
+                var vorschlaege = IntelligentAssistant.SchlageAbteilungenVor();
+
+                Console.WriteLine();
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("   🤖 KI schlägt folgende Abteilungen vor:");
+                Console.ResetColor();
+
+                for (int i = 0; i < vorschlaege.Count && i < 5; i++)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine($"      [{i + 1}] {vorschlaege[i]}");
+                    Console.ResetColor();
+                }
+                Console.WriteLine();
+
+                abteilung = ConsoleHelper.GetInput("Abteilung (oder Nummer für Vorschlag)");
 
                 if (string.IsNullOrWhiteSpace(abteilung))
                 {
@@ -84,7 +125,14 @@ namespace Inventarverwaltung
                     continue;
                 }
 
-                break; // Eingabe ist gültig
+                // Prüfe ob Nummer eingegeben wurde
+                if (int.TryParse(abteilung, out int nummer) && nummer > 0 && nummer <= vorschlaege.Count)
+                {
+                    abteilung = vorschlaege[nummer - 1];
+                    ConsoleHelper.PrintSuccess($"✓ KI-Vorschlag übernommen: {abteilung}");
+                }
+
+                break;
             }
 
             // Mitarbeiter erstellen und speichern
@@ -92,7 +140,11 @@ namespace Inventarverwaltung
             DataManager.Mitarbeiter.Add(neuerMitarbeiter);
             DataManager.SaveMitarbeiterToFile();
 
+            // KI neu initialisieren
+            IntelligentAssistant.IniializeAI();
+
             // Erfolgsmeldung
+            Console.WriteLine();
             ConsoleHelper.PrintSuccess($"Mitarbeiter '{vName} {nName}' aus der Abteilung '{abteilung}' wurde erfolgreich hinzugefügt!");
 
             // Logging

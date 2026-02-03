@@ -9,23 +9,33 @@ namespace Inventarverwaltung
     public static class InventoryManager
     {
         /// <summary>
-        /// Erstellt einen neuen Inventarartikel mit intelligenter Fehlerbehandlung
+        /// Erstellt einen neuen Inventarartikel mit intelligenter KI-Unterstützung
         /// </summary>
         public static void NeuenArtikelErstellen()
         {
             Console.Clear();
             ConsoleHelper.PrintSectionHeader("Neues Gerät hinzufügen", ConsoleColor.DarkGreen);
 
-            // Inventarnummer eingeben (mit Wiederholung bei Fehler)
+            // KI: System-Insights anzeigen
+            IntelligentAssistant.ZeigeSystemInsights();
+
+            // Inventarnummer eingeben (mit KI-Vorschlag)
             string invNmr;
             while (true)
             {
-                invNmr = ConsoleHelper.GetInput("Inventar-Nummer (z.B. INV001)");
+                // KI: Intelligenter Vorschlag für nächste Nummer
+                string vorschlag = IntelligentAssistant.SchlageInventarnummernVor();
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine($"\n   🤖 KI-Vorschlag: {vorschlag}");
+                Console.ResetColor();
 
+                invNmr = ConsoleHelper.GetInput("Inventar-Nummer (Enter für Vorschlag)");
+
+                // Wenn leer, Vorschlag übernehmen
                 if (string.IsNullOrWhiteSpace(invNmr))
                 {
-                    ConsoleHelper.PrintError("Inventar-Nummer darf nicht leer sein!");
-                    continue;
+                    invNmr = vorschlag;
+                    ConsoleHelper.PrintSuccess($"✓ Vorschlag übernommen: {invNmr}");
                 }
 
                 // Prüfen ob bereits vorhanden
@@ -36,10 +46,10 @@ namespace Inventarverwaltung
                     continue;
                 }
 
-                break; // Eingabe ist gültig
+                break;
             }
 
-            // Gerätename eingeben (mit Wiederholung bei Fehler)
+            // Gerätename eingeben (mit KI-Analyse)
             string geraeteName;
             while (true)
             {
@@ -51,6 +61,16 @@ namespace Inventarverwaltung
                     continue;
                 }
 
+                // KI: Analysiere Gerät
+                string analyse = IntelligentAssistant.Analysieregeraete(geraeteName);
+                if (!string.IsNullOrWhiteSpace(analyse))
+                {
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.WriteLine("\n   🤖 KI-Analyse:");
+                    Console.WriteLine(analyse);
+                    Console.ResetColor();
+                }
+
                 // Prüfen ob bereits vorhanden
                 if (DataManager.Inventar.Exists(i => i.GeraeteName.Equals(geraeteName, StringComparison.OrdinalIgnoreCase)))
                 {
@@ -59,22 +79,68 @@ namespace Inventarverwaltung
                     continue;
                 }
 
-                break; // Eingabe ist gültig
+                // KI: Prüfe auf ähnliche Namen (Tippfehler?)
+                var vorhandeneGeraete = DataManager.Inventar.Select(i => i.GeraeteName).ToList();
+                var aehnliche = IntelligentAssistant.FindePotentielleDuplikate(geraeteName, vorhandeneGeraete);
+
+                if (aehnliche.Count > 0)
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine("\n   ⚠️ KI-Warnung: Ähnliche Geräte gefunden:");
+                    foreach (var item in aehnliche)
+                    {
+                        Console.WriteLine($"      • {item}");
+                    }
+                    Console.ResetColor();
+
+                    string bestaetigung = ConsoleHelper.GetInput("Trotzdem fortfahren? (j/n)");
+                    if (bestaetigung.ToLower() != "j" && bestaetigung.ToLower() != "ja")
+                    {
+                        continue;
+                    }
+                }
+
+                break;
             }
 
-            // Mitarbeiter zuweisen (mit Wiederholung bei Fehler)
+            // Mitarbeiter zuweisen (mit KI-Vorschlägen)
             string mitarbeiterBezeichnung;
             while (true)
             {
-                ConsoleHelper.PrintInfo("Verfügbare Mitarbeiter:");
+                // KI: Intelligente Mitarbeiter-Vorschläge
+                var aiVorschlaege = IntelligentAssistant.SchlageMitarbeiterVor(geraeteName, 3);
+
+                if (aiVorschlaege.Count > 0)
+                {
+                    Console.WriteLine();
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine("   🤖 KI empfiehlt folgende Mitarbeiter:");
+                    Console.ResetColor();
+                    for (int i = 0; i < aiVorschlaege.Count; i++)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine($"      [{i + 1}] {aiVorschlaege[i]}");
+                        Console.ResetColor();
+                    }
+                    Console.WriteLine();
+                }
+
+                ConsoleHelper.PrintInfo("Alle verfügbaren Mitarbeiter:");
                 ZeigeMitarbeiterListe();
 
-                mitarbeiterBezeichnung = ConsoleHelper.GetInput("Mitarbeiter (Vorname Nachname)");
+                mitarbeiterBezeichnung = ConsoleHelper.GetInput("Mitarbeiter (Vorname Nachname oder Nummer)");
 
                 if (string.IsNullOrWhiteSpace(mitarbeiterBezeichnung))
                 {
                     ConsoleHelper.PrintError("Mitarbeitername darf nicht leer sein!");
                     continue;
+                }
+
+                // Prüfe ob Nummer eingegeben wurde
+                if (int.TryParse(mitarbeiterBezeichnung, out int nummer) && nummer > 0 && nummer <= aiVorschlaege.Count)
+                {
+                    mitarbeiterBezeichnung = aiVorschlaege[nummer - 1];
+                    ConsoleHelper.PrintSuccess($"✓ KI-Vorschlag übernommen: {mitarbeiterBezeichnung}");
                 }
 
                 // Prüfen ob Mitarbeiter existiert
@@ -89,7 +155,7 @@ namespace Inventarverwaltung
                     continue;
                 }
 
-                break; // Eingabe ist gültig
+                break;
             }
 
             // Artikel erstellen und speichern
@@ -97,7 +163,11 @@ namespace Inventarverwaltung
             DataManager.Inventar.Add(neuerArtikel);
             DataManager.SaveInvToFile();
 
+            // KI neu initialisieren (lernt aus neuem Eintrag)
+            IntelligentAssistant.IniializeAI();
+
             // Erfolgsmeldung
+            Console.WriteLine();
             ConsoleHelper.PrintSuccess($"Gerät '{geraeteName}' (ID: {invNmr}) wurde erfolgreich dem Mitarbeiter '{mitarbeiterBezeichnung}' zugeordnet!");
 
             // Logging

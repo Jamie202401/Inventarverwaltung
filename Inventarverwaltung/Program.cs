@@ -27,6 +27,9 @@ namespace Inventarverwaltung
             DataManager.LoadMitarbeiter();
             DataManager.LoadInventar();
 
+            // KI-Assistent initialisieren (lernt aus vorhandenen Daten)
+            IntelligentAssistant.IniializeAI();
+
             // Willkommensnachricht anzeigen
             ConsoleHelper.PrintWelcome();
 
