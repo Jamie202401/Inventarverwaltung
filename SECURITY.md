@@ -4,6 +4,8 @@
 Vielen Dank, dass du zur Sichherheit von dem Inventarverwaltungssystem beitragen möchtest. Wenn du eine Lücke im System findest oder sonstiges melde dich bitte umgehend, damit diese Lücke so schnell wie möglich geschlossen werden kann
 
 Bitte Sende die Hinweise wie folgt:
+<br>
+<br>
 🔒GitHub Security Report
 
 Bitte erstelle <strong>kein öffentliches Issue</strong> das die Details zur Lücke enthält.
