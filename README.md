@@ -1,3 +1,5 @@
+[SECURITY.md](https://github.com/user-attachments/files/25043446/SECURITY.md)
+[SECURITY.md](https://github.com/user-attachments/files/25043441/SECURITY.md)
 # Inventarverwaltung - Projektstruktur mit Logging
 
 ## 🎯 Übersicht
