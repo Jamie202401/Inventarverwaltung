@@ -97,10 +97,10 @@ Gerät: "Laptop Dell XPS 15"
 
 #### Duplikat-Warnung
 ```
-Eingabe: "Laptop Dell XPS"
+Eingabe: "Laptop Lenovo x"
 ⚠️ KI-Warnung: Ähnliche Geräte gefunden:
-   • Laptop Dell XPS 15
-   • Laptop Dell XPS 13
+   • Laptop Lenovo xy
+   • Laptop Lenovo xyz
 ```
 
 ### 2. Mitarbeiter-Intelligenz
@@ -162,8 +162,8 @@ Kein Admin im System:
 ```
 
 **Schlüsselwörter:**
-- Admin-Trigger: admin, chef, leiter
-- User-Trigger: praktikant, azubi, trainee
+- Admin-Trigger: admin
+- User-Trigger: praktikant, azubi
 
 ### 4. System-Insights
 
