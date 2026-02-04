@@ -245,27 +245,20 @@ Von Dateien zu professioneller Datenbank
 #### Geplante Features:
 
 ##### 🗄️ SQL-Datenbank Integration
-- 🔲 **SQLite-Unterstützung**
-  - Lokal ohne Server
+
+- 🔲 **Microsoft Sql-Unterstützung**
   - Schneller als Dateien
-  - Transaktionssicherheit
   - Einfache Migration
 
 - 🔲 **SQL Server Support (optional)**
-  - Für größere Unternehmen
   - Netzwerk-fähig
   - Multi-User gleichzeitig
   - Höhere Performance
 
-- 🔲 **MySQL/MariaDB Support**
-  - Alternative zu SQL Server
-  - Open Source
-  - Weit verbreitet
-  - Cloud-kompatibel
 
 ##### 🔄 Migrations-Tools
 - 🔲 **Automatische Migration**
-  - Von .txt zu SQLite
+  - Von .txt zu Microsft SQL
   - Ein-Klick-Migration
   - Datenintegrität prüfen
   - Rollback bei Fehler
@@ -280,13 +273,9 @@ Von Dateien zu professioneller Datenbank
 - 🔲 **Indizierung**
   - Schnellere Suchen
   - Optimierte Abfragen
-  - Caching-Mechanismen
-  - Lazy Loading
 
 - 🔲 **Batch-Operationen**
   - Massen-Updates
-  - Bulk-Insert
-  - Transaktionen
   - Optimierte Queries
 
 ##### 📊 Erweiterte Daten-Funktionen
@@ -310,7 +299,7 @@ Von Dateien zu professioneller Datenbank
 
 ### Version 2.1.0 - "Intelligence Hub" 🧠
 
-**Status:** 🔵 **Geplant für Q4 2026**  
+**Status:** 🔵 **Geplant *  
 **Priorität:** NIEDRIG-MITTEL
 
 #### Geplante Features:
@@ -320,8 +309,6 @@ Von Dateien zu professioneller Datenbank
   - Wert pro Artikel
   - Gesamt-Inventarwert
   - Kosten pro Abteilung
-  - Kosten pro Mitarbeiter
-  - Abschreibungen
 
 - 🔲 **Nutzungs-Statistiken**
   - Häufigste Geräte-Typen
@@ -358,7 +345,6 @@ Von Dateien zu professioneller Datenbank
 - 🔲 **Anomalie-Erkennung**
   - Ungewöhnliche Zuweisungen
   - Verdächtige Aktivitäten
-  - Kosten-Anomalien
   - Automatische Alerts
 
 **Geschätzte Features:** 14 neue Features
@@ -366,14 +352,6 @@ Von Dateien zu professioneller Datenbank
 ---
 
 ## 🌐 Phase 6: Multi-User & Network (ZUKUNFT)
-
-### Version 3.0.0 - "Enterprise Edition" 🏢
-
-**Status:** 🔵 **Langfristig geplant (2027+)**  
-**Priorität:** NIEDRIG
-
-#### Vision:
-Enterprise-fähiges System mit Netzwerk-Support
 
 #### Ideen:
 
@@ -383,19 +361,10 @@ Enterprise-fähiges System mit Netzwerk-Support
 - 🔲 User-Sessions
 - 🔲 Konflikt-Erkennung
 
-##### 🌐 Netzwerk-Features
-- 🔲 Client-Server-Architektur
-- 🔲 Web-Interface (Browser-basiert)
-- 🔲 Mobile App (iOS/Android)
-- 🔲 REST API
 
 ##### 🔗 Integrationen
-- 🔲 Active Directory Integration
-- 🔲 LDAP-Support
-- 🔲 Barcode-Scanner
-- 🔲 RFID-Tracking
 - 🔲 E-Mail-Benachrichtigungen
-- 🔲 SMS-Alerts
+- 
 
 **Geschätzte Features:** 20+ neue Features
 
@@ -443,21 +412,8 @@ Genesis     │           │           │           │           │
 
 ---
 
-## 💡 Zusätzliche Ideen (Community Wishlist)
+## 💡 Zusätzliche Ideen 
 
-### Kleinere Features für zwischendurch:
-
-#### 🎨 Design & UX
-- 🔲 Themes (Hell/Dunkel/Farbschema)
-- 🔲 Custom Icons per Kategorie
-- 🔲 Animierte Übergänge
-- 🔲 Sound-Effekte (optional)
-
-#### 📱 Portabilität
-- 🔲 Portable Version (USB-Stick)
-- 🔲 Cloud-Sync (Dropbox, OneDrive)
-- 🔲 Linux-Support
-- 🔲 macOS-Support
 
 #### 🔧 Verwaltung
 - 🔲 Artikel-Kategorien
@@ -497,11 +453,6 @@ Genesis     │           │           │           │           │
 - Backup-System
 - Web-Interface (Prototyp)
 
-### NIEDRIG (Später)
-- Mobile App
-- Enterprise Features
-- API
-- Integrationen
 
 ---
 
@@ -534,28 +485,7 @@ Genesis     │           │           │           │           │
 - API verfügbar
 - 1000+ Installationen
 
----
 
-## 🤝 Beitragen
-
-Hast du Ideen für neue Features? Melde dich!
-
-### Wie du beitragen kannst:
-1. **Feature-Vorschläge** - Teile deine Ideen
-2. **Bug-Reports** - Finde und melde Fehler
-3. **Code-Beiträge** - Pull Requests willkommen
-4. **Dokumentation** - Verbessere Anleitungen
-5. **Testing** - Teste neue Versionen
-
----
-
-## 📞 Kontakt & Feedback
-
-- **E-Mail:** feedback@inventar-system.de
-- **GitHub:** github.com/dein-repo/inventarverwaltung
-- **Discord:** discord.gg/inventar-community
-
----
 
 ## 📜 Versionsgeschichte
 
@@ -566,26 +496,18 @@ Hast du Ideen für neue Features? Melde dich!
 - AES-256 Verschlüsselung
 - Vollständige Dokumentation
 
-### v1.1.0 - "Productivity Boost" (geplant Q1 2026) 🔄
+### v1.1.0 - "Productivity Boost"  🔄
 - Bestands-Management
 - Mitarbeiter löschen
 - Verbesserte Workflows
 - 18 neue Features
 
-### v1.2.0 - "Data Hub" (geplant Q2 2026) 📊
+### v1.2.0 - "Data Hub" 📊
 - Import/Export
 - Backup/Restore
 - 15 neue Features
 
----
 
-## 🎉 Danke!
-
-Danke an alle Nutzer, Tester und Contributors!
-
-**Gemeinsam machen wir das beste Inventarverwaltungssystem!** 🚀
-
----
 
 **Letzte Aktualisierung:** Februar 2026  
 **Nächstes Update:** März 2026  
