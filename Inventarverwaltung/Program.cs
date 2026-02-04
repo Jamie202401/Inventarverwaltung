@@ -9,9 +9,15 @@ namespace Inventarverwaltung
     {
         static void Main(string[] args)
         {
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
+
+            LoadingScreen.Show();
+            AuthManager.Anmeldung();
             // Log-System initialisieren
-            LogManager.InitializeLog();
+            /*LogManager.InitializeLog();
             LogManager.LogProgrammStart();
+
+            
 
             // Dateien vorbereiten und verstecken
             FileManager.HideAllFiles();
@@ -29,7 +35,7 @@ namespace Inventarverwaltung
 
             // KI-Assistent initialisieren (lernt aus vorhandenen Daten)
             IntelligentAssistant.IniializeAI();
-
+*/
             // Willkommensnachricht anzeigen
             ConsoleHelper.PrintWelcome();
 

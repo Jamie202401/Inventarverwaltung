@@ -31,6 +31,7 @@ namespace Inventarverwaltung
             ConsoleHelper.PrintMenuItem("7", "📝 System-Log anzeigen (verschlüsselt)");
             ConsoleHelper.PrintMenuItem("8", "📄 Tagesreport erstellen (verschlüsselt)");
             ConsoleHelper.PrintMenuItem("9", "🔐 Verschlüsselungs-Info anzeigen");
+            ConsoleHelper.PrintMenuItem("10", "Importieren von Dateien in das Programm (Comming Soon)");
             Console.ResetColor();
 
             Console.WriteLine();

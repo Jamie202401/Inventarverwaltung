@@ -16,6 +16,61 @@ namespace Inventarverwaltung
             Console.Clear();
             ConsoleHelper.PrintSectionHeader("Neues Gerät hinzufügen", ConsoleColor.DarkGreen);
 
+            // WICHTIG: Prüfe ob überhaupt Mitarbeiter vorhanden sind
+            if (DataManager.Mitarbeiter.Count == 0)
+            {
+                Console.WriteLine();
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("  ╔═══════════════════════════════════════════════════════════════════╗");
+                Console.WriteLine("  ║                                                                   ║");
+                Console.WriteLine("  ║     ⚠️  KEINE MITARBEITER VORHANDEN                               ║");
+                Console.WriteLine("  ║                                                                   ║");
+                Console.WriteLine("  ╚═══════════════════════════════════════════════════════════════════╝");
+                Console.ResetColor();
+                Console.WriteLine();
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("  📋 Sie müssen zuerst mindestens einen Mitarbeiter anlegen,");
+                Console.WriteLine("     bevor Sie Inventar-Artikel hinzufügen können.");
+                Console.ResetColor();
+                Console.WriteLine();
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine("  💡 Tipp:");
+                Console.WriteLine("     → Wählen Sie Menüpunkt [2] um einen Mitarbeiter hinzuzufügen");
+                Console.WriteLine("     → Oder erstellen Sie einen 'IT-Pool' Mitarbeiter für nicht");
+                Console.WriteLine("       zugewiesene Geräte");
+                Console.ResetColor();
+                Console.WriteLine();
+
+                // Frage ob Mitarbeiter jetzt angelegt werden soll
+                Console.ForegroundColor = ConsoleColor.White;
+                string antwort = ConsoleHelper.GetInput("Möchten Sie jetzt einen Mitarbeiter anlegen? (j/n)");
+                Console.ResetColor();
+
+                if (antwort.ToLower() == "j" || antwort.ToLower() == "ja")
+                {
+                    // Springe direkt zur Mitarbeiter-Anlage
+                    EmployeeManager.NeuenMitarbeiterHinzufuegen();
+
+                    // Nach Anlage: Prüfe nochmal ob Mitarbeiter vorhanden
+                    if (DataManager.Mitarbeiter.Count == 0)
+                    {
+                        ConsoleHelper.PrintWarning("Kein Mitarbeiter angelegt. Artikel kann nicht hinzugefügt werden.");
+                        ConsoleHelper.PressKeyToContinue();
+                        return;
+                    }
+
+                    // Wenn Mitarbeiter angelegt wurde, mache weiter
+                    Console.Clear();
+                    ConsoleHelper.PrintSectionHeader("Neues Gerät hinzufügen", ConsoleColor.DarkGreen);
+                }
+                else
+                {
+                    ConsoleHelper.PrintInfo("Vorgang abgebrochen.");
+                    ConsoleHelper.PressKeyToContinue();
+                    return;
+                }
+            }
+
             // KI: System-Insights anzeigen
             IntelligentAssistant.ZeigeSystemInsights();
 
