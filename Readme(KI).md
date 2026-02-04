@@ -65,7 +65,7 @@ KI-Vorschlag: INV004 ✓
 
 #### Intelligente Mitarbeiter-Zuordnung
 ```
-Gerät: "Laptop Dell"
+Gerät: "Laptop Lenovo"
 🤖 KI empfiehlt:
    [1] Max Müller (IT) - hat noch keinen Laptop
    [2] Anna Schmidt (Entwicklung) - passende Abteilung
@@ -80,7 +80,7 @@ Gerät: "Laptop Dell"
 
 #### Geräte-Analyse
 ```
-Gerät: "Laptop Dell XPS 15"
+Gerät: "Laptop Lenovo XPS 15"
 🤖 KI-Analyse:
    💡 Kategorie: Mobile Computing
    📊 2 ähnliche Geräte bereits im System
