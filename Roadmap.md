@@ -94,7 +94,6 @@ Noch schnellere Workflows und bessere Übersichtlichkeit
 - 🔲 **Ultra-Schnell-Modus für Artikel**
   - Ein-Zeilen-Eingabe: `INV001;Laptop;Max Müller;5`
   - CSV-Import für Massen-Anlage
-  - Barcode-Scanner-Unterstützung vorbereitet
   - Template-System für häufige Artikel
 
 - 🔲 **Intelligente Auto-Zuweisung**
@@ -107,7 +106,6 @@ Noch schnellere Workflows und bessere Übersichtlichkeit
   - Globale Suche (Artikel + Mitarbeiter)
   - Filter nach Abteilung
   - Filter nach Kategorie
-  - Suche mit Fuzzy-Matching
 
 ##### 👥 Mitarbeiter-Management erweitert
 - 🔲 **Mitarbeiter löschen**
@@ -119,7 +117,6 @@ Noch schnellere Workflows und bessere Übersichtlichkeit
 - 🔲 **Mitarbeiter bearbeiten**
   - Namen ändern
   - Abteilung wechseln
-  - Kontaktdaten hinzufügen
   - Notizen zu Mitarbeitern
 
 - 🔲 **Mitarbeiter-Details-Ansicht**
@@ -130,7 +127,6 @@ Noch schnellere Workflows und bessere Übersichtlichkeit
 
 ##### 🎨 UI/UX Verbesserungen
 - 🔲 **Vereinfachte Navigation**
-  - Breadcrumb-Navigation
   - Zurück-Button (ESC)
   - Schnell-Menü (Ziffernblock)
   - Tastatur-Shortcuts
@@ -141,7 +137,7 @@ Noch schnellere Workflows und bessere Übersichtlichkeit
   - Trend-Anzeigen
   - Aktivitäts-Feed
 
-**Geschätzte Features:** 18 neue Features
+**Geschätzte Features:** 10 neue Features
 
 ---
 
@@ -153,7 +149,7 @@ Noch schnellere Workflows und bessere Übersichtlichkeit
 **Priorität:** HOCH
 
 #### 🎯 Hauptziele dieser Phase:
-Volle Kontrolle über Daten - Import, Export, Backup
+Volle Kontrolle über Daten - Import, Export
 
 #### Geplante Features:
 
@@ -161,13 +157,11 @@ Volle Kontrolle über Daten - Import, Export, Backup
 - 🔲 **CSV-Import**
   - Artikel aus CSV importieren
   - Mitarbeiter aus CSV importieren
-  - Mapping-Assistent
   - Duplikat-Erkennung beim Import
   - Vorschau vor Import
 
 - 🔲 **Excel-Import (XLSX)**
   - Direkt aus Excel-Dateien
-  - Mehrere Sheets unterstützt
   - Format-Validierung
   - Fehlerprotokoll bei Import
 
@@ -175,7 +169,6 @@ Volle Kontrolle über Daten - Import, Export, Backup
   - CSV-Vorlage für Artikel
   - CSV-Vorlage für Mitarbeiter
   - Excel-Vorlage mit Beispielen
-  - Ausfüll-Hilfe integriert
 
 ##### 📤 Export-Funktionen
 - 🔲 **CSV-Export**
@@ -187,7 +180,6 @@ Volle Kontrolle über Daten - Import, Export, Backup
 - 🔲 **Excel-Export (XLSX)**
   - Formatierte Tabellen
   - Mehrere Sheets
-  - Formeln und Berechnungen
   - Diagramme (optional)
 
 - 🔲 **PDF-Reports**
@@ -207,13 +199,10 @@ Volle Kontrolle über Daten - Import, Export, Backup
   - Täglich/Wöchentlich/Monatlich
   - Verschlüsselte Backup-Dateien
   - Backup-Rotation (behalte letzte X)
-  - Backup-Größe optimiert
 
 - 🔲 **Manuelles Backup**
   - Ein-Klick Komplett-Backup
   - Backup auf USB-Stick
-  - Cloud-Backup (OneDrive, Google Drive)
-  - Backup-Verifizierung
 
 - 🔲 **Restore-Funktion**
   - Wiederherstellung aus Backup
@@ -221,14 +210,8 @@ Volle Kontrolle über Daten - Import, Export, Backup
   - Selektive Wiederherstellung
   - Vorschau vor Restore
 
-##### 🔄 Daten-Migration
-- 🔲 **Import aus anderen Systemen**
-  - Snipe-IT Kompatibilität
-  - GLPI Kompatibilität
-  - Generic CSV Format
-  - Migrations-Assistent
 
-**Geschätzte Features:** 15 neue Features
+**Geschätzte Features:** 9 neue Features
 
 ---
 
