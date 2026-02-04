@@ -1,3 +1,4 @@
+[Roadmap.md](https://github.com/user-attachments/files/25069167/Roadmap.md)
 
 # Inventarverwaltung - Projektstruktur mit Logging
 
