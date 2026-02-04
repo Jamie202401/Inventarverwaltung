@@ -1,3 +1,4 @@
+
 # Inventarverwaltung - Projektstruktur mit Logging
 
 ## 🎯 Übersicht
