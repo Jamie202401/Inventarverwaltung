@@ -272,16 +272,7 @@ Bei jedem Start neu berechnet
 | 🔐 **Sicherheit** | Keine Daten-Lecks möglich |
 | ⚖️ **DSGVO** | 100% compliant |
 
-## 🆚 Vergleich: Lokale KI vs. Cloud-KI
 
-| Feature | Lokale KI ✅ | Cloud-KI (GPT) ❌ |
-|---------|------------|-------------------|
-| Datenschutz | Perfekt | Risiko |
-| Internet nötig | Nein | Ja |
-| Kosten | Gratis | $$ |
-| Geschwindigkeit | Blitzschnell | Langsam |
-| Offline-Nutzung | Ja | Nein |
-| Daten bleiben lokal | Ja | Nein |
 
 ## 🎓 Best Practices
 
@@ -304,7 +295,7 @@ Die KI könnte erweitert werden um:
 - 🔄 Automatische Gerät-Rotationen
 - 📊 Erweiterte Statistiken
 - 🎯 Noch präzisere Empfehlungen
-- 🧮 Kosten-Optimierung
+
 
 ## ✨ Fazit
 
@@ -312,7 +303,6 @@ Diese **lokale KI** bietet dir:
 - ⚡ Schnellere Dateneingabe
 - 🎯 Intelligente Vorschläge
 - 🛡️ Fehler-Vermeidung
-- 🔒 Totale Privatsphäre
 - 💯 Kostenlos und offline
 
 **Und das Beste**: Du musst nichts tun - die KI arbeitet einfach im Hintergrund! 🚀
