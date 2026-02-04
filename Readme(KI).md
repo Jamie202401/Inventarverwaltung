@@ -19,9 +19,8 @@ Die KI hilft dir, schneller und einfacher Daten einzugeben, indem sie:
 
 ✅ **Alle Daten bleiben auf deinem Computer**  
 ✅ **Keine Internet-Verbindung nötig**  
-✅ **Keine Daten werden irgendwo hingeschickt**  
-✅ **Völlige Privatsphäre und Datenschutz**  
-✅ **DSGVO-konform**  
+  
+
 
 ## 🧠 Wie funktioniert die lokale KI?
 
