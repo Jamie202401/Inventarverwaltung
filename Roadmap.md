@@ -11,7 +11,7 @@
 ### Version 1.0.0 - "Genesis" ✓
 
 **Status:** 🟢 **Fertiggestellt**  
-**Release:** Februar 2026
+**Release:** Juni/August 2026
 
 #### Implementierte Features:
 
@@ -20,7 +20,7 @@
 - ✅ Benutzerfreundliche Konsolen-Oberfläche
 - ✅ Farbcodierte Ausgaben und Icons
 - ✅ Intelligente Fehlerbehandlung
-- ✅ Validierung auf allen Eingabeebenen
+
 
 ##### 📊 Daten-Management
 - ✅ Inventarverwaltung (Artikel anlegen, anzeigen)
@@ -28,15 +28,7 @@
 - ✅ Benutzerverwaltung (mit Admin/User-Rollen)
 - ✅ Datei-basierte Speicherung (versteckte .txt Dateien)
 
-##### 🔐 Sicherheit
-- ✅ AES-256-CBC Verschlüsselung für alle Logs
-- ✅ PBKDF2 Key Derivation (10.000 Iterationen)
-- ✅ SHA-256 Hash-Funktionen
-- ✅ Verschlüsselte Tagesreports
-- ✅ DSGVO-konforme Datenhaltung
-
 ##### 📝 Logging & Audit
-- ✅ Vollständiges Audit-Trail
 - ✅ Verschlüsselte Log-Dateien
 - ✅ IP-Adressen und Computernamen-Tracking
 - ✅ Zeitstempel für alle Aktionen
@@ -47,22 +39,14 @@
 - ✅ Mitarbeiter-Empfehlungen basierend auf Gerätekategorie
 - ✅ Abteilungs-Vorschläge nach Häufigkeit
 - ✅ Tippfehler-Erkennung (Levenshtein-Distanz)
-- ✅ Duplikat-Warnung (Fuzzy Matching)
+- ✅ Duplikat-Warnung 
 - ✅ Geräte-Kategorisierung
 - ✅ System-Insights und Statistiken
 
 ##### 🎨 Benutzeroberfläche
 - ✅ Animierter Ladebildschirm beim Start
 - ✅ Fortschrittsbalken mit Prozent-Anzeige
-- ✅ Spinner-Animationen
-- ✅ ASCII-Art Logo
 - ✅ Strukturierte Tabellen-Darstellung
-
-##### ⚡ Schnell-Funktionen
-- ✅ Schnellzuweisung: Artikel → Mitarbeiter
-- ✅ Massen-Zuweisung (Bereich-Syntax: 1-5, 1,3,5)
-- ✅ Schnelles Neuladen (ohne Neustart)
-- ✅ KI-gestützte Vorschläge in Echtzeit
 
 ##### 📦 Distribution
 - ✅ Visual Studio Projekt (.csproj)
@@ -71,7 +55,7 @@
 - ✅ Vollständige Dokumentation (8 Markdown-Dateien)
 - ✅ MIT Lizenz
 
-**Gesamt:** ✅ 45 Features implementiert
+**Gesamt:** ✅ 40 Features implementiert
 
 ---
 
@@ -79,7 +63,7 @@
 
 ### Version 1.1.0 - "Productivity Boost" 🔄
 
-**Status:** 🟡 **Geplant für Q1 2026**  
+**Status:** 🟡 **Geplant für Q3 2026**  
 **Priorität:** HOCH
 
 #### 🎯 Hauptziele dieser Phase:
@@ -165,7 +149,7 @@ Noch schnellere Workflows und bessere Übersichtlichkeit
 
 ### Version 1.2.0 - "Data Hub" 📊
 
-**Status:** 🟡 **Geplant für Q2 2026**  
+**Status:** 🟡 **Geplant für Ende 2026**  
 **Priorität:** HOCH
 
 #### 🎯 Hauptziele dieser Phase:
@@ -252,7 +236,7 @@ Volle Kontrolle über Daten - Import, Export, Backup
 
 ### Version 2.0.0 - "Database Revolution" 🚀
 
-**Status:** 🔵 **Geplant für Q3 2026**  
+**Status:** 🔵 **Geplant für xx**  
 **Priorität:** MITTEL
 
 #### 🎯 Hauptziele dieser Phase:
