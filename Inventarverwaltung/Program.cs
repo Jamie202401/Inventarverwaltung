@@ -4,6 +4,7 @@ namespace Inventarverwaltung
 {
     /// <summary>
     /// Hauptprogramm der Inventarverwaltung
+    /// ERWEITERT: Neue Funktionen für Bestandsverwaltung
     /// </summary>
     class Program
     {
@@ -11,31 +12,12 @@ namespace Inventarverwaltung
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
 
+            // Animierter Ladebildschirm mit Dateninitialisierung
             LoadingScreen.Show();
-            AuthManager.Anmeldung();
-            // Log-System initialisieren
-            /*LogManager.InitializeLog();
-            LogManager.LogProgrammStart();
 
-            
-
-            // Dateien vorbereiten und verstecken
-            FileManager.HideAllFiles();
-
-            // Benutzer anmelden
+            // Benutzeranmeldung
             AuthManager.Anmeldung();
 
-            // Konsole einrichten
-            ConsoleHelper.SetupConsole();
-
-            // Alle gespeicherten Daten laden
-            DataManager.LoadBenutzer();
-            DataManager.LoadMitarbeiter();
-            DataManager.LoadInventar();
-
-            // KI-Assistent initialisieren (lernt aus vorhandenen Daten)
-            IntelligentAssistant.IniializeAI();
-*/
             // Willkommensnachricht anzeigen
             ConsoleHelper.PrintWelcome();
 
@@ -48,39 +30,101 @@ namespace Inventarverwaltung
 
                 switch (auswahl)
                 {
+                    // ═══════════════════════════════════════════════════
+                    // INVENTARVERWALTUNG
+                    // ═══════════════════════════════════════════════════
                     case "1":
                         InventoryManager.NeuenArtikelErstellen();
                         break;
-                    case "2":
-                        EmployeeManager.NeuenMitarbeiterHinzufuegen();
-                        break;
-                    case "3":
-                        EmployeeManager.ZeigeMitarbeiter();
-                        break;
+
                     case "4":
                         InventoryManager.ZeigeInventar();
                         break;
+
+                    case "14":
+                        InventoryManager.ZeigeArtikelDetails();
+                        break;
+
+                    // ═══════════════════════════════════════════════════
+                    // BESTANDSVERWALTUNG (NEU!)
+                    // ═══════════════════════════════════════════════════
+                    case "11":
+                        InventoryManager.BestandErhoehen();
+                        break;
+
+                    case "12":
+                        InventoryManager.BestandVerringern();
+                        break;
+
+                    case "13":
+                        InventoryManager.MindestbestandAendern();
+                        break;
+
+                    case "15":
+                        InventoryManager.ZeigeArtikelUnterMindestbestand();
+                        break;
+
+                    // ═══════════════════════════════════════════════════
+                    // MITARBEITERVERWALTUNG
+                    // ═══════════════════════════════════════════════════
+                    case "2":
+                        EmployeeManager.NeuenMitarbeiterHinzufuegen();
+                        break;
+
+                    case "3":
+                        EmployeeManager.ZeigeMitarbeiter();
+                        break;
+
+                    // ═══════════════════════════════════════════════════
+                    // BENUTZERVERWALTUNG
+                    // ═══════════════════════════════════════════════════
                     case "5":
                         UserManager.NeuerBenutzer();
                         break;
+
                     case "6":
                         UserManager.ZeigeBenutzer();
                         break;
+
+                    // ═══════════════════════════════════════════════════
+                    // SYSTEMFUNKTIONEN
+                    // ═══════════════════════════════════════════════════
                     case "7":
                         LogManager.ZeigeLogDatei();
                         break;
+
                     case "8":
                         LogManager.ErstelleTagesReport();
                         ConsoleHelper.PressKeyToContinue();
                         break;
+
                     case "9":
                         EncryptionManager.ZeigeVerschluesselungsInfo();
                         break;
+
+                    // ═══════════════════════════════════════════════════
+                    // PROGRAMM BEENDEN
+                    // ═══════════════════════════════════════════════════
                     case "0":
                         running = false;
                         break;
+
+                    // ═══════════════════════════════════════════════════
+                    // UNGÜLTIGE EINGABE
+                    // ═══════════════════════════════════════════════════
                     default:
-                        ConsoleHelper.PrintError("Ungültige Auswahl! Bitte wählen Sie eine Zahl von 0-9.");
+                        Console.Clear();
+                        ConsoleHelper.PrintError("Ungültige Auswahl!");
+                        Console.WriteLine();
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine("  💡 Verfügbare Optionen:");
+                        Console.WriteLine("     • Inventarverwaltung: 1, 4, 14");
+                        Console.WriteLine("     • Bestandsverwaltung: 11, 12, 13, 15");
+                        Console.WriteLine("     • Mitarbeiter: 2, 3");
+                        Console.WriteLine("     • Benutzer: 5, 6");
+                        Console.WriteLine("     • System: 7, 8, 9");
+                        Console.WriteLine("     • Beenden: 0");
+                        Console.ResetColor();
                         ConsoleHelper.PressKeyToContinue();
                         break;
                 }
@@ -91,8 +135,20 @@ namespace Inventarverwaltung
 
             // Abschiedsnachricht
             Console.Clear();
-            ConsoleHelper.PrintSuccess("\n✓ Danke für die Nutzung des Inventarverwaltungssystems!\n");
-            System.Threading.Thread.Sleep(1500);
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine();
+            Console.WriteLine("  ╔═══════════════════════════════════════════════════════════════════╗");
+            Console.WriteLine("  ║                                                                   ║");
+            Console.WriteLine("  ║     ✓ VIELEN DANK FÜR DIE NUTZUNG!                               ║");
+            Console.WriteLine("  ║                                                                   ║");
+            Console.WriteLine("  ║     📦 Inventarverwaltung mit Bestandsführung                     ║");
+            Console.WriteLine("  ║     🤖 KI-gestützt & 🔐 AES-256 verschlüsselt                     ║");
+            Console.WriteLine("  ║                                                                   ║");
+            Console.WriteLine("  ╚═══════════════════════════════════════════════════════════════════╝");
+            Console.WriteLine();
+            Console.ResetColor();
+
+            System.Threading.Thread.Sleep(2000);
         }
     }
 }

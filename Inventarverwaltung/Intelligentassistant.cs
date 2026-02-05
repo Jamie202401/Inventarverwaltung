@@ -447,26 +447,53 @@ namespace Inventarverwaltung
 
         private static int BerechneLevenshteinDistanz(string s1, string s2)
         {
+            // Erstelle eine 2D-Matrix (Tabelle) mit (Länge von s1 + 1) Zeilen und (Länge von s2 + 1) Spalten
+            // Beispiel: "Müller" (6) und "Muller" (6) → Matrix ist 7x7 groß
+            // Das +1 ist für das "leere Wort" am Anfang
             int[,] d = new int[s1.Length + 1, s2.Length + 1];
 
+            // Fülle die erste Spalte mit 0, 1, 2, 3, 4, 5, 6...
+            // Das bedeutet: Um von "" (leer) zu "M", "Mü", "Mül"... zu kommen, braucht man 1, 2, 3... Einfügungen
             for (int i = 0; i <= s1.Length; i++)
-                d[i, 0] = i;
+                d[i, 0] = i;  // d[0,0]=0, d[1,0]=1, d[2,0]=2 usw.
+
+            // Fülle die erste Zeile mit 0, 1, 2, 3, 4, 5, 6...
+            // Das bedeutet: Um von "" (leer) zu "M", "Mu", "Mul"... zu kommen, braucht man 1, 2, 3... Einfügungen
             for (int j = 0; j <= s2.Length; j++)
-                d[0, j] = j;
+                d[0, j] = j;  // d[0,0]=0, d[0,1]=1, d[0,2]=2 usw.
+
+            // Durchlaufe alle Spalten (alle Buchstaben von s2)
             for (int j = 1; j <= s2.Length; j++)
             {
+                // Durchlaufe alle Zeilen (alle Buchstaben von s1)
                 for (int i = 1; i <= s1.Length; i++)
                 {
+                    // Prüfe: Sind die aktuellen Buchstaben gleich?
+                    // s1[i-1] ist der i-te Buchstabe von s1 (wegen 0-Indexierung)
+                    // Wenn gleich: cost = 0 (keine Änderung nötig)
+                    // Wenn unterschiedlich: cost = 1 (Ersetzen nötig)
                     int cost = (s1[i - 1] == s2[j - 1]) ? 0 : 1;
-                    d[i, j] = Math.Min(Math.Min(d[i - 1, j] + 1, d[i, j - 1] + 1), d[i - 1, j - 1] + cost);
+
+                    // Berechne die minimalen Kosten für diese Position:
+                    // Option 1: d[i-1, j] + 1   → Von links kommen (ein Zeichen aus s1 löschen)
+                    // Option 2: d[i, j-1] + 1   → Von oben kommen (ein Zeichen in s2 einfügen)
+                    // Option 3: d[i-1, j-1] + cost → Diagonal kommen (Zeichen ersetzen oder beibehalten)
+                    // Nimm die günstigste Option (Math.Min findet das Minimum)
+                    d[i, j] = Math.Min(
+                        Math.Min(d[i - 1, j] + 1,      // Löschen
+                                 d[i, j - 1] + 1),     // Einfügen
+                                 d[i - 1, j - 1] + cost); // Ersetzen oder gleich lassen
                 }
             }
+
+            // Die Zahl unten rechts in der Matrix ist die finale Levenshtein-Distanz
+            // Das ist die minimale Anzahl an Änderungen, um von s1 zu s2 zu kommen
             return d[s1.Length, s2.Length];
         }
         ///<summary>
         ///Ersten Buchstaben Groß
         /// </summary>
-   private static string CapitalizeFirst(string text)
+        private static string CapitalizeFirst(string text)
         {
             if (string.IsNullOrEmpty(text))
                 return text;
@@ -495,7 +522,7 @@ namespace Inventarverwaltung
 
 
             //Inventar
-            if(DataManager.Mitarbeiter.Count > 0)
+        /*    if(DataManager.Mitarbeiter.Count > 0)
             {
                 var geraeteProMitarbeiter = DataManager.Inventar
                     .GroupBy(i => i.MitarbeiterBezeichnung)
@@ -504,7 +531,7 @@ namespace Inventarverwaltung
                     .First();
                 Console.WriteLine($"    {geraeteProMitarbeiter.Mitarbeiter} hat die meisten Geräte ({geraeteProMitarbeiter.Anzahl})");
             }
-           
+           */
             //Mitarbeiter
             if(DataManager.Mitarbeiter.Count > 0)
             {

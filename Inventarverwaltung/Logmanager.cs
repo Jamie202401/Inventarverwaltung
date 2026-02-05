@@ -223,6 +223,12 @@ namespace Inventarverwaltung
                 $"Versuch einen bereits existierenden Benutzer anzulegen | Benutzername: {benutzername}");
         }
 
+        public static void LogBenutzerAktualisiert(string benutzername, string alteBerechtigung, string neueBerechtigung)
+        {
+            SchreibeLog("BENUTZER", "Berechtigung aktualisiert",
+                $"Benutzername: {benutzername} | Alt: {alteBerechtigung} → Neu: {neueBerechtigung}");
+        }
+
         #endregion
 
         #region Datei-Logs
@@ -237,6 +243,19 @@ namespace Inventarverwaltung
         {
             SchreibeLog("DATEI", "Daten gespeichert",
                 $"Typ: {dateityp} | {details}");
+        }
+
+        #endregion
+
+        #region Zuweisung-Logs
+
+        /// <summary>
+        /// Protokolliert die Neuzuweisung eines Artikels
+        /// </summary>
+        public static void LogArtikelNeuzugewiesen(string invNr, string geraeteName, string alterMitarbeiter, string neuerMitarbeiter)
+        {
+            SchreibeLog("ZUWEISUNG", "Artikel neu zugewiesen",
+                $"Inv-Nr: {invNr} | Gerät: {geraeteName} | Von: {alterMitarbeiter} → Zu: {neuerMitarbeiter}");
         }
 
         #endregion

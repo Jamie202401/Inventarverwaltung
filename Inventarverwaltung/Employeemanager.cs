@@ -154,7 +154,7 @@ namespace Inventarverwaltung
         }
 
         /// <summary>
-        /// Zeigt alle Mitarbeiter in einer übersichtlichen Tabelle
+        /// Zeigt alle Mitarbeiter in einer übersichtlichen Tabelle mit Spaltenüberschriften
         /// </summary>
         public static void ZeigeMitarbeiter()
         {
@@ -169,7 +169,12 @@ namespace Inventarverwaltung
             }
 
             Console.WriteLine();
-            ConsoleHelper.PrintTableHeader("Nr", "Vorname", "Nachname", "Abteilung");
+
+            // Spaltenüberschriften exakt über den Daten
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine($"  {"Nr",-4} {"Vorname",-20} {"Nachname",-20} {"Abteilung",-20}");
+            Console.WriteLine($"  {new string('─', 4)} {new string('─', 20)} {new string('─', 20)} {new string('─', 20)}");
+            Console.ResetColor();
 
             for (int i = 0; i < DataManager.Mitarbeiter.Count; i++)
             {

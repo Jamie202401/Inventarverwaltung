@@ -4,97 +4,108 @@ using System.Linq;
 namespace Inventarverwaltung
 {
     /// <summary>
-    /// Verwaltet die Benutzeranmeldung
+    /// Verwaltet die Benutzeranmeldung über Accounts.txt
     /// </summary>
     public static class AuthManager
     {
+        public static string AktuellerBenutzer { get; private set; }
+
         /// <summary>
-        /// Meldet einen Benutzer am System an oder erstellt ein neues Konto
+        /// Führt die Benutzeranmeldung durch - prüft gegen Accounts.txt
         /// </summary>
         public static void Anmeldung()
         {
-            DataManager.LoadAnmeldung();
-
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine("\n╔════════════════════════════════════════════╗");
-            Console.WriteLine("║          🔐 BENUTZERANMELDUNG              ║");
-            Console.WriteLine("╚════════════════════════════════════════════╝\n");
-            Console.ResetColor();
-
-            // Benutzername eingeben (mit Wiederholung)
-            string anmeldename;
-            while (true)
-            {
-                anmeldename = ConsoleHelper.GetInput("Benutzername");
-
-                if (string.IsNullOrWhiteSpace(anmeldename))
-                {
-                    ConsoleHelper.PrintError("Benutzername darf nicht leer sein!");
-                    LogManager.LogAnmeldungFehlgeschlagen("Leerer Benutzername");
-                    continue;
-                }
-
-                if (anmeldename.Length < 3)
-                {
-                    ConsoleHelper.PrintError("Benutzername muss mindestens 3 Zeichen lang sein!");
-                    LogManager.LogAnmeldungFehlgeschlagen($"Benutzername zu kurz: {anmeldename}");
-                    continue;
-                }
-
-                break; // Eingabe ist gültig
-            }
-
-            // Prüfen ob Benutzer existiert
-            Anmelder existierenderBenutzer = DataManager.Anmeldung.FirstOrDefault(a =>
-                a.Anmeldename.Equals(anmeldename, StringComparison.OrdinalIgnoreCase));
-
-            if (existierenderBenutzer != null)
-            {
-                // Benutzer gefunden - erfolgreich angemeldet
-                ConsoleHelper.PrintSuccess($"Willkommen zurück, {anmeldename}! 👋");
-                LogManager.LogAnmeldungErfolgreich(anmeldename);
-            }
-            else
-            {
-                // Neuen Benutzer erstellen
-                ConsoleHelper.PrintWarning($"Benutzer '{anmeldename}' wurde nicht gefunden.");
-
-                while (true)
-                {
-                    Console.WriteLine("\n  Möchten Sie ein neues Konto erstellen?");
-                    Console.WriteLine("  [1] Ja, neues Konto erstellen");
-                    Console.WriteLine("  [0] Nein, Anmeldung abbrechen");
-
-                    string eingabe = ConsoleHelper.GetInput("Ihre Wahl");
-
-                    if (eingabe == "1")
-                    {
-                        Anmelder neuerBenutzer = new Anmelder(anmeldename);
-                        DataManager.Anmeldung.Add(neuerBenutzer);
-                        DataManager.SaveIntoNewAccounts();
-
-                        ConsoleHelper.PrintSuccess($"Konto für '{anmeldename}' wurde erfolgreich erstellt! 🎉");
-                        LogManager.LogNeuesKontoErstellt(anmeldename);
-                        break;
-                    }
-                    else if (eingabe == "0")
-                    {
-                        ConsoleHelper.PrintWarning("Anmeldung abgebrochen.");
-                        LogManager.LogAnmeldungFehlgeschlagen("Benutzer hat Anmeldung abgebrochen");
-                        System.Threading.Thread.Sleep(1000);
-                        Environment.Exit(0);
-                        break;
-                    }
-                    else
-                    {
-                        ConsoleHelper.PrintError("Ungültige Eingabe! Bitte 1 oder 0 wählen.");
-                    }
-                }
-            }
 
             Console.WriteLine();
-            System.Threading.Thread.Sleep(1500);
+            Console.WriteLine("  ╔═══════════════════════════════════════════════════════════╗");
+            Console.WriteLine("  ║                                                           ║");
+            Console.WriteLine("  ║           INVENTARVERWALTUNG - ANMELDUNG                  ║");
+            Console.WriteLine("  ║                                                           ║");
+            Console.WriteLine("  ╚═══════════════════════════════════════════════════════════╝");
+            Console.WriteLine();
+            Console.ResetColor();
+
+            // Lade Benutzer aus Accounts.txt
+            DataManager.LoadBenutzer();
+
+            // Wenn keine Benutzer existieren, erstelle Standard-Admin
+            if (DataManager.Benutzer.Count == 0)
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("  ⚠️  Noch keine Benutzer-Accounts vorhanden!");
+                Console.WriteLine();
+                Console.WriteLine("  Erstelle Standard-Admin-Account...");
+                Console.ResetColor();
+
+                // Erstelle Admin-Account
+                Accounts adminAccount = new Accounts("admin", Berechtigungen.Admin);
+                DataManager.Benutzer.Add(adminAccount);
+                DataManager.SaveBenutzerToFile();
+
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine();
+                Console.WriteLine("  ✓ Admin-Account erstellt!");
+                Console.WriteLine("  → Benutzername: admin");
+                Console.ResetColor();
+                System.Threading.Thread.Sleep(1500);
+                Console.WriteLine();
+            }
+
+            // Anmeldeschleife
+            while (true)
+            {
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.Write("  👤 Benutzername: ");
+                Console.ResetColor();
+                string benutzername = Console.ReadLine()?.Trim();
+
+                if (string.IsNullOrWhiteSpace(benutzername))
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("  ✗ Benutzername darf nicht leer sein!");
+                    Console.ResetColor();
+                    Console.WriteLine();
+                    continue;
+                }
+
+                // Prüfe ob Benutzer in Accounts.txt existiert
+                var benutzer = DataManager.Benutzer.FirstOrDefault(b =>
+                    b.Benutzername.Equals(benutzername, StringComparison.OrdinalIgnoreCase));
+
+                if (benutzer == null)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine($"  ✗ Benutzer '{benutzername}' existiert nicht!");
+                    Console.ResetColor();
+                    Console.WriteLine();
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine("  💡 Tipp: Lassen Sie einen Admin einen Account für Sie anlegen");
+                    Console.WriteLine("  💡 Oder verwenden Sie 'admin' für den Standard-Account");
+                    Console.ResetColor();
+                    Console.WriteLine();
+                    continue;
+                }
+
+                // Erfolgreiche Anmeldung
+                AktuellerBenutzer = benutzer.Benutzername;
+
+                Console.WriteLine();
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine($"  ✓ Anmeldung erfolgreich!");
+                Console.WriteLine($"  → Willkommen, {AktuellerBenutzer}");
+
+                string rollenIcon = benutzer.Berechtigung == Berechtigungen.Admin ? "👑" : "👤";
+                Console.WriteLine($"  → Berechtigung: {rollenIcon} {benutzer.Berechtigung}");
+                Console.ResetColor();
+
+                // Logging
+                LogManager.LogAnmeldungErfolgreich(AktuellerBenutzer);
+
+                System.Threading.Thread.Sleep(1500);
+                break;
+            }
         }
     }
 }

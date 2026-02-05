@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace Inventarverwaltung
 {
@@ -8,7 +9,7 @@ namespace Inventarverwaltung
     public static class UserManager
     {
         /// <summary>
-        /// Erstellt einen neuen Benutzer mit KI-Unterstützung
+        /// Erstellt einen neuen Benutzer ODER aktualisiert Berechtigung wenn bereits vorhanden
         /// </summary>
         public static void NeuerBenutzer()
         {
@@ -17,6 +18,8 @@ namespace Inventarverwaltung
 
             // Benutzername eingeben
             string benutzerName;
+            Accounts existierenderBenutzer = null;
+
             while (true)
             {
                 benutzerName = ConsoleHelper.GetInput("Benutzername");
@@ -34,14 +37,48 @@ namespace Inventarverwaltung
                 }
 
                 // Prüfen ob Benutzer bereits existiert
-                bool existiert = DataManager.Benutzer.Exists(b =>
+                existierenderBenutzer = DataManager.Benutzer.FirstOrDefault(b =>
                     b.Benutzername.Equals(benutzerName, StringComparison.OrdinalIgnoreCase));
 
-                if (existiert)
+                if (existierenderBenutzer != null)
                 {
-                    ConsoleHelper.PrintError($"Ein Benutzer mit dem Namen '{benutzerName}' existiert bereits!");
-                    LogManager.LogBenutzerDuplikat(benutzerName);
-                    continue;
+                    // Benutzer existiert bereits!
+                    Console.WriteLine();
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine("  ╔═══════════════════════════════════════════════════════════════════╗");
+                    Console.WriteLine("  ║                                                                   ║");
+                    Console.WriteLine("  ║     ⚠️  BENUTZER EXISTIERT BEREITS                                ║");
+                    Console.WriteLine("  ║                                                                   ║");
+                    Console.WriteLine("  ╚═══════════════════════════════════════════════════════════════════╝");
+                    Console.ResetColor();
+                    Console.WriteLine();
+
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.WriteLine($"  👤 Benutzername: {existierenderBenutzer.Benutzername}");
+
+                    string rollenIcon = existierenderBenutzer.Berechtigung == Berechtigungen.Admin ? "👑" : "👤";
+                    Console.WriteLine($"  🔑 Aktuelle Berechtigung: {rollenIcon} {existierenderBenutzer.Berechtigung}");
+                    Console.ResetColor();
+                    Console.WriteLine();
+
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.WriteLine("  💡 Möchten Sie die Berechtigung ändern?");
+                    Console.ResetColor();
+
+                    string aendern = ConsoleHelper.GetInput("Berechtigung ändern? (j/n)");
+
+                    if (aendern.ToLower() == "j" || aendern.ToLower() == "ja")
+                    {
+                        // Springe zur Berechtigungs-Auswahl
+                        break;
+                    }
+                    else
+                    {
+                        ConsoleHelper.PrintInfo("Vorgang abgebrochen.");
+                        LogManager.LogBenutzerDuplikat(benutzerName);
+                        ConsoleHelper.PressKeyToContinue();
+                        return;
+                    }
                 }
 
                 break;
@@ -86,23 +123,49 @@ namespace Inventarverwaltung
                 }
             }
 
-            // Benutzer erstellen und speichern
-            Accounts neuerBenutzer = new Accounts(benutzerName, berechtigung);
-            DataManager.Benutzer.Add(neuerBenutzer);
-            DataManager.SaveBenutzerToFile();
+            // Benutzer erstellen ODER aktualisieren
+            if (existierenderBenutzer != null)
+            {
+                // AKTUALISIERE bestehenden Benutzer
+                Berechtigungen alteBerechtigung = existierenderBenutzer.Berechtigung;
+                existierenderBenutzer.Berechtigung = berechtigung;
 
-            // Erfolgsmeldung mit Icon
-            string rollenIcon = berechtigung == Berechtigungen.Admin ? "👑" : "👤";
-            ConsoleHelper.PrintSuccess($"Benutzer '{benutzerName}' wurde als {rollenIcon} '{berechtigung}' angelegt!");
+                // Speichere alle Benutzer komplett neu
+                DataManager.SaveBenutzerToFile();
 
-            // Logging
-            LogManager.LogBenutzerAngelegt(benutzerName, berechtigung);
+                // Erfolgsmeldung
+                string rollenIcon = berechtigung == Berechtigungen.Admin ? "👑" : "👤";
+                Console.WriteLine();
+                ConsoleHelper.PrintSuccess($"Berechtigung von '{benutzerName}' wurde aktualisiert!");
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine($"  Alt: {alteBerechtigung}");
+                Console.WriteLine($"  Neu: {rollenIcon} {berechtigung}");
+                Console.ResetColor();
+
+                // Logging
+                LogManager.LogBenutzerAktualisiert(benutzerName, alteBerechtigung.ToString(), berechtigung.ToString());
+            }
+            else
+            {
+                // ERSTELLE neuen Benutzer
+                Accounts neuerBenutzer = new Accounts(benutzerName, berechtigung);
+                DataManager.Benutzer.Add(neuerBenutzer);
+                DataManager.SaveBenutzerToFile();
+
+                // Erfolgsmeldung mit Icon
+                string rollenIcon = berechtigung == Berechtigungen.Admin ? "👑" : "👤";
+                Console.WriteLine();
+                ConsoleHelper.PrintSuccess($"Benutzer '{benutzerName}' wurde als {rollenIcon} '{berechtigung}' angelegt!");
+
+                // Logging
+                LogManager.LogBenutzerAngelegt(benutzerName, berechtigung);
+            }
 
             ConsoleHelper.PressKeyToContinue();
         }
 
         /// <summary>
-        /// Zeigt alle Benutzer in einer übersichtlichen Tabelle
+        /// Zeigt alle Benutzer in einer übersichtlichen Tabelle mit Spaltenüberschriften
         /// </summary>
         public static void ZeigeBenutzer()
         {
@@ -117,7 +180,12 @@ namespace Inventarverwaltung
             }
 
             Console.WriteLine();
-            ConsoleHelper.PrintTableHeader("Nr", "Benutzername", "Berechtigung", "Rolle");
+
+            // Spaltenüberschriften exakt über den Daten
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine($"  {"Nr",-4} {"Benutzername",-20} {"Berechtigung",-20} {"Rolle"}");
+            Console.WriteLine($"  {new string('─', 4)} {new string('─', 20)} {new string('─', 20)} {new string('─', 10)}");
+            Console.ResetColor();
 
             for (int i = 0; i < DataManager.Benutzer.Count; i++)
             {
