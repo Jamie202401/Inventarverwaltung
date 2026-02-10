@@ -73,28 +73,28 @@ Noch schnellere Workflows und bessere Übersichtlichkeit
 
 ##### 📦 Bestands-Management
 - 🔲 **Bestandsführung für Artikel**
-  - Anzahl/Menge pro Artikel
-  - Mindestbestand konfigurierbar
-  - Aktueller Bestand anzeigen
-  - Farbcodierte Anzeige (grün/gelb/rot)
+  - ✅Anzahl/Menge pro Artikel
+  - ✅Mindestbestand konfigurierbar
+  - ✅Aktueller Bestand anzeigen
+  - ✅Farbcodierte Anzeige (grün/gelb/rot)
 
 - 🔲 **Automatische Warnungen**
-  - ⚠️ Warnung bei niedrigem Bestand
-  - Pop-up beim Programmstart
-  - Übersicht aller kritischen Artikel
-  - E-Mail-Benachrichtigung (optional)
+  - ✅⚠️ Warnung bei niedrigem Bestand
+  - ✅Pop-up beim Programmstart
+  - ✅Übersicht aller kritischen Artikel
+  - ✅E-Mail-Benachrichtigung (optional)
 
 - 🔲 **Bestandsübersicht-Dashboard**
-  - Alle Artikel mit Bestandszahlen
-  - Filterung nach Kategorien
-  - Sortierung nach Bestand
-  - Export als PDF/Excel
+  - ✅Alle Artikel mit Bestandszahlen
+  - ✅Filterung nach Kategorien
+  - ✅Sortierung nach Bestand
+  - ✅Export als PDF/Excel
 
 ##### ⚡ Workflow-Optimierungen
 - 🔲 **Ultra-Schnell-Modus für Artikel**
-  - Ein-Zeilen-Eingabe: `INV001;Laptop;Max Müller;5`
-  - CSV-Import für Massen-Anlage
-  - Template-System für häufige Artikel
+  - ✅Ein-Zeilen-Eingabe: `INV001;Laptop;Max Müller;5`
+  - ✅CSV-Import für Massen-Anlage
+  - ✅Template-System für häufige Artikel
 
 - 🔲 **Intelligente Auto-Zuweisung**
   - KI schlägt automatisch Mitarbeiter vor
