@@ -118,12 +118,18 @@ Noch schnellere Workflows und bessere Übersichtlichkeit
   - Namen ändern
   - Abteilung wechseln
   - Notizen zu Mitarbeitern
+  
 
 - 🔲 **Mitarbeiter-Details-Ansicht**
   - Alle zugewiesenen Geräte
   - Gesamt-Wert der Geräte
   - Historie der Zuweisungen
   - Statistiken pro Mitarbeiter
+ 
+- 🔲 **Rollen Details**
+      - Benutzerrechte selbst festlegen
+      - Neue Rollen erstellen
+      - bei bestehenden Benutzern die Rechte nächträglich festlegen (Übersicht mit Berechtigungen z.B. Rollen verwalten: Haken/kein Haken Mitarbeiter bearbeiten;Haken/kein Haken )
 
 ##### 🎨 UI/UX Verbesserungen
 - 🔲 **Vereinfachte Navigation**
