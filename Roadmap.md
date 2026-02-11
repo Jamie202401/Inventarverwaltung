@@ -120,6 +120,17 @@ Noch schnellere Workflows und bessere Übersichtlichkeit
   - Globale Suche (Artikel + Mitarbeiter)
   - Filter nach Abteilung
   - Filter nach Kategorie
+ 
+- - 🔲 **Hardware**
+        - Drucken
+          -Man soll ein Blatt drucken können auf diesen steht als Title "Ausgabe Hardware""Datum""Mitarbeiter Kürzel"
+          - Darunter soll aufgelistet werden welche Artikel der Mitarbeiter zugewiesen hat
+          - Die Liste solll angezeigt werden und der User kann dort auch noch Änderungen vornehmen
+          - unten soll ein Unterschriftsfeld sein wo der Mitarbeiter unterschreibt
+          - Sobal der Benutzer sagt es ist okay soll es gedruckt werden
+          - Dann kann der User festlegen welcher Drucker das Dokument drucken soll
+          - Die gedruckten Dokuente werden in einer Historie festgehalten diese soll man jederzeit einsehen und bearbeitet werden.
+      
 
 ##### 👥 Mitarbeiter-Management erweitert
 - 🔲 **Mitarbeiter löschen**
