@@ -123,7 +123,7 @@ Noch schnellere Workflows und bessere Übersichtlichkeit
  
 - - 🔲 **Hardware**
         - Drucken
-          -Man soll ein Blatt drucken können auf diesen steht als Title "Ausgabe Hardware""Datum""Mitarbeiter Kürzel"
+          - Man soll ein Blatt drucken können auf diesen steht als Title "Ausgabe Hardware""Datum""Mitarbeiter Kürzel"
           - Darunter soll aufgelistet werden welche Artikel der Mitarbeiter zugewiesen hat
           - Die Liste solll angezeigt werden und der User kann dort auch noch Änderungen vornehmen
           - unten soll ein Unterschriftsfeld sein wo der Mitarbeiter unterschreibt
