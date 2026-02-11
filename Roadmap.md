@@ -101,6 +101,20 @@ Noch schnellere Workflows und bessere Übersichtlichkeit
   - Ein-Klick-Zuweisung
   - Letzte Zuweisungen merken
   - Favoriten-Mitarbeiter festlegen
+ 
+- - 🔲 **KI**
+      - Einstellungen sehen
+      - Funktionen ein oder Auschalten
+      - Modus Auswählen
+          - performance
+          - Eco
+          - Minimal
+        - Status der KI Anzeigen
+        - Insights der KI sehen
+            - Wie viele Vorschläge hat die KI gemacht
+            - Wie viele Vorschläge wurden übernommen
+            - Wie viele Vorschläge wurden abgelehnt
+            - Wie viele Vorschläge waren falsch
 
 - 🔲 **Erweiterte Such-Funktionen**
   - Globale Suche (Artikel + Mitarbeiter)
