@@ -123,13 +123,14 @@ Noch schnellere Workflows und bessere Übersichtlichkeit
  
 - - 🔲 **Hardware**
         - Drucken
-          - Man soll ein Blatt drucken können auf diesen steht als Title "Ausgabe Hardware""Datum""Mitarbeiter Kürzel"
-          - Darunter soll aufgelistet werden welche Artikel der Mitarbeiter zugewiesen hat
-          - Die Liste solll angezeigt werden und der User kann dort auch noch Änderungen vornehmen
-          - unten soll ein Unterschriftsfeld sein wo der Mitarbeiter unterschreibt
-          - Sobal der Benutzer sagt es ist okay soll es gedruckt werden
-          - Dann kann der User festlegen welcher Drucker das Dokument drucken soll
-          - Die gedruckten Dokuente werden in einer Historie festgehalten diese soll man jederzeit einsehen und bearbeitet werden.
+    <br>
+          - Man soll ein Blatt drucken können auf diesen steht als Title "Ausgabe Hardware""Datum""Mitarbeiter Kürzel"<br>
+          - Darunter soll aufgelistet werden welche Artikel der Mitarbeiter zugewiesen hat<br>
+          - Die Liste solll angezeigt werden und der User kann dort auch noch Änderungen vornehmen<br>
+          - unten soll ein Unterschriftsfeld sein wo der Mitarbeiter unterschreibt<br>
+          - Sobal der Benutzer sagt es ist okay soll es gedruckt werden<br>
+          - Dann kann der User festlegen welcher Drucker das Dokument drucken soll<br>
+          - Die gedruckten Dokuente werden in einer Historie festgehalten diese soll man jederzeit einsehen und bearbeitet werden.<br>
       
 
 ##### 👥 Mitarbeiter-Management erweitert
