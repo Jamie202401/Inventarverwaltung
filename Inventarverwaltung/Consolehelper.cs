@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 
 namespace Inventarverwaltung
 {
@@ -11,8 +12,8 @@ namespace Inventarverwaltung
         public static void SetupConsole()
         {
             Console.Title = "INVENTARVERWALTUNG";
-            Console.SetWindowSize(120, 40);
-            Console.SetBufferSize(120, 40);
+            Console.SetWindowSize(150, 60);
+            Console.SetBufferSize(150, 60);
             Console.CursorVisible = true;
         }
 
@@ -123,6 +124,54 @@ namespace Inventarverwaltung
             }
             Console.WriteLine(header);
             Console.WriteLine("  " + new string('─', 80));
+            Console.ResetColor();
+        }
+
+        /// <summary>
+        /// Zeigt einen Gradient-Header mit Titel und Untertitel
+        /// </summary>
+        public static void PrintGradientHeader(string titel, string untertitel = "")
+        {
+            Console.Clear();
+
+            // Obere Box
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine();
+            Console.WriteLine("  ╔═══════════════════════════════════════════════════════════════╗");
+            Console.ResetColor();
+
+            // Titel
+            Console.ForegroundColor = ConsoleColor.White;
+            string paddedTitel = titel.PadLeft((63 + titel.Length) / 2).PadRight(63);
+            Console.WriteLine($"  ║{paddedTitel}║");
+            Console.ResetColor();
+
+            // Untertitel (falls vorhanden)
+            if (!string.IsNullOrEmpty(untertitel))
+            {
+                Console.ForegroundColor = ConsoleColor.DarkCyan;
+                string paddedUntertitel = untertitel.PadLeft((63 + untertitel.Length) / 2).PadRight(63);
+                Console.WriteLine($"  ║{paddedUntertitel}║");
+                Console.ResetColor();
+            }
+
+            // Untere Box
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("  ╚═══════════════════════════════════════════════════════════════╝");
+            Console.ResetColor();
+        }
+
+        /// <summary>
+        /// Zeigt animierten Text mit Typing-Effekt
+        /// </summary>
+        public static void AnimatedText(string text, int delayMs = 50)
+        {
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            foreach (char c in text)
+            {
+                Console.Write(c);
+                Thread.Sleep(delayMs);
+            }
             Console.ResetColor();
         }
     }
