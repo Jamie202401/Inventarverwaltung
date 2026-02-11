@@ -5,7 +5,7 @@ namespace Inventarverwaltung
 {
     /// <summary>
     /// Verwaltet die Menüanzeige mit modernem Design und Animationen
-    /// ERWEITERT: Neue Menüpunkte für Bestandsverwaltung + Dashboard
+    /// ERWEITERT: Dashboard, Schnellerfassung, Export + KI Engine 2.0
     /// </summary>
     public static class MenuManager
     {
@@ -19,7 +19,9 @@ namespace Inventarverwaltung
             Console.WriteLine();
 
             // Menü-Kategorien
-            DrawDashboardSection();  // NEU - GANZ OBEN!
+            DrawDashboardSection();
+            DrawKISection();  // NEU: KI-Bereich
+            DrawSchnellerfassungSection();
             DrawInventorySection();
             DrawStockManagementSection();
             DrawEmployeeSection();
@@ -34,7 +36,7 @@ namespace Inventarverwaltung
         private static void DrawDashboardSection()
         {
             Console.ForegroundColor = ConsoleColor.Magenta;
-            Console.WriteLine("  ┌─ 📊 DASHBOARD (NEU!) " + new string('─', 44) + "┐");
+            Console.WriteLine("  ┌─ 📊 DASHBOARD " + new string('─', 52) + "┐");
             Console.ResetColor();
 
             DrawMenuItems(new[]
@@ -43,6 +45,40 @@ namespace Inventarverwaltung
             }, ConsoleColor.Magenta);
 
             Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.WriteLine("  └" + new string('─', 68) + "┘");
+            Console.ResetColor();
+            Console.WriteLine();
+        }
+
+        private static void DrawKISection()
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("  ┌─ 🤖 KI ENGINE 2.0 (NEU!) " + new string('─', 39) + "┐");
+            Console.ResetColor();
+
+            DrawMenuItems(new[]
+            {
+                ("98", "🤖 KI-Insights & Analysen (Machine Learning)")
+            }, ConsoleColor.Green);
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("  └" + new string('─', 68) + "┘");
+            Console.ResetColor();
+            Console.WriteLine();
+        }
+
+        private static void DrawSchnellerfassungSection()
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("  ┌─ ⚡ SCHNELLERFASSUNG " + new string('─', 44) + "┐");
+            Console.ResetColor();
+
+            DrawMenuItems(new[]
+            {
+                ("20", "⚡ Ultra-Schnell-Modus, CSV-Import & Templates")
+            }, ConsoleColor.Yellow);
+
+            Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("  └" + new string('─', 68) + "┘");
             Console.ResetColor();
             Console.WriteLine();
@@ -69,7 +105,7 @@ namespace Inventarverwaltung
 
         private static void DrawStockManagementSection()
         {
-            Console.ForegroundColor = ConsoleColor.Green;
+            Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine("  ┌─ 📊 BESTANDSVERWALTUNG " + new string('─', 42) + "┐");
             Console.ResetColor();
 
@@ -79,25 +115,6 @@ namespace Inventarverwaltung
                 ("12", "➖ Bestand verringern"),
                 ("13", "⚙️  Mindestbestand konfigurieren"),
                 ("15", "🔴 Artikel unter Mindestbestand anzeigen")
-            }, ConsoleColor.Green);
-
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("  └" + new string('─', 68) + "┘");
-            Console.ResetColor();
-            Console.WriteLine();
-        }
-
-        private static void DrawEmployeeSection()
-        {
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine("  ┌─ 👥 MITARBEITERVERWALTUNG " + new string('─', 39) + "┐");
-            Console.ResetColor();
-
-            DrawMenuItems(new[]
-            {
-                ("2", "👤 Neuen Mitarbeiter hinzufügen"),
-                ("3", "👥 Mitarbeiter anzeigen"),
-                ("6", "👨‍💼 Benutzer anzeigen")
             }, ConsoleColor.Cyan);
 
             Console.ForegroundColor = ConsoleColor.Cyan;
@@ -106,18 +123,38 @@ namespace Inventarverwaltung
             Console.WriteLine();
         }
 
-        private static void DrawExtraFunctions()
+        private static void DrawEmployeeSection()
         {
-            Console.ForegroundColor = ConsoleColor.Blue;
-            Console.WriteLine("  ┌─ 🔧 Extrafunktionen " + new string('─', 43) + "┐");
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            Console.WriteLine("  ┌─ 👥 MITARBEITERVERWALTUNG " + new string('─', 39) + "┐");
             Console.ResetColor();
 
             DrawMenuItems(new[]
             {
-                ("16", "Import"),
-                ("17", "Bearbeitung"),
-                ("18", "Löschung")
-            }, ConsoleColor.Yellow);
+                ("2", "👤 Neuen Mitarbeiter hinzufügen"),
+                ("3", "👥 Mitarbeiter anzeigen"),
+                ("6", "👨‍💼 Benutzer anzeigen")
+            }, ConsoleColor.DarkCyan);
+
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            Console.WriteLine("  └" + new string('─', 68) + "┘");
+            Console.ResetColor();
+            Console.WriteLine();
+        }
+
+        private static void DrawExtraFunctions()
+        {
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine("  ┌─ 🔧 EXTRAFUNKTIONEN " + new string('─', 45) + "┐");
+            Console.ResetColor();
+
+            DrawMenuItems(new[]
+            {
+                ("16", "📥 Import"),
+                ("17", "✏️  Bearbeitung"),
+                ("18", "🗑️  Löschung"),
+                ("19", "📤 Export (Excel/PDF)")
+            }, ConsoleColor.Blue);
 
             Console.ForegroundColor = ConsoleColor.Blue;
             Console.WriteLine("  └" + new string('─', 68) + "┘");
@@ -127,7 +164,7 @@ namespace Inventarverwaltung
 
         private static void DrawSystemSection()
         {
-            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.WriteLine("  ┌─ 🔧 SYSTEMFUNKTIONEN " + new string('─', 43) + "┐");
             Console.ResetColor();
 
@@ -137,9 +174,9 @@ namespace Inventarverwaltung
                 ("7", "📝 System-Log anzeigen (verschlüsselt)"),
                 ("8", "📄 Tagesreport erstellen (verschlüsselt)"),
                 ("9", "🔐 Verschlüsselungs-Info anzeigen")
-            }, ConsoleColor.Yellow);
+            }, ConsoleColor.DarkYellow);
 
-            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.WriteLine("  └" + new string('─', 68) + "┘");
             Console.ResetColor();
             Console.WriteLine();

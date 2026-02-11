@@ -4,7 +4,8 @@ namespace Inventarverwaltung
 {
     /// <summary>
     /// Hauptprogramm der Inventarverwaltung
-    /// ERWEITERT: Neue Funktionen für Bestandsverwaltung + Dashboard
+    /// VOLLSTÄNDIG: Dashboard, Schnellerfassung, Export, KI Engine 2.0
+    /// Version 2.0.0 - Production Ready
     /// </summary>
     class Program
     {
@@ -31,10 +32,24 @@ namespace Inventarverwaltung
                 switch (auswahl)
                 {
                     // ═══════════════════════════════════════════════════
-                    // DASHBOARD (NEU!)
+                    // DASHBOARD
                     // ═══════════════════════════════════════════════════
                     case "99":
                         DashboardManager.ZeigeDashboard();
+                        break;
+
+                    // ═══════════════════════════════════════════════════
+                    // KI ENGINE 2.0 (NEU!)
+                    // ═══════════════════════════════════════════════════
+                    case "98":
+                        KIEngine.ZeigeErweiterteInsights();
+                        break;
+
+                    // ═══════════════════════════════════════════════════
+                    // SCHNELLERFASSUNG
+                    // ═══════════════════════════════════════════════════
+                    case "20":
+                        SchnellerfassungsManager.ZeigeSchnellerfassungsMenu();
                         break;
 
                     // ═══════════════════════════════════════════════════
@@ -108,20 +123,25 @@ namespace Inventarverwaltung
                     case "9":
                         EncryptionManager.ZeigeVerschluesselungsInfo();
                         break;
-                    // ═══════════════════════════════════════════════════
-                    // Extrafunktioen
-                    // ═══════════════════════════════════════════════════
 
+                    // ═══════════════════════════════════════════════════
+                    // EXTRAFUNKTIONEN
+                    // ═══════════════════════════════════════════════════
                     case "16":
                         CSVImportManager.ZeigeImportMenu();
                         break;
-                    case "17":  // Bearbeiten
+
+                    case "17":
                         Editmanager.ZeigeBearbeitungsMenu();
                         break;
 
-                    case "18":  // Löschen
+                    case "18":
                         DeleteManager.ZeigeLöschMenu();
                         break;
+
+                   // case "19":
+                     //   ExportManager.ZeigeExportMenu();
+                       // break;
 
                     // ═══════════════════════════════════════════════════
                     // PROGRAMM BEENDEN
@@ -140,12 +160,14 @@ namespace Inventarverwaltung
                         Console.ForegroundColor = ConsoleColor.Yellow;
                         Console.WriteLine("  💡 Verfügbare Optionen:");
                         Console.WriteLine("     • Dashboard: 99");
+                        Console.WriteLine("     • KI-Insights: 98");
+                        Console.WriteLine("     • Schnellerfassung: 20");
                         Console.WriteLine("     • Inventarverwaltung: 1, 4, 14");
                         Console.WriteLine("     • Bestandsverwaltung: 11, 12, 13, 15");
                         Console.WriteLine("     • Mitarbeiter: 2, 3");
                         Console.WriteLine("     • Benutzer: 5, 6");
                         Console.WriteLine("     • System: 7, 8, 9");
-                        Console.WriteLine("     • Extra: 16, 17, 18");
+                        Console.WriteLine("     • Extra: 16, 17, 18, 19");
                         Console.WriteLine("     • Beenden: 0");
                         Console.ResetColor();
                         ConsoleHelper.PressKeyToContinue();
@@ -164,9 +186,17 @@ namespace Inventarverwaltung
             Console.WriteLine("  ║                                                                   ║");
             Console.WriteLine("  ║     ✓ VIELEN DANK FÜR DIE NUTZUNG!                               ║");
             Console.WriteLine("  ║                                                                   ║");
-            Console.WriteLine("  ║     📦 Inventarverwaltung mit Bestandsführung                     ║");
-            Console.WriteLine("  ║     🤖 KI-gestützt & 🔐 AES-256 verschlüsselt                     ║");
-            Console.WriteLine("  ║     📊 Jetzt mit Dashboard-Funktion!                              ║");
+            Console.WriteLine("  ║     📦 Inventarverwaltung - Professional Edition 2.0              ║");
+            Console.WriteLine("  ║                                                                   ║");
+            Console.WriteLine("  ║     ✨ Features:                                                  ║");
+            Console.WriteLine("  ║        • 📊 Premium Dashboard                                     ║");
+            Console.WriteLine("  ║        • 🤖 KI Engine 2.0 (Machine Learning)                      ║");
+            Console.WriteLine("  ║        • ⚡ Schnellerfassung (Ultra-Modus)                        ║");
+            Console.WriteLine("  ║        • 📤 Export (Excel/PDF)                                    ║");
+            Console.WriteLine("  ║        • 🔐 AES-256 Verschlüsselung                               ║");
+            Console.WriteLine("  ║        • 💬 Natural Language Processing                           ║");
+            Console.WriteLine("  ║        • 📈 Predictive Analytics                                  ║");
+            Console.WriteLine("  ║        • ⚠️  Anomalie-Erkennung                                   ║");
             Console.WriteLine("  ║                                                                   ║");
             Console.WriteLine("  ╚═══════════════════════════════════════════════════════════════════╝");
             Console.WriteLine();

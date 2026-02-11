@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-
+/*
 namespace Inventarverwaltung
 {
     internal static class ConsoleFont
@@ -69,3 +69,4 @@ namespace Inventarverwaltung
         }
     }
 }
+*/
