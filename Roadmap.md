@@ -63,7 +63,7 @@
 
 ### Version 1.1.0 - "Productivity Boost" 🔄
 
-**Status:** 🟡 **Geplant für Q3 2026**  
+**Status:** 🟡 **Geplant für Mitte 2026**  
 **Priorität:** HOCH
 
 #### 🎯 Hauptziele dieser Phase:
@@ -121,7 +121,7 @@ Noch schnellere Workflows und bessere Übersichtlichkeit
   - Filter nach Abteilung
   - Filter nach Kategorie
  
-- - 🔲 **Hardware**
+ - 🔲 **Hardware**
         - Drucken<br>
           - Man soll ein Blatt drucken können auf diesen steht als Title "Ausgabe Hardware""Datum""Mitarbeiter Kürzel"<br>
           - Darunter soll aufgelistet werden welche Artikel der Mitarbeiter zugewiesen hat<br>
