@@ -63,7 +63,7 @@
 
 ### Version 1.1.0 - "Productivity Boost" 🔄
 
-**Status:** 🟡 **Geplant für Q3 2026**  
+**Status:** 🟡 **Geplant für Mitte 2026**  
 **Priorität:** HOCH
 
 #### 🎯 Hauptziele dieser Phase:
@@ -101,11 +101,36 @@ Noch schnellere Workflows und bessere Übersichtlichkeit
   - Ein-Klick-Zuweisung
   - Letzte Zuweisungen merken
   - Favoriten-Mitarbeiter festlegen
+ 
+- - 🔲 **KI**
+      - Einstellungen sehen
+      - Funktionen ein oder Auschalten
+      - Modus Auswählen
+          - performance
+          - Eco
+          - Minimal
+        - Status der KI Anzeigen
+        - Insights der KI sehen
+            - Wie viele Vorschläge hat die KI gemacht
+            - Wie viele Vorschläge wurden übernommen
+            - Wie viele Vorschläge wurden abgelehnt
+            - Wie viele Vorschläge waren falsch
 
 - 🔲 **Erweiterte Such-Funktionen**
   - Globale Suche (Artikel + Mitarbeiter)
   - Filter nach Abteilung
   - Filter nach Kategorie
+ 
+ - 🔲 **Hardware**
+        - Drucken<br>
+          - Man soll ein Blatt drucken können auf diesen steht als Title "Ausgabe Hardware""Datum""Mitarbeiter Kürzel"<br>
+          - Darunter soll aufgelistet werden welche Artikel der Mitarbeiter zugewiesen hat<br>
+          - Die Liste solll angezeigt werden und der User kann dort auch noch Änderungen vornehmen<br>
+          - unten soll ein Unterschriftsfeld sein wo der Mitarbeiter unterschreibt<br>
+          - Sobal der Benutzer sagt es ist okay soll es gedruckt werden<br>
+          - Dann kann der User festlegen welcher Drucker das Dokument drucken soll<br>
+          - Die gedruckten Dokuente werden in einer Historie festgehalten diese soll man jederzeit einsehen und bearbeitet werden.<br>
+      
 
 ##### 👥 Mitarbeiter-Management erweitert
 - 🔲 **Mitarbeiter löschen**
@@ -118,12 +143,18 @@ Noch schnellere Workflows und bessere Übersichtlichkeit
   - Namen ändern
   - Abteilung wechseln
   - Notizen zu Mitarbeitern
+  
 
 - 🔲 **Mitarbeiter-Details-Ansicht**
   - Alle zugewiesenen Geräte
   - Gesamt-Wert der Geräte
   - Historie der Zuweisungen
   - Statistiken pro Mitarbeiter
+ 
+- 🔲 **Rollen Details**
+      - Benutzerrechte selbst festlegen
+      - Neue Rollen erstellen
+      - bei bestehenden Benutzern die Rechte nächträglich festlegen (Übersicht mit Berechtigungen z.B. Rollen verwalten: Haken/kein Haken Mitarbeiter bearbeiten;Haken/kein Haken )
 
 ##### 🎨 UI/UX Verbesserungen
 - 🔲 **Vereinfachte Navigation**
