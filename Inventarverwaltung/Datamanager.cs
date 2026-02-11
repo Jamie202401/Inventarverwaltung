@@ -175,7 +175,43 @@ namespace Inventarverwaltung
             sb.AppendLine($"# Ende der Datei - {Inventar.Count} Artikel gespeichert");
             sb.AppendLine("════════════════════════════════════════════════════════════════════════════════════");
 
-            File.WriteAllText(FileManager.FilePath, sb.ToString());
+            try
+            {
+                // Entferne "Hidden" und "ReadOnly" Attribute falls gesetzt
+                if (File.Exists(FileManager.FilePath))
+                {
+                    FileAttributes attributes = File.GetAttributes(FileManager.FilePath);
+                    if ((attributes & FileAttributes.Hidden) == FileAttributes.Hidden)
+                    {
+                        File.SetAttributes(FileManager.FilePath, attributes & ~FileAttributes.Hidden);
+                    }
+                    if ((attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
+                    {
+                        File.SetAttributes(FileManager.FilePath, attributes & ~FileAttributes.ReadOnly);
+                    }
+                }
+
+                // Schreibe Datei
+                File.WriteAllText(FileManager.FilePath, sb.ToString(), Encoding.UTF8);
+
+                // Setze "Hidden" Attribut wieder zurück falls gewünscht
+                // (Kommentieren Sie diese Zeile aus, wenn Dateien NICHT versteckt werden sollen)
+                // File.SetAttributes(FileManager.FilePath, File.GetAttributes(FileManager.FilePath) | FileAttributes.Hidden);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                // Versuche mit temporärer Datei
+                string tempFile = FileManager.FilePath + ".tmp";
+                File.WriteAllText(tempFile, sb.ToString(), Encoding.UTF8);
+
+                // Lösche alte Datei und benenne temp um
+                if (File.Exists(FileManager.FilePath))
+                {
+                    File.Delete(FileManager.FilePath);
+                }
+                File.Move(tempFile, FileManager.FilePath);
+            }
+
             LogManager.LogDatenGespeichert("Inventar", $"Komplettes Inventar ({Inventar.Count} Artikel) gespeichert");
         }
 
@@ -313,7 +349,37 @@ namespace Inventarverwaltung
             sb.AppendLine($"# Ende der Datei - {Mitarbeiter.Count} Mitarbeiter gespeichert");
             sb.AppendLine("════════════════════════════════════════════════════════════════════════════════════");
 
-            File.WriteAllText(FileManager.FilePath2, sb.ToString());
+            try
+            {
+                // Entferne "Hidden" und "ReadOnly" Attribute falls gesetzt
+                if (File.Exists(FileManager.FilePath2))
+                {
+                    FileAttributes attributes = File.GetAttributes(FileManager.FilePath2);
+                    if ((attributes & FileAttributes.Hidden) == FileAttributes.Hidden)
+                    {
+                        File.SetAttributes(FileManager.FilePath2, attributes & ~FileAttributes.Hidden);
+                    }
+                    if ((attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
+                    {
+                        File.SetAttributes(FileManager.FilePath2, attributes & ~FileAttributes.ReadOnly);
+                    }
+                }
+
+                // Schreibe Datei
+                File.WriteAllText(FileManager.FilePath2, sb.ToString(), Encoding.UTF8);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                // Versuche mit temporärer Datei
+                string tempFile = FileManager.FilePath2 + ".tmp";
+                File.WriteAllText(tempFile, sb.ToString(), Encoding.UTF8);
+
+                if (File.Exists(FileManager.FilePath2))
+                {
+                    File.Delete(FileManager.FilePath2);
+                }
+                File.Move(tempFile, FileManager.FilePath2);
+            }
         }
 
         private static string FormatMitarbeiterZeile(MID mitarbeiter)
@@ -419,7 +485,37 @@ namespace Inventarverwaltung
             sb.AppendLine($"# Ende der Datei - {Benutzer.Count} Benutzer gespeichert");
             sb.AppendLine("════════════════════════════════════════════════════════════════════════════════════");
 
-            File.WriteAllText(FileManager.FilePath3, sb.ToString());
+            try
+            {
+                // Entferne "Hidden" und "ReadOnly" Attribute falls gesetzt
+                if (File.Exists(FileManager.FilePath3))
+                {
+                    FileAttributes attributes = File.GetAttributes(FileManager.FilePath3);
+                    if ((attributes & FileAttributes.Hidden) == FileAttributes.Hidden)
+                    {
+                        File.SetAttributes(FileManager.FilePath3, attributes & ~FileAttributes.Hidden);
+                    }
+                    if ((attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
+                    {
+                        File.SetAttributes(FileManager.FilePath3, attributes & ~FileAttributes.ReadOnly);
+                    }
+                }
+
+                // Schreibe Datei
+                File.WriteAllText(FileManager.FilePath3, sb.ToString(), Encoding.UTF8);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                // Versuche mit temporärer Datei
+                string tempFile = FileManager.FilePath3 + ".tmp";
+                File.WriteAllText(tempFile, sb.ToString(), Encoding.UTF8);
+
+                if (File.Exists(FileManager.FilePath3))
+                {
+                    File.Delete(FileManager.FilePath3);
+                }
+                File.Move(tempFile, FileManager.FilePath3);
+            }
         }
 
         #endregion

@@ -5,7 +5,7 @@ namespace Inventarverwaltung
 {
     /// <summary>
     /// Verwaltet die Menüanzeige mit modernem Design und Animationen
-    /// ERWEITERT: Neue Menüpunkte für Bestandsverwaltung
+    /// ERWEITERT: Neue Menüpunkte für Bestandsverwaltung + Dashboard
     /// </summary>
     public static class MenuManager
     {
@@ -19,14 +19,33 @@ namespace Inventarverwaltung
             Console.WriteLine();
 
             // Menü-Kategorien
+            DrawDashboardSection();  // NEU - GANZ OBEN!
             DrawInventorySection();
-            DrawStockManagementSection();  // NEU!
+            DrawStockManagementSection();
             DrawEmployeeSection();
             DrawSystemSection();
+            DrawExtraFunctions();
             DrawExitSection();
 
             Console.WriteLine();
             DrawUserInput();
+        }
+
+        private static void DrawDashboardSection()
+        {
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.WriteLine("  ┌─ 📊 DASHBOARD (NEU!) " + new string('─', 44) + "┐");
+            Console.ResetColor();
+
+            DrawMenuItems(new[]
+            {
+                ("99", "📊 Inventar Dashboard (Umfassende Übersicht)")
+            }, ConsoleColor.Magenta);
+
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.WriteLine("  └" + new string('─', 68) + "┘");
+            Console.ResetColor();
+            Console.WriteLine();
         }
 
         private static void DrawInventorySection()
@@ -51,7 +70,7 @@ namespace Inventarverwaltung
         private static void DrawStockManagementSection()
         {
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("  ┌─ 📊 BESTANDSVERWALTUNG (NEU!) " + new string('─', 35) + "┐");
+            Console.WriteLine("  ┌─ 📊 BESTANDSVERWALTUNG " + new string('─', 42) + "┐");
             Console.ResetColor();
 
             DrawMenuItems(new[]
@@ -82,6 +101,25 @@ namespace Inventarverwaltung
             }, ConsoleColor.Cyan);
 
             Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("  └" + new string('─', 68) + "┘");
+            Console.ResetColor();
+            Console.WriteLine();
+        }
+
+        private static void DrawExtraFunctions()
+        {
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine("  ┌─ 🔧 Extrafunktionen " + new string('─', 43) + "┐");
+            Console.ResetColor();
+
+            DrawMenuItems(new[]
+            {
+                ("16", "Import"),
+                ("17", "Bearbeitung"),
+                ("18", "Löschung")
+            }, ConsoleColor.Yellow);
+
+            Console.ForegroundColor = ConsoleColor.Blue;
             Console.WriteLine("  └" + new string('─', 68) + "┘");
             Console.ResetColor();
             Console.WriteLine();

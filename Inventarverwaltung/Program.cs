@@ -4,7 +4,7 @@ namespace Inventarverwaltung
 {
     /// <summary>
     /// Hauptprogramm der Inventarverwaltung
-    /// ERWEITERT: Neue Funktionen für Bestandsverwaltung
+    /// ERWEITERT: Neue Funktionen für Bestandsverwaltung + Dashboard
     /// </summary>
     class Program
     {
@@ -31,6 +31,13 @@ namespace Inventarverwaltung
                 switch (auswahl)
                 {
                     // ═══════════════════════════════════════════════════
+                    // DASHBOARD (NEU!)
+                    // ═══════════════════════════════════════════════════
+                    case "99":
+                        DashboardManager.ZeigeDashboard();
+                        break;
+
+                    // ═══════════════════════════════════════════════════
                     // INVENTARVERWALTUNG
                     // ═══════════════════════════════════════════════════
                     case "1":
@@ -46,7 +53,7 @@ namespace Inventarverwaltung
                         break;
 
                     // ═══════════════════════════════════════════════════
-                    // BESTANDSVERWALTUNG (NEU!)
+                    // BESTANDSVERWALTUNG
                     // ═══════════════════════════════════════════════════
                     case "11":
                         InventoryManager.BestandErhoehen();
@@ -101,6 +108,20 @@ namespace Inventarverwaltung
                     case "9":
                         EncryptionManager.ZeigeVerschluesselungsInfo();
                         break;
+                    // ═══════════════════════════════════════════════════
+                    // Extrafunktioen
+                    // ═══════════════════════════════════════════════════
+
+                    case "16":
+                        CSVImportManager.ZeigeImportMenu();
+                        break;
+                    case "17":  // Bearbeiten
+                        Editmanager.ZeigeBearbeitungsMenu();
+                        break;
+
+                    case "18":  // Löschen
+                        DeleteManager.ZeigeLöschMenu();
+                        break;
 
                     // ═══════════════════════════════════════════════════
                     // PROGRAMM BEENDEN
@@ -118,11 +139,13 @@ namespace Inventarverwaltung
                         Console.WriteLine();
                         Console.ForegroundColor = ConsoleColor.Yellow;
                         Console.WriteLine("  💡 Verfügbare Optionen:");
+                        Console.WriteLine("     • Dashboard: 99");
                         Console.WriteLine("     • Inventarverwaltung: 1, 4, 14");
                         Console.WriteLine("     • Bestandsverwaltung: 11, 12, 13, 15");
                         Console.WriteLine("     • Mitarbeiter: 2, 3");
                         Console.WriteLine("     • Benutzer: 5, 6");
                         Console.WriteLine("     • System: 7, 8, 9");
+                        Console.WriteLine("     • Extra: 16, 17, 18");
                         Console.WriteLine("     • Beenden: 0");
                         Console.ResetColor();
                         ConsoleHelper.PressKeyToContinue();
@@ -143,6 +166,7 @@ namespace Inventarverwaltung
             Console.WriteLine("  ║                                                                   ║");
             Console.WriteLine("  ║     📦 Inventarverwaltung mit Bestandsführung                     ║");
             Console.WriteLine("  ║     🤖 KI-gestützt & 🔐 AES-256 verschlüsselt                     ║");
+            Console.WriteLine("  ║     📊 Jetzt mit Dashboard-Funktion!                              ║");
             Console.WriteLine("  ║                                                                   ║");
             Console.WriteLine("  ╚═══════════════════════════════════════════════════════════════════╝");
             Console.WriteLine();
