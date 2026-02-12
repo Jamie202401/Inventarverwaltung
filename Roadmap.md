@@ -151,10 +151,10 @@ Noch schnellere Workflows und bessere Übersichtlichkeit
   - Historie der Zuweisungen
   - Statistiken pro Mitarbeiter
  
-- 🔲 **Rollen Details**
-      - Benutzerrechte selbst festlegen
-      - Neue Rollen erstellen
-      - bei bestehenden Benutzern die Rechte nächträglich festlegen (Übersicht mit Berechtigungen z.B. Rollen verwalten: Haken/kein Haken Mitarbeiter bearbeiten;Haken/kein Haken )
+- 🔲 **Rollen Details**<br>
+      - Benutzerrechte selbst festlegen<br>
+      - Neue Rollen erstellen<br>
+      - bei bestehenden Benutzern die Rechte nächträglich festlegen (Übersicht mit Berechtigungen z.B. Rollen verwalten: Haken/kein Haken Mitarbeiter bearbeiten;Haken/kein Haken )<br>
 
 ##### 🎨 UI/UX Verbesserungen
 - 🔲 **Vereinfachte Navigation**
@@ -168,7 +168,7 @@ Noch schnellere Workflows und bessere Übersichtlichkeit
   - Trend-Anzeigen
   - Aktivitäts-Feed
 
-**Geschätzte Features:** 10 neue Features
+**Geschätzte Features:** 13 neue Features
 
 ---
 
