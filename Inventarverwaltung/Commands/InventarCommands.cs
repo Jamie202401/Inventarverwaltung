@@ -1,0 +1,35 @@
+﻿namespace Inventarverwaltung.Commands
+{
+    // ══════════════════════════════════════════════════════════════════
+    // INVENTAR-COMMANDS
+    //
+    // Jede Klasse = genau eine Menü-Aktion.
+    // Neuen Punkt hinzufügen:
+    //   1. Klasse hier einfügen (Key, Label, Icon, Execute)
+    //   2. In AppSetup.cs der Inventar-Gruppe per .Add() hinzufügen
+    // ══════════════════════════════════════════════════════════════════
+
+    public class InventarNeuCommand : Core.ICommand
+    {
+        public string Key => "INV_NEU";
+        public string Label => "Neuen Artikel hinzufügen";
+        public string Icon => "📦";
+        public void Execute() => InventoryManager.NeuenArtikelErstellen();
+    }
+
+    public class InventarZeigeCommand : Core.ICommand
+    {
+        public string Key => "INV_ZEIGE";
+        public string Label => "Inventar anzeigen";
+        public string Icon => "📋";
+        public void Execute() => InventoryManager.ZeigeInventar();
+    }
+
+    public class InventarDetailCommand : Core.ICommand
+    {
+        public string Key => "INV_DETAIL";
+        public string Label => "Artikel-Details anzeigen";
+        public string Icon => "🔍";
+        public void Execute() => InventoryManager.ZeigeArtikelDetails();
+    }
+}
