@@ -18,6 +18,7 @@ namespace Inventarverwaltung
         public static List<MID> Mitarbeiter = new List<MID>();
         public static List<Accounts> Benutzer = new List<Accounts>();
         public static List<Anmelder> Anmeldung = new List<Anmelder>();
+        public static List<Lieferant> Lieferanten = new List<Lieferant>(); // ← NEU
 
         #region Inventar - Laden und Speichern (mit schönem Format)
 
@@ -578,6 +579,71 @@ namespace Inventarverwaltung
             int ok = Inventar.Count(a => a.Anzahl > a.Mindestbestand);
 
             return (gesamt, leer, niedrig, ok);
+        }
+
+        #endregion
+
+        #region Lieferanten - Laden und Speichern
+
+        private static readonly string LIEFERANTEN_PFAD = "lieferanten.json";
+
+        /// <summary>
+        /// Lädt alle Lieferanten aus lieferanten.json
+        /// Wird beim Programmstart in LoadingScreen.cs aufgerufen
+        /// </summary>
+        public static void LoadLieferanten()
+        {
+            try
+            {
+                if (!File.Exists(LIEFERANTEN_PFAD))
+                {
+                    Lieferanten = new List<Lieferant>();
+                    LogManager.LogDatenGeladen("Lieferanten", 0);
+                    return;
+                }
+
+                string json = File.ReadAllText(LIEFERANTEN_PFAD, Encoding.UTF8);
+
+                var options = new System.Text.Json.JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+
+                Lieferanten = System.Text.Json.JsonSerializer.Deserialize<List<Lieferant>>(json, options)
+                              ?? new List<Lieferant>();
+
+                LogManager.LogDatenGeladen("Lieferanten", Lieferanten.Count);
+            }
+            catch (Exception ex)
+            {
+                LogManager.LogFehler("LoadLieferanten", ex.Message);
+                Lieferanten = new List<Lieferant>();
+            }
+        }
+
+        /// <summary>
+        /// Speichert alle Lieferanten in lieferanten.json
+        /// Wird nach jeder Änderung (Anlegen / Bearbeiten / Löschen) aufgerufen
+        /// </summary>
+        public static void SaveLieferanten()
+        {
+            try
+            {
+                var options = new System.Text.Json.JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    PropertyNameCaseInsensitive = true
+                };
+
+                string json = System.Text.Json.JsonSerializer.Serialize(Lieferanten, options);
+                File.WriteAllText(LIEFERANTEN_PFAD, json, Encoding.UTF8);
+
+                LogManager.LogDatenGespeichert("Lieferanten", $"{Lieferanten.Count} Lieferant(en) gespeichert");
+            }
+            catch (Exception ex)
+            {
+                LogManager.LogFehler("SaveLieferanten", ex.Message);
+            }
         }
 
         #endregion

@@ -570,7 +570,7 @@ namespace Inventarverwaltung
             Console.Write("║");
             Console.ResetColor();
 
-            // Bestand mit Progress-Bar
+            // Bestand with Progress-Bar
             Console.Write(" ");
             ZeigeBestandBalken(artikel.Anzahl, artikel.Mindestbestand, 13);
             Console.Write(" ");
@@ -765,7 +765,7 @@ namespace Inventarverwaltung
         private static void ZeigeTabellenHeader(string text, int breite)
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
-          //  Console.Write(value: $" {text.ToUpper(),-breite} ");
+     //       Console.Write(value: $" {text.ToUpper(),-breite} ");
             Console.ResetColor();
         }
 

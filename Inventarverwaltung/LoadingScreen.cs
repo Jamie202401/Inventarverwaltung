@@ -6,7 +6,7 @@ namespace Inventarverwaltung
     /// <summary>
     /// Animierter Ladebildschirm beim Programmstart
     /// Lädt alle Daten und zeigt schöne Animationen
-	/// ERWEITERT: KI Engine 2.0 Integration
+    /// ERWEITERT: KI Engine 2.0 Integration
     /// </summary>
     public static class LoadingScreen
     {
@@ -22,7 +22,7 @@ namespace Inventarverwaltung
             Console.Clear();
             Console.CursorVisible = false;
 
-            
+
             // Zeige Logo
             ZeigeLogo();
             Thread.Sleep(500);
@@ -34,7 +34,8 @@ namespace Inventarverwaltung
                 new { Name = "Lade Benutzerdaten", Action = new Action(() => DataManager.LoadBenutzer()) },
                 new { Name = "Lade Mitarbeiter", Action = new Action(() => DataManager.LoadMitarbeiter()) },
                 new { Name = "Lade Inventar", Action = new Action(() => DataManager.LoadInventar()) },
-            //  new { Name = "Lade Anmeldungen", Action = new Action(() => DataManager.LoadAnmeldung()) },
+                new { Name = "Lade Lieferanten", Action = new Action(() => DataManager.LoadLieferanten()) },
+			//  new { Name = "Lade Anmeldungen", Action = new Action(() => DataManager.LoadAnmeldung()) },
                 new { Name = "🤖 Initialisiere KI Engine 2.0", Action = new Action(() => KIEngine.Initialisiere()) },
                 new { Name = "Initialisiere Verschlüsselung", Action = new Action(() => LogManager.InitializeLog()) },
                 new { Name = "Prüfe Systemintegrität", Action = new Action(() => PruefeSystem()) }
@@ -93,9 +94,9 @@ namespace Inventarverwaltung
                 "║     ██║██║ ╚████║ ╚████╔╝ ███████╗██║ ╚████║   ██║   ██║  ██║██║  ██║ ║",
                 "║     ╚═╝╚═╝  ╚═══╝  ╚═══╝  ╚══════╝╚═╝  ╚═══╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝ ║",
                 "║                                                                       ║",
-                "║                  🤖 KI ENGINE 2.0 - PREMIUM EDITION	                 ║",
-                "║                  🔐 AES-256 Verschlüsselung aktiviert                  ║",
-                "║                  📊 Version 2.0.0 - PRODUCTION                         ║",
+                "║                  🤖 KI ENGINE 2.0 - PREMIUM EDITION                   ║",
+                "║                  🔐 AES-256 Verschlüsselung aktiviert                 ║",
+                "║                  📊 Version 2.0.0 - PRODUCTION                        ║",
                 "║                               © 2026  jh                              ║",
                 "╚═══════════════════════════════════════════════════════════════════════╝"
             };
@@ -224,8 +225,8 @@ namespace Inventarverwaltung
             Console.ForegroundColor = primaryColor;
             Console.WriteLine("  ╔═══════════════════════════════════════════════════════════╗");
             Console.WriteLine($"  ║  📊 Geladen: {DataManager.Inventar.Count} Artikel | {DataManager.Mitarbeiter.Count} Mitarbeiter | {DataManager.Benutzer.Count} Benutzer  ");
-            Console.WriteLine("  ║  🤖 KI Engine 2.0: Aktiv & Bereit                         ║");
-            Console.WriteLine("  ║  🔐 Verschlüsselung: AES-256 Aktiviert                    ║");
+            Console.WriteLine("  ║  🤖 KI Engine 2.0: Aktiv & Bereit                        ║");
+            Console.WriteLine("  ║  🔐 Verschlüsselung: AES-256 Aktiviert                   ║");
             Console.WriteLine("  ╚═══════════════════════════════════════════════════════════╝");
             Console.ResetColor();
         }
@@ -244,7 +245,6 @@ namespace Inventarverwaltung
         /// </summary>
         private static void PruefeSystem()
         {
-            // Kurze Verzögerung für visuellen Effekt
             Thread.Sleep(200);
         }
 
@@ -275,6 +275,7 @@ namespace Inventarverwaltung
             DataManager.LoadBenutzer();
             DataManager.LoadMitarbeiter();
             DataManager.LoadInventar();
+            DataManager.LoadLieferanten();
             KIEngine.Initialisiere();
 
             Console.SetCursorPosition(0, Console.CursorTop - 1);
@@ -282,9 +283,9 @@ namespace Inventarverwaltung
             Console.WriteLine("  ✓ Daten aktualisiert!              ");
             Console.ResetColor();
             Thread.Sleep(500);
-            
+
         }
-        
+
     }
 
 }

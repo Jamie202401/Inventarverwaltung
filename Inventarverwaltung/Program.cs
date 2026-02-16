@@ -3,9 +3,11 @@
 namespace Inventarverwaltung
 {
     /// <summary>
-    /// Hauptprogramm der Inventarverwaltung
-    /// VOLLSTÄNDIG: Dashboard, Schnellerfassung, Export, KI Engine 2.0
-    /// Version 2.0.0 - Production Ready
+    /// Einstiegspunkt des Programms.
+    /// Nur noch 5 Zeilen Logik — der Rest steckt in:
+    ///   AppSetup.cs  → Menükonfiguration
+    ///   Core/        → Router, UI, Interface
+    ///   Commands/    → Einzelne Aktionen
     /// </summary>
     class Program
     {
@@ -13,195 +15,34 @@ namespace Inventarverwaltung
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
 
-            // Animierter Ladebildschirm mit Dateninitialisierung
-            LoadingScreen.Show();
+            LoadingScreen.Show();          // Ladebildschirm + alle Daten laden
+            AuthManager.Anmeldung();       // Benutzeranmeldung
+            ConsoleHelper.PrintWelcome();  // Willkommensbildschirm
 
-            // Benutzeranmeldung
-            AuthManager.Anmeldung();
+            // Router aufbauen und Hauptschleife starten.
+            // Kehrt zurück wenn der Benutzer [0] drückt.
+            AppSetup.Build().Run();
 
-            // Willkommensnachricht anzeigen
-            ConsoleHelper.PrintWelcome();
-
-            // Hauptschleife: Menü anzeigen und Benutzeraktionen verarbeiten
-            bool running = true;
-            while (running)
-            {
-                MenuManager.ShowMenu();
-                string auswahl = Console.ReadLine()?.Trim();
-
-                switch (auswahl)
-                {
-                    // ═══════════════════════════════════════════════════
-                    // DASHBOARD
-                    // ═══════════════════════════════════════════════════
-                    case "99":
-                        DashboardManager.ZeigeDashboard();
-                        break;
-
-                    // ═══════════════════════════════════════════════════
-                    // KI ENGINE 2.0 (NEU!)
-                    // ═══════════════════════════════════════════════════
-                    case "98":
-                        KIEngine.ZeigeErweiterteInsights();
-                        break;
-
-                    // ═══════════════════════════════════════════════════
-                    // SCHNELLERFASSUNG
-                    // ═══════════════════════════════════════════════════
-                    case "20":
-                        SchnellerfassungsManager.ZeigeSchnellerfassungsMenu();
-                        break;
-
-                    // ═══════════════════════════════════════════════════
-                    // INVENTARVERWALTUNG
-                    // ═══════════════════════════════════════════════════
-                    case "1":
-                        InventoryManager.NeuenArtikelErstellen();
-                        break;
-
-                    case "4":
-                        InventoryManager.ZeigeInventar();
-                        break;
-
-                    case "14":
-                        InventoryManager.ZeigeArtikelDetails();
-                        break;
-
-                    // ═══════════════════════════════════════════════════
-                    // BESTANDSVERWALTUNG
-                    // ═══════════════════════════════════════════════════
-                    case "11":
-                        InventoryManager.BestandErhoehen();
-                        break;
-
-                    case "12":
-                        InventoryManager.BestandVerringern();
-                        break;
-
-                    case "13":
-                        InventoryManager.MindestbestandAendern();
-                        break;
-
-                    case "15":
-                        InventoryManager.ZeigeArtikelUnterMindestbestand();
-                        break;
-
-                    // ═══════════════════════════════════════════════════
-                    // MITARBEITERVERWALTUNG
-                    // ═══════════════════════════════════════════════════
-                    case "2":
-                        EmployeeManager.NeuenMitarbeiterHinzufuegen();
-                        break;
-
-                    case "3":
-                        EmployeeManager.ZeigeMitarbeiter();
-                        break;
-
-                    // ═══════════════════════════════════════════════════
-                    // BENUTZERVERWALTUNG
-                    // ═══════════════════════════════════════════════════
-                    case "5":
-                        UserManager.NeuerBenutzer();
-                        break;
-
-                    case "6":
-                        UserManager.ZeigeBenutzer();
-                        break;
-
-                    // ═══════════════════════════════════════════════════
-                    // SYSTEMFUNKTIONEN
-                    // ═══════════════════════════════════════════════════
-                    case "7":
-                        LogManager.ZeigeLogDatei();
-                        break;
-
-                    case "8":
-                        LogManager.ErstelleTagesReport();
-                        ConsoleHelper.PressKeyToContinue();
-                        break;
-
-                    case "9":
-                        EncryptionManager.ZeigeVerschluesselungsInfo();
-                        break;
-
-                    // ═══════════════════════════════════════════════════
-                    // EXTRAFUNKTIONEN
-                    // ═══════════════════════════════════════════════════
-                    case "16":
-                        CSVImportManager.ZeigeImportMenu();
-                        break;
-
-                    case "17":
-                        Editmanager.ZeigeBearbeitungsMenu();
-                        break;
-
-                    case "18":
-                        DeleteManager.ZeigeLöschMenu();
-                        break;
-
-                   // case "19":
-                     //   ExportManager.ZeigeExportMenu();
-                       // break;
-
-                    // ═══════════════════════════════════════════════════
-                    // PROGRAMM BEENDEN
-                    // ═══════════════════════════════════════════════════
-                    case "0":
-                        running = false;
-                        break;
-
-                    // ═══════════════════════════════════════════════════
-                    // UNGÜLTIGE EINGABE
-                    // ═══════════════════════════════════════════════════
-                    default:
-                        Console.Clear();
-                        ConsoleHelper.PrintError("Ungültige Auswahl!");
-                        Console.WriteLine();
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.WriteLine("  💡 Verfügbare Optionen:");
-                        Console.WriteLine("     • Dashboard: 99");
-                        Console.WriteLine("     • KI-Insights: 98");
-                        Console.WriteLine("     • Schnellerfassung: 20");
-                        Console.WriteLine("     • Inventarverwaltung: 1, 4, 14");
-                        Console.WriteLine("     • Bestandsverwaltung: 11, 12, 13, 15");
-                        Console.WriteLine("     • Mitarbeiter: 2, 3");
-                        Console.WriteLine("     • Benutzer: 5, 6");
-                        Console.WriteLine("     • System: 7, 8, 9");
-                        Console.WriteLine("     • Extra: 16, 17, 18, 19");
-                        Console.WriteLine("     • Beenden: 0");
-                        Console.ResetColor();
-                        ConsoleHelper.PressKeyToContinue();
-                        break;
-                }
-            }
-
-            // Programmende protokollieren
+            // Abschluss
             LogManager.LogProgrammEnde();
+            Verabschiedung();
+        }
 
-            // Abschiedsnachricht
+        private static void Verabschiedung()
+        {
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine();
             Console.WriteLine("  ╔═══════════════════════════════════════════════════════════════════╗");
             Console.WriteLine("  ║                                                                   ║");
-            Console.WriteLine("  ║     ✓ VIELEN DANK FÜR DIE NUTZUNG!                               ║");
+            Console.WriteLine("  ║     ✓  VIELEN DANK FÜR DIE NUTZUNG!                              ║");
             Console.WriteLine("  ║                                                                   ║");
-            Console.WriteLine("  ║     📦 Inventarverwaltung - Professional Edition 2.0              ║");
-            Console.WriteLine("  ║                                                                   ║");
-            Console.WriteLine("  ║     ✨ Features:                                                  ║");
-            Console.WriteLine("  ║        • 📊 Premium Dashboard                                     ║");
-            Console.WriteLine("  ║        • 🤖 KI Engine 2.0 (Machine Learning)                      ║");
-            Console.WriteLine("  ║        • ⚡ Schnellerfassung (Ultra-Modus)                        ║");
-            Console.WriteLine("  ║        • 📤 Export (Excel/PDF)                                    ║");
-            Console.WriteLine("  ║        • 🔐 AES-256 Verschlüsselung                               ║");
-            Console.WriteLine("  ║        • 💬 Natural Language Processing                           ║");
-            Console.WriteLine("  ║        • 📈 Predictive Analytics                                  ║");
-            Console.WriteLine("  ║        • ⚠️  Anomalie-Erkennung                                   ║");
+            Console.WriteLine("  ║     📦 Inventarverwaltung  ·  🖨️  Hardware-Ausgabe                ║");
+            Console.WriteLine("  ║     🤖 KI-gestützt  ·  🔐 AES-256 verschlüsselt                   ║");
             Console.WriteLine("  ║                                                                   ║");
             Console.WriteLine("  ╚═══════════════════════════════════════════════════════════════════╝");
             Console.WriteLine();
             Console.ResetColor();
-
             System.Threading.Thread.Sleep(2000);
         }
     }

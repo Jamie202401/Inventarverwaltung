@@ -24,6 +24,7 @@ namespace Inventarverwaltung
             DrawSchnellerfassungSection();
             DrawInventorySection();
             DrawStockManagementSection();
+            DrawHardwareDruckSection();
             DrawEmployeeSection();
             DrawSystemSection();
             DrawExtraFunctions();
@@ -58,7 +59,8 @@ namespace Inventarverwaltung
 
             DrawMenuItems(new[]
             {
-                ("98", "🤖 KI-Insights & Analysen (Machine Learning)")
+                ("98", "🤖 KI-Insights & Analysen (Machine Learning)"),
+                ("97", "KI Dashbaord")
             }, ConsoleColor.Green);
 
             Console.ForegroundColor = ConsoleColor.Green;
@@ -177,6 +179,22 @@ namespace Inventarverwaltung
             }, ConsoleColor.DarkYellow);
 
             Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.WriteLine("  └" + new string('─', 68) + "┘");
+            Console.ResetColor();
+            Console.WriteLine();
+        }
+        private static void DrawHardwareDruckSection()
+        {
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.WriteLine("  ┌─ 🖨️  HARDWARE AUSGABE / DRUCK " + new string('─', 35) + "┐");
+            Console.ResetColor();
+
+            DrawMenuItems(new[]
+            {
+                ("21", "🖨️  Hardware-Ausgabe drucken & verwalten")
+            }, ConsoleColor.Magenta);
+
+            Console.ForegroundColor = ConsoleColor.Magenta;
             Console.WriteLine("  └" + new string('─', 68) + "┘");
             Console.ResetColor();
             Console.WriteLine();
