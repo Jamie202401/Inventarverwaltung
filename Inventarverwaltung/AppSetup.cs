@@ -145,6 +145,16 @@ namespace Inventarverwaltung
                 .Add(new BenutzerRolleZuweisenCommand())
                 .Add(new RolleLoeschenCommand())
                 );
+
+            router.Register(
+                new MenuGroup("12", "💾", "Backup",
+                              "Sicherung · Wiederherstellung · Verlauf",
+                              ConsoleColor.Yellow)
+                    .Add(new BackupErstellenCommand())           // Backup jetzt erstellen
+                    .Add(new BackupUebersichtCommand())  
+                    .Add(new BackupMasterPasswortCommand())
+                    // Alle Backups anzeigen & wiederherstellen
+            );
             return router;
         }
     }
