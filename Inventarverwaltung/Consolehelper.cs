@@ -3,20 +3,36 @@
 namespace Inventarverwaltung
 {
     /// <summary>
-    /// Hilfsfunktionen für die Konsolen-Ausgabe
+    /// Hilfsfunktionen für die Konsolen-Ausgabe.
+    /// SetupConsole() wird nach ExitFullscreen() aufgerufen —
+    /// Größe muss zur WindowManager-Konfiguration passen (160×50).
     /// </summary>
     public static class ConsoleHelper
     {
-        // Konsole einrichten
+        // Arbeits-Fensterbreite — muss mit WindowManager.ExitFullscreen() übereinstimmen
+        public const int WorkWidth = 160;
+        public const int WorkHeight = 50;
+
+        // ── Konsole einrichten ────────────────────────────────────
         public static void SetupConsole()
         {
-            Console.Title = "INVENTARVERWALTUNG";
-            Console.SetWindowSize(150, 60);
-            Console.SetBufferSize(150, 60);
+            Console.Title = "INVENTARVERWALTUNG  ·  KI Edition 2.0";
+
+            try
+            {
+                // Puffer ohne vertikale Scrollbar (exakt = Fenstergröße)
+                Console.SetBufferSize(WorkWidth, WorkHeight);
+                Console.SetWindowSize(WorkWidth, WorkHeight);
+            }
+            catch
+            {
+                // Auf Terminals die keine feste Größe unterstützen → still ignorieren
+            }
+
             Console.CursorVisible = true;
         }
 
-        // Hauptüberschrift anzeigen
+        // ── Hauptüberschrift ──────────────────────────────────────
         public static void PrintHeader()
         {
             Console.Clear();
@@ -27,7 +43,7 @@ namespace Inventarverwaltung
             Console.ResetColor();
         }
 
-        // Willkommensnachricht
+        // ── Willkommensnachricht ──────────────────────────────────
         public static void PrintWelcome()
         {
             Console.Clear();
@@ -40,13 +56,13 @@ namespace Inventarverwaltung
             System.Threading.Thread.Sleep(1500);
         }
 
-        // Menüpunkt anzeigen
+        // ── Menüpunkt ─────────────────────────────────────────────
         public static void PrintMenuItem(string key, string text)
         {
             Console.WriteLine($"  [{key}]  {text}");
         }
 
-        // Erfolgreiche Aktion (grün)
+        // ── Erfolg (grün) ─────────────────────────────────────────
         public static void PrintSuccess(string message)
         {
             Console.ForegroundColor = ConsoleColor.Green;
@@ -54,7 +70,7 @@ namespace Inventarverwaltung
             Console.ResetColor();
         }
 
-        // Fehlermeldung (rot)
+        // ── Fehler (rot) ──────────────────────────────────────────
         public static void PrintError(string message)
         {
             Console.ForegroundColor = ConsoleColor.Red;
@@ -62,7 +78,7 @@ namespace Inventarverwaltung
             Console.ResetColor();
         }
 
-        // Warnung (gelb)
+        // ── Warnung (gelb) ────────────────────────────────────────
         public static void PrintWarning(string message)
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
@@ -70,7 +86,7 @@ namespace Inventarverwaltung
             Console.ResetColor();
         }
 
-        // Info-Nachricht (blau)
+        // ── Info (cyan) ───────────────────────────────────────────
         public static void PrintInfo(string message)
         {
             Console.ForegroundColor = ConsoleColor.Cyan;
@@ -78,7 +94,7 @@ namespace Inventarverwaltung
             Console.ResetColor();
         }
 
-        // Abschnitt-Überschrift
+        // ── Abschnitt-Überschrift ─────────────────────────────────
         public static void PrintSectionHeader(string title, ConsoleColor color = ConsoleColor.Blue)
         {
             Console.ForegroundColor = color;
@@ -88,14 +104,14 @@ namespace Inventarverwaltung
             Console.ResetColor();
         }
 
-        // Eingabeaufforderung
+        // ── Eingabe ───────────────────────────────────────────────
         public static string GetInput(string prompt)
         {
             Console.Write($"\n▶ {prompt}: ");
             return Console.ReadLine()?.Trim();
         }
 
-        // Taste drücken zum Fortfahren
+        // ── Taste drücken ─────────────────────────────────────────
         public static void PressKeyToContinue()
         {
             Console.ForegroundColor = ConsoleColor.DarkGray;
@@ -104,25 +120,23 @@ namespace Inventarverwaltung
             Console.ReadKey(true);
         }
 
-        // Trennlinie
+        // ── Trennlinie ────────────────────────────────────────────
         public static void PrintSeparator()
         {
             Console.ForegroundColor = ConsoleColor.DarkGray;
-            Console.WriteLine(new string('─', 80));
+            Console.WriteLine(new string('─', WorkWidth - 2));
             Console.ResetColor();
         }
 
-        // Tabellenkopf
+        // ── Tabellenkopf ──────────────────────────────────────────
         public static void PrintTableHeader(params string[] headers)
         {
             Console.ForegroundColor = ConsoleColor.Gray;
             string header = "  ";
             foreach (var h in headers)
-            {
                 header += $"{h,-20} ";
-            }
             Console.WriteLine(header);
-            Console.WriteLine("  " + new string('─', 80));
+            Console.WriteLine("  " + new string('─', WorkWidth - 4));
             Console.ResetColor();
         }
     }
