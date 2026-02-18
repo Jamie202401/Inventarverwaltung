@@ -160,17 +160,31 @@ namespace Inventarverwaltung
 
     /// <summary>
     /// Repräsentiert einen Benutzer-Account (in Accounts.txt)
+    /// Passwort wird als SHA-256-Hash gespeichert — niemals im Klartext
     /// </summary>
     public class Accounts
     {
         public string Benutzername { get; set; }
         public Berechtigungen Berechtigung { get; set; }
 
+        /// <summary>SHA-256 Hash des Passworts (Base64). Leer = kein Passwort gesetzt.</summary>
+        public string PasswortHash { get; set; } = string.Empty;
+
         public Accounts(string benutzername, Berechtigungen berechtigung)
         {
             Benutzername = benutzername;
             Berechtigung = berechtigung;
         }
+
+        public Accounts(string benutzername, Berechtigungen berechtigung, string passwortHash)
+        {
+            Benutzername = benutzername;
+            Berechtigung = berechtigung;
+            PasswortHash = passwortHash ?? string.Empty;
+        }
+
+        /// <summary>Gibt true zurück wenn der Account noch kein Passwort hat</summary>
+        public bool HatKeinPasswort => string.IsNullOrEmpty(PasswortHash);
     }
 
     /// <summary>
