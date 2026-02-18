@@ -17,6 +17,8 @@ namespace Inventarverwaltung
     /// Alle Pfade laufen zentral über diese Klasse.
     /// Beim Start werden bestehende Dateien automatisch in die richtigen Ordner verschoben.
     /// </summary>
+    /// 
+
     public static class FileManager
     {
         // ─────────────────────────────────────────────────────────────────────
@@ -134,6 +136,8 @@ namespace Inventarverwaltung
                     string ext = Path.GetExtension(dateiName).ToLower();
                     if (ext == ".exe" || ext == ".dll" || ext == ".config" ||
                         ext == ".pdb" || ext == ".runtimeconfig")
+                        dateiName.EndsWith(".runtimeconfig.json", StringComparison.OrdinalIgnoreCase);
+                            dateiName.EndsWith(".deps.json", StringComparison.OrdinalIgnoreCase);
                         continue;
 
                     // Passendes Ziel suchen
