@@ -137,7 +137,7 @@ namespace Inventarverwaltung
             // ── Badge-Zeilen (Typewriter) ────────────────────────
             LnType("🤖  KI ENGINE 2.0  —  PREMIUM EDITION", C_YELLOW, 11);
             LnType("🔐  AES-256 VERSCHLÜSSELUNG  ·  VOLLSTÄNDIG OFFLINE", C_CYAN, 11);
-            LnType("📊  VERSION 2.0  ·  PRODUCTION BUILD  ·  © 2026  jh", C_GRAY, 11);
+            LnType("📊  VERSION 2.2.1  ·  PRODUCTION BUILD  ·  © 2026  jh", C_GRAY, 11);
 
             Blank();
             Ln(new string('═', BLOCK_W), C_BLUE);
