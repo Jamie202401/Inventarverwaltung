@@ -255,7 +255,6 @@ namespace Inventarverwaltung
             int startLeft = Console.CursorLeft;
             int startTop = Console.CursorTop;
 
-            // Eine Zeile Platz fuer den Hinweis
             Console.WriteLine();
             Console.SetCursorPosition(startLeft, startTop);
 
@@ -315,7 +314,6 @@ namespace Inventarverwaltung
                 }
             }
 
-            // Hinweis-Zeile loeschen
             Console.SetCursorPosition(0, startTop + 1);
             Console.Write(new string(' ', Console.WindowWidth > 0 ? Console.WindowWidth : 80));
             Console.SetCursorPosition(0, startTop + 1);
