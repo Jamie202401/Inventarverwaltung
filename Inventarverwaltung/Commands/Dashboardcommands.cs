@@ -13,6 +13,14 @@
         public void Execute() => DashboardManager.ZeigeDashboard();
     }
 
+    public class SystemDashboardenhanced : Core.ICommand
+    {
+        public string Key => "DASH_ENC";
+        public string Label => "Info-Dashboard";
+        public string Icon => "📊";
+        public void Execute() => DashboardEnhanced.ZeigeDashboardMenu();
+    }
+
     /// <summary>Öffnet das KI-Control-Center (aus Kidashboard.cs)</summary>
     public class KIDashboardCommand : Core.ICommand
     {
