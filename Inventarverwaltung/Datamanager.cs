@@ -415,27 +415,27 @@ namespace Inventarverwaltung
                 if (line.StartsWith("#") || line.StartsWith("=") || line.StartsWith("-") ||
                     line.StartsWith("╔") || line.StartsWith("║") || line.StartsWith("╚") ||
                     line.Contains("BENUTZER-DATENBANK"))
+                {
                     continue;
+                }
 
                 if (line.Contains("[DATEN]")) { inDataSection = true; continue; }
                 if (!inDataSection && !line.Contains(";")) continue;
 
+                // Kommentar-Teil entfernen (alles ab "  #")
+                string bereinigt = line;
+                int kommentarPos = line.IndexOf("  #");
+                if (kommentarPos >= 0)
+                    bereinigt = line.Substring(0, kommentarPos);
+
                 // Format: Benutzername;Berechtigung;PasswortHash
                 // Rückwärtskompatibel: Benutzername;Berechtigung (kein Hash)
-                string[] data = line.Split(';');
+                string[] data = bereinigt.Split(';');
                 if (data.Length < 2) continue;
 
                 string name = data[0].Trim();
                 string rolleText = data[1].Trim();
                 string hash = data.Length >= 3 ? data[2].Trim() : string.Empty;
-
-                // Kommentar-Anteil abschneiden (# ...) — gilt für rolleText UND hash
-                if (rolleText.Contains("#"))
-                    rolleText = rolleText.Substring(0, rolleText.IndexOf('#')).Trim();
-
-                // Hash: alles ab '#' abschneiden (z.B. "abc123  # 👑" → "abc123")
-                if (hash.Contains("#"))
-                    hash = hash.Substring(0, hash.IndexOf('#')).Trim();
 
                 if (!Enum.TryParse(rolleText, out Berechtigungen rolle))
                     rolle = Berechtigungen.User;
@@ -477,13 +477,14 @@ namespace Inventarverwaltung
             sb.AppendLine("[DATEN]");
             sb.AppendLine();
 
-            // Format: Benutzername;Berechtigung;PasswortHash
             foreach (var acc in Benutzer)
             {
                 string icon = acc.Berechtigung == Berechtigungen.Admin ? "👑" : "👤";
                 string hash = acc.PasswortHash ?? string.Empty;
-                // Kommentar als 4. Feld, damit der Hash sauber bleibt
-                sb.AppendLine($"{acc.Benutzername.PadRight(25)};{acc.Berechtigung.ToString().PadRight(10)};{hash};# {icon}");
+
+                // WICHTIG: PasswortHash muss mitgespeichert werden!
+                // Format: Benutzername;Berechtigung;PasswortHash  # Icon
+                sb.AppendLine($"{acc.Benutzername.PadRight(25)};{acc.Berechtigung.ToString().PadRight(10)};{hash}  # {icon}");
             }
 
             sb.AppendLine();
@@ -636,6 +637,7 @@ namespace Inventarverwaltung
                 LogManager.LogFehler("SaveLieferanten", ex.Message);
             }
         }
+
         public static (int gesamt, int leer, int niedrig, int ok) GetBestandsStatistik()
         {
             int gesamt = Inventar.Count;
