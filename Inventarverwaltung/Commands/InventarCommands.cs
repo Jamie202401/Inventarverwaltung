@@ -2,11 +2,6 @@
 {
     // ══════════════════════════════════════════════════════════════════
     // INVENTAR-COMMANDS
-    //
-    // Jede Klasse = genau eine Menü-Aktion.
-    // Neuen Punkt hinzufügen:
-    //   1. Klasse hier einfügen (Key, Label, Icon, Execute)
-    //   2. In AppSetup.cs der Inventar-Gruppe per .Add() hinzufügen
     // ══════════════════════════════════════════════════════════════════
 
     public class InventarNeuCommand : Core.ICommand
@@ -31,5 +26,13 @@
         public string Label => "Artikel-Details anzeigen";
         public string Icon => "🔍";
         public void Execute() => InventoryManager.ZeigeArtikelDetails();
+    }
+
+    public class ZuweisungsVerwaltungCommand : Core.ICommand
+    {
+        public string Key => "INV_ZUWEISUNG";
+        public string Label => "Zuweisungsverwaltung";
+        public string Icon => "🔄";
+        public void Execute() => ZuweisungsManager.ZeigeZuweisungsMenu();
     }
 }
