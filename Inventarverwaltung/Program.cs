@@ -4,26 +4,41 @@ namespace Inventarverwaltung
 {
     /// <summary>
     /// Einstiegspunkt des Programms.
-    /// Nur noch 5 Zeilen Logik — der Rest steckt in:
-    ///   AppSetup.cs  → Menükonfiguration
-    ///   Core/        → Router, UI, Interface
-    ///   Commands/    → Einzelne Aktionen
+    ///
+    /// Start-Sequenz:
+    ///   1. Vollbild aktivieren         (WindowManager)
+    ///   2. Ladebildschirm anzeigen     (LoadingScreen)
+    ///   3. Normales Fenster wiederherstellen (WindowManager)
+    ///   4. Anmeldung                   (AuthManager)
+    ///   5. Hauptschleife               (AppSetup → AppRouter)
+    ///   6. Abschluss-Screen
     /// </summary>
     class Program
     {
         static void Main(string[] args)
         {
+            // UTF-8 muss allererste Zeile sein (Emojis, Umlaute, Box-Zeichen)
             Console.OutputEncoding = System.Text.Encoding.UTF8;
+            Console.Title = "Inventarverwaltung";
 
-            LoadingScreen.Show();          // Ladebildschirm + alle Daten laden
-            AuthManager.Anmeldung();       // Benutzeranmeldung
-            ConsoleHelper.PrintWelcome();  // Willkommensbildschirm
+            // ── [1] Vollbild für Ladebildschirm ─────────────────────
+            WindowManager.EnterFullscreen();
 
-            // Router aufbauen und Hauptschleife starten.
+            // ── [2] Cinematic Loading Screen ────────────────────────
+            LoadingScreen.Show();
+
+            // ── [3] Zurück zum Normal-Fenster ────────────────────────
+            WindowManager.ExitFullscreen();
+
+            // ── [4] Anmeldung ────────────────────────────────────────
+            AuthManager.Anmeldung();
+            ConsoleHelper.PrintWelcome();
+
+            // ── [5] Hauptschleife ────────────────────────────────────
             // Kehrt zurück wenn der Benutzer [0] drückt.
             AppSetup.Build().Run();
 
-            // Abschluss
+            // ── [6] Abschluss ────────────────────────────────────────
             LogManager.LogProgrammEnde();
             Verabschiedung();
         }
