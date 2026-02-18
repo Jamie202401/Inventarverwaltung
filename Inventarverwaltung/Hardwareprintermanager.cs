@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Printing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -59,7 +57,7 @@ namespace Inventarverwaltung
     public static partial class HardwarePrintManager
     {
         // Dateipfad für die Druckhistorie (JSON)
-        private static readonly string HistorieDatei = "DruckHistorie.json";
+        private static string HistorieDatei => FileManager.DruckHistoriePfad;
 
         // Aktuelle Druckliste (wird vor dem Drucken bearbeitet)
         private static List<DruckArtikelPosition> _aktuelleArtikelListe = new List<DruckArtikelPosition>();
@@ -626,27 +624,35 @@ namespace Inventarverwaltung
             Console.ResetColor();
 
             var drucker = new List<string>();
-            try
-            {
-                foreach (string printer in PrinterSettings.InstalledPrinters)
-                {
-                    drucker.Add(printer);
-                }
-            }
-            catch
-            {
-                // Fallback wenn System.Drawing.Common nicht verfügbar
-                drucker.Add("Standard-Drucker");
-            }
-
-            // Standard-Drucker markieren
             string standardDrucker = "";
             try
             {
-                var defaultSettings = new PrinterSettings();
-                standardDrucker = defaultSettings.PrinterName;
+                // System.Drawing.Common per Reflection laden (optional, Windows-only)
+                var settingsType = Type.GetType("System.Drawing.Printing.PrinterSettings, System.Drawing.Common");
+                if (settingsType == null)
+                    settingsType = Type.GetType("System.Drawing.Printing.PrinterSettings, System.Drawing");
+
+                if (settingsType != null)
+                {
+                    var installedProp = settingsType.GetProperty("InstalledPrinters", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+                    if (installedProp != null)
+                    {
+                        var printerList = installedProp.GetValue(null) as System.Collections.IEnumerable;
+                        if (printerList != null)
+                            foreach (var p in printerList)
+                                drucker.Add(p.ToString());
+                    }
+
+                    var inst = Activator.CreateInstance(settingsType);
+                    var nameProp = settingsType.GetProperty("PrinterName");
+                    if (nameProp != null)
+                        standardDrucker = nameProp.GetValue(inst)?.ToString() ?? "";
+                }
             }
             catch { }
+
+            if (drucker.Count == 0)
+                drucker.Add("Standard-Drucker");
 
             if (drucker.Count == 0)
             {
@@ -683,7 +689,7 @@ namespace Inventarverwaltung
                 if (alsStandard)
                 {
                     // Drucker in Einstellungsdatei speichern
-                    File.WriteAllText("DruckEinstellungen.txt", _ausgewaehlterDrucker);
+                    File.WriteAllText(FileManager.DruckEinstellungenPfad, _ausgewaehlterDrucker);
                     ConsoleHelper.PrintInfo("Als Standarddrucker gespeichert.");
                 }
                 System.Threading.Thread.Sleep(1200);
@@ -704,8 +710,8 @@ namespace Inventarverwaltung
             if (string.IsNullOrEmpty(_ausgewaehlterDrucker))
             {
                 // Versuche gespeicherten Standarddrucker zu laden
-                if (File.Exists("DruckEinstellungen.txt"))
-                    _ausgewaehlterDrucker = File.ReadAllText("DruckEinstellungen.txt").Trim();
+                if (File.Exists(FileManager.DruckEinstellungenPfad))
+                    _ausgewaehlterDrucker = File.ReadAllText(FileManager.DruckEinstellungenPfad).Trim();
             }
 
             Console.WriteLine();
@@ -742,14 +748,7 @@ namespace Inventarverwaltung
             bool druckErfolgreich = false;
             try
             {
-                var printDoc = new PrintDocument();
-
-                if (!string.IsNullOrEmpty(_ausgewaehlterDrucker))
-                    printDoc.PrinterSettings.PrinterName = _ausgewaehlterDrucker;
-
-                printDoc.DocumentName = $"HW-Ausgabe_{_aktuelleMitarbeiterKuerzel}_{DateTime.Now:yyyyMMdd_HHmm}";
-                printDoc.PrintPage += (sender, e) => PrintPage(e, historieEintrag);
-                printDoc.Print();
+                DruckePerReflection(historieEintrag);
                 druckErfolgreich = true;
             }
             catch (Exception ex)
@@ -788,138 +787,329 @@ namespace Inventarverwaltung
         }
 
         /// <summary>
-        /// Erzeugt den Druckinhalt für eine Seite
+        /// Führt den Druckvorgang per Reflection aus (keine direkte System.Drawing-Abhängigkeit)
         /// </summary>
-        private static void PrintPage(PrintPageEventArgs e, DruckHistorieEintrag eintrag)
+        private static void DruckePerReflection(DruckHistorieEintrag eintrag)
         {
-            Graphics g = e.Graphics;
-            float yPos = 40;
-            float margin = 60;
-            float pageWidth = e.PageBounds.Width - margin * 2;
+            // Versuche System.Drawing.Common zu laden (Windows / NuGet-Paket)
+            Type printDocType = Type.GetType("System.Drawing.Printing.PrintDocument, System.Drawing.Common")
+                             ?? Type.GetType("System.Drawing.Printing.PrintDocument, System.Drawing");
 
-            // ── Titel ──────────────────────────────────────────────────
-            Font titelFont = new Font("Arial", 18, FontStyle.Bold);
-            Font subFont = new Font("Arial", 10, FontStyle.Regular);
-            Font boldFont = new Font("Arial", 10, FontStyle.Bold);
-            Font tableFont = new Font("Arial", 9, FontStyle.Regular);
-            Font smallFont = new Font("Arial", 8, FontStyle.Regular);
-            Font underlineFont = new Font("Arial", 10, FontStyle.Underline);
+            if (printDocType == null)
+                throw new InvalidOperationException(
+                    "System.Drawing ist nicht verfügbar. Bitte NuGet-Paket 'System.Drawing.Common' installieren.");
 
-            Brush schwarz = Brushes.Black;
-            Brush grau = Brushes.Gray;
+            dynamic printDoc = Activator.CreateInstance(printDocType);
 
-            // Doppelter Rahmen oben
-            g.DrawRectangle(Pens.Black, margin, yPos, pageWidth, 60);
-            g.DrawRectangle(Pens.Black, margin + 2, yPos + 2, pageWidth - 4, 56);
+            if (!string.IsNullOrEmpty(_ausgewaehlterDrucker))
+            {
+                dynamic ps = printDoc.PrinterSettings;
+                ps.PrinterName = _ausgewaehlterDrucker;
+            }
 
-            // Titel
-            SizeF titelSize = g.MeasureString("AUSGABE HARDWARE", titelFont);
-            g.DrawString("AUSGABE HARDWARE", titelFont, schwarz, margin + (pageWidth - titelSize.Width) / 2, yPos + 12);
-            yPos += 75;
+            printDoc.DocumentName =
+                $"HW-Ausgabe_{_aktuelleMitarbeiterKuerzel}_{DateTime.Now:yyyyMMdd_HHmm}";
 
-            // ── Info-Block ─────────────────────────────────────────────
-            g.DrawString($"Datum:", boldFont, schwarz, margin, yPos);
-            g.DrawString(eintrag.Datum.ToString("dd.MM.yyyy"), subFont, schwarz, margin + 120, yPos);
+            printDoc.PrintPage += new System.Drawing.Printing.PrintPageEventHandler(
+                (sender, e) => PrintPage(e, eintrag));
 
-            g.DrawString($"Mitarbeiter-Kürzel:", boldFont, schwarz, margin + 300, yPos);
-            g.DrawString(eintrag.MitarbeiterKuerzel, subFont, schwarz, margin + 460, yPos);
-            yPos += 20;
+            printDoc.Print();
+        }
 
-            g.DrawString($"Mitarbeiter:", boldFont, schwarz, margin, yPos);
-            g.DrawString(eintrag.MitarbeiterName, subFont, schwarz, margin + 120, yPos);
+        /// <summary>
+        /// Erzeugt professionellen DIN-A4-Druckinhalt (vollständig neu gestaltet)
+        /// </summary>
+        private static void PrintPage(System.Drawing.Printing.PrintPageEventArgs e,
+                                      DruckHistorieEintrag eintrag)
+        {
+            var g = e.Graphics;
+            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
 
-            g.DrawString($"Ausgestellt von:", boldFont, schwarz, margin + 300, yPos);
-            g.DrawString(eintrag.GedrucktVon, subFont, schwarz, margin + 460, yPos);
-            yPos += 10;
+            // ── Seitenmaße (DIN A4 bei 100 dpi ≈ 827 × 1169) ─────────
+            float margin = 50f;
+            float pageW = e.MarginBounds.Width;   // nutzbarer Bereich
+            float pageLeft = e.MarginBounds.Left;
+            float pageTop = e.MarginBounds.Top;
+            float yPos = pageTop;
 
-            // Trennlinie
-            g.DrawLine(Pens.Black, margin, yPos, margin + pageWidth, yPos);
-            yPos += 15;
+            // ── Farben ─────────────────────────────────────────────────
+            var colDark = System.Drawing.Color.FromArgb(30, 30, 45);   // Fast-Schwarz
+            var colAccent = System.Drawing.Color.FromArgb(25, 90, 160);   // Dunkelblau
+            var colAccentLt = System.Drawing.Color.FromArgb(210, 225, 245);  // Hellblau
+            var colGray = System.Drawing.Color.FromArgb(110, 110, 110);
+            var colLightGray = System.Drawing.Color.FromArgb(245, 246, 248);
+            var colWhite = System.Drawing.Color.White;
+            var colBorder = System.Drawing.Color.FromArgb(180, 190, 205);
 
-            // ── Artikel-Tabelle ────────────────────────────────────────
-            float col0 = margin;           // Nr.
-            float col1 = margin + 35;      // Inv-Nr
-            float col2 = margin + 115;     // Gerätename
-            float col3 = margin + 340;     // Seriennummer
-            float col4 = margin + 490;     // Anzahl
-            float col5 = margin + 540;     // Bemerkung
+            var brushDark = new System.Drawing.SolidBrush(colDark);
+            var brushAccent = new System.Drawing.SolidBrush(colAccent);
+            var brushAccentLt = new System.Drawing.SolidBrush(colAccentLt);
+            var brushGray = new System.Drawing.SolidBrush(colGray);
+            var brushWhite = new System.Drawing.SolidBrush(colWhite);
+            var brushLight = new System.Drawing.SolidBrush(colLightGray);
+            var penAccent = new System.Drawing.Pen(colAccent, 1.5f);
+            var penBorder = new System.Drawing.Pen(colBorder, 0.8f);
+            var penDark = new System.Drawing.Pen(colDark, 1.0f);
+            var penThin = new System.Drawing.Pen(colBorder, 0.5f);
+
+            // ── Fonts ──────────────────────────────────────────────────
+            var fntKopf = new System.Drawing.Font("Arial", 20, System.Drawing.FontStyle.Bold);
+            var fntSubKopf = new System.Drawing.Font("Arial", 9, System.Drawing.FontStyle.Regular);
+            var fntSektTitel = new System.Drawing.Font("Arial", 8, System.Drawing.FontStyle.Bold);
+            var fntLabel = new System.Drawing.Font("Arial", 8, System.Drawing.FontStyle.Bold);
+            var fntWert = new System.Drawing.Font("Arial", 8, System.Drawing.FontStyle.Regular);
+            var fntTblHead = new System.Drawing.Font("Arial", 8, System.Drawing.FontStyle.Bold);
+            var fntTbl = new System.Drawing.Font("Arial", 8, System.Drawing.FontStyle.Regular);
+            var fntSmall = new System.Drawing.Font("Arial", 7, System.Drawing.FontStyle.Regular);
+            var fntSmallBold = new System.Drawing.Font("Arial", 7, System.Drawing.FontStyle.Bold);
+
+            var sfLeft = new System.Drawing.StringFormat { Alignment = System.Drawing.StringAlignment.Near, LineAlignment = System.Drawing.StringAlignment.Center };
+            var sfCenter = new System.Drawing.StringFormat { Alignment = System.Drawing.StringAlignment.Center, LineAlignment = System.Drawing.StringAlignment.Center };
+            var sfRight = new System.Drawing.StringFormat { Alignment = System.Drawing.StringAlignment.Far, LineAlignment = System.Drawing.StringAlignment.Center };
+
+            // ════════════════════════════════════════════════════════════
+            // [1] KOPFZEILE — blauer Balken mit Titel
+            // ════════════════════════════════════════════════════════════
+            float headerH = 70f;
+            var headerRect = new System.Drawing.RectangleF(pageLeft, yPos, pageW, headerH);
+            g.FillRectangle(brushAccent, headerRect);
+
+            // Titel linksbündig
+            var titleRect = new System.Drawing.RectangleF(pageLeft + 16, yPos + 8, pageW * 0.65f, headerH - 10);
+            g.DrawString("HARDWARE-AUSGABE-BELEG", fntKopf, brushWhite, titleRect, sfLeft);
+
+            // Rechts: Dok-ID + Datum
+            var idRect = new System.Drawing.RectangleF(pageLeft + pageW * 0.65f, yPos + 10, pageW * 0.35f - 10, 22);
+            g.DrawString($"Dok.-ID:  {eintrag.Id}", fntSubKopf, brushAccentLt, idRect, sfRight);
+            var datRect = new System.Drawing.RectangleF(pageLeft + pageW * 0.65f, yPos + 30, pageW * 0.35f - 10, 20);
+            g.DrawString($"Datum:    {eintrag.Datum:dd.MM.yyyy  HH:mm}", fntSubKopf, brushAccentLt, datRect, sfRight);
+            var statRect = new System.Drawing.RectangleF(pageLeft + pageW * 0.65f, yPos + 48, pageW * 0.35f - 10, 18);
+            g.DrawString($"Status:   {eintrag.Status}", fntSubKopf, brushAccentLt, statRect, sfRight);
+
+            // Unterrand-Akzentlinie
+            g.FillRectangle(new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(255, 190, 30)),
+                pageLeft, yPos + headerH - 4, pageW, 4);
+            yPos += headerH + 14;
+
+            // ════════════════════════════════════════════════════════════
+            // [2] INFO-BLOCK — zwei Spalten in abgerundetem Rahmen
+            // ════════════════════════════════════════════════════════════
+            float infoH = 90f;
+            float colHalf = (pageW - 12) / 2f;
+
+            // Linke Info-Box
+            var boxL = new System.Drawing.RectangleF(pageLeft, yPos, colHalf, infoH);
+            g.FillRectangle(brushLight, boxL);
+            g.DrawRectangle(penBorder, boxL.X, boxL.Y, boxL.Width, boxL.Height);
+
+            // Linker Box-Header
+            g.FillRectangle(brushAccentLt, pageLeft, yPos, colHalf, 20);
+            g.DrawString("MITARBEITER", fntSektTitel, brushAccent,
+                new System.Drawing.RectangleF(pageLeft + 8, yPos + 1, colHalf - 10, 18), sfLeft);
+
+            float infoY = yPos + 26;
+            float lbl1 = pageLeft + 8;
+            float val1 = pageLeft + 115;
+
+            void InfoZeile(float x, float xv, float y, string lbl, string val, System.Drawing.Font fLbl, System.Drawing.Brush bVal)
+            {
+                g.DrawString(lbl, fLbl, brushGray,
+                    new System.Drawing.RectangleF(x, y, xv - x - 4, 18), sfLeft);
+                g.DrawString(val, fntWert, bVal,
+                    new System.Drawing.RectangleF(xv, y, colHalf - (xv - pageLeft) - 8, 18), sfLeft);
+            }
+
+            InfoZeile(lbl1, val1, infoY, "Mitarbeiter:", eintrag.MitarbeiterName, fntLabel, brushDark);
+            InfoZeile(lbl1, val1, infoY + 20, "Kürzel:", eintrag.MitarbeiterKuerzel, fntLabel, brushDark);
+            InfoZeile(lbl1, val1, infoY + 40, "Ausgestellt von:", eintrag.GedrucktVon, fntLabel, brushGray);
+            InfoZeile(lbl1, val1, infoY + 58, "Drucker:", eintrag.DruckerName, fntLabel, brushGray);
+
+            // Rechte Info-Box
+            float rx = pageLeft + colHalf + 12;
+            var boxR = new System.Drawing.RectangleF(rx, yPos, colHalf, infoH);
+            g.FillRectangle(brushLight, boxR);
+            g.DrawRectangle(penBorder, boxR.X, boxR.Y, boxR.Width, boxR.Height);
+
+            g.FillRectangle(brushAccentLt, rx, yPos, colHalf, 20);
+            g.DrawString("AUSGABE-DETAILS", fntSektTitel, brushAccent,
+                new System.Drawing.RectangleF(rx + 8, yPos + 1, colHalf - 10, 18), sfLeft);
+
+            float lbl2 = rx + 8;
+            float val2 = rx + 120;
+
+            InfoZeile(lbl2, val2, infoY, "Datum:", eintrag.Datum.ToString("dd.MM.yyyy"), fntLabel, brushDark);
+            InfoZeile(lbl2, val2, infoY + 20, "Uhrzeit:", eintrag.Datum.ToString("HH:mm") + " Uhr", fntLabel, brushDark);
+            InfoZeile(lbl2, val2, infoY + 40, "Status:", eintrag.Status, fntLabel, brushDark);
+            InfoZeile(lbl2, val2, infoY + 58, "Artikel gesamt:", eintrag.Artikel.Count.ToString() + " Stk.", fntLabel, brushDark);
+
+            yPos += infoH + 18;
+
+            // ════════════════════════════════════════════════════════════
+            // [3] ARTIKEL-TABELLE
+            // ════════════════════════════════════════════════════════════
+
+            // Sektion-Überschrift
+            g.FillRectangle(brushAccent,
+                new System.Drawing.RectangleF(pageLeft, yPos, pageW, 22));
+            g.DrawString("AUSGEGEBENE ARTIKEL", fntSektTitel, brushWhite,
+                new System.Drawing.RectangleF(pageLeft + 8, yPos + 2, pageW - 16, 18), sfLeft);
+            yPos += 22;
+
+            // Spalten-Definitionen (Breiten relativ zu pageW)
+            float cNr = 28f;
+            float cInv = 90f;
+            float cName = pageW - cNr - cInv - 130f - 40f - 110f;  // flexibel
+            float cSerie = 130f;
+            float cAnz = 40f;
+            float cBem = 110f;
+            float rowH = 22f;
+
+            float xNr = pageLeft;
+            float xInv = xNr + cNr;
+            float xName = xInv + cInv;
+            float xSerie = xName + cName;
+            float xAnz = xSerie + cSerie;
+            float xBem = xAnz + cAnz;
 
             // Tabellenkopf
-            g.FillRectangle(Brushes.LightGray, margin, yPos, pageWidth, 18);
-            g.DrawRectangle(Pens.Black, margin, yPos, pageWidth, 18);
-            g.DrawString("Nr.", boldFont, schwarz, col0 + 2, yPos + 3);
-            g.DrawString("Inventar-Nr.", boldFont, schwarz, col1, yPos + 3);
-            g.DrawString("Gerätename", boldFont, schwarz, col2, yPos + 3);
-            g.DrawString("Seriennummer", boldFont, schwarz, col3, yPos + 3);
-            g.DrawString("Anz.", boldFont, schwarz, col4, yPos + 3);
-            g.DrawString("Bemerkung", boldFont, schwarz, col5, yPos + 3);
-            yPos += 20;
+            float thY = yPos;
+            g.FillRectangle(new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(50, 65, 90)),
+                pageLeft, thY, pageW, rowH);
 
-            // Artikel-Zeilen
+            void TblHead(float x, float w, string txt)
+                => g.DrawString(txt, fntTblHead, brushWhite,
+                    new System.Drawing.RectangleF(x + 4, thY + 2, w - 6, rowH - 4), sfLeft);
+
+            TblHead(xNr, cNr, "#");
+            TblHead(xInv, cInv, "Inventar-Nr.");
+            TblHead(xName, cName, "Gerätename");
+            TblHead(xSerie, cSerie, "Seriennummer");
+            TblHead(xAnz, cAnz, "Anz.");
+            TblHead(xBem, cBem, "Bemerkung");
+
+            // Vertikale Spaltenlinien im Header
+            var penWhiteThin = new System.Drawing.Pen(System.Drawing.Color.FromArgb(80, 255, 255, 255), 0.5f);
+            foreach (float cx in new[] { xInv, xName, xSerie, xAnz, xBem })
+                g.DrawLine(penWhiteThin, cx, thY, cx, thY + rowH);
+
+            yPos += rowH;
+
+            // Zeilen
             for (int i = 0; i < eintrag.Artikel.Count; i++)
             {
                 var a = eintrag.Artikel[i];
+                var rowBg = (i % 2 == 0)
+                    ? brushWhite
+                    : brushLight;
 
-                if (i % 2 == 0)
-                    g.FillRectangle(new SolidBrush(Color.FromArgb(248, 248, 248)), margin, yPos, pageWidth, 16);
+                var rowRect = new System.Drawing.RectangleF(pageLeft, yPos, pageW, rowH);
+                g.FillRectangle(rowBg, rowRect);
+                g.DrawRectangle(penThin, rowRect.X, rowRect.Y, rowRect.Width, rowRect.Height);
 
-                g.DrawRectangle(Pens.LightGray, margin, yPos, pageWidth, 16);
-                g.DrawString($"{i + 1}", tableFont, schwarz, col0 + 2, yPos + 2);
-                g.DrawString(a.InvNmr, tableFont, schwarz, col1, yPos + 2);
+                // Vertikale Spaltenlinien
+                foreach (float cx in new[] { xInv, xName, xSerie, xAnz, xBem })
+                    g.DrawLine(penBorder, cx, yPos, cx, yPos + rowH);
 
-                // Name ggf. kürzen
-                string name = a.GeraeteName;
-                while (g.MeasureString(name, tableFont).Width > (col3 - col2 - 5) && name.Length > 0)
-                    name = name.Substring(0, name.Length - 1);
-                if (name != a.GeraeteName) name += "…";
-                g.DrawString(name, tableFont, schwarz, col2, yPos + 2);
+                // Nr. (zentriert)
+                g.DrawString($"{i + 1}", fntTbl, brushGray,
+                    new System.Drawing.RectangleF(xNr, yPos, cNr, rowH), sfCenter);
 
-                g.DrawString(a.SerienNummer ?? "-", tableFont, schwarz, col3, yPos + 2);
-                g.DrawString(a.Anzahl.ToString(), tableFont, schwarz, col4, yPos + 2);
-                g.DrawString(a.Bemerkung ?? "-", tableFont, grau, col5, yPos + 2);
-                yPos += 17;
+                // Inventar-Nr.
+                g.DrawString(a.InvNmr ?? "-", fntTbl, brushDark,
+                    new System.Drawing.RectangleF(xInv + 4, yPos, cInv - 6, rowH), sfLeft);
+
+                // Gerätename — ggf. kürzen
+                string gname = a.GeraeteName ?? "-";
+                var measRect = new System.Drawing.RectangleF(xName + 4, yPos, cName - 8, rowH);
+                while (gname.Length > 1 && g.MeasureString(gname + "…", fntTbl).Width > cName - 10)
+                    gname = gname.Substring(0, gname.Length - 1);
+                if (gname != (a.GeraeteName ?? "-")) gname += "…";
+                g.DrawString(gname, fntTbl, brushDark, measRect, sfLeft);
+
+                // Seriennummer
+                g.DrawString(a.SerienNummer ?? "—", fntTbl, brushGray,
+                    new System.Drawing.RectangleF(xSerie + 4, yPos, cSerie - 6, rowH), sfLeft);
+
+                // Anzahl (zentriert)
+                g.DrawString(a.Anzahl.ToString(), fntTbl, brushDark,
+                    new System.Drawing.RectangleF(xAnz, yPos, cAnz, rowH), sfCenter);
+
+                // Bemerkung
+                string bem = a.Bemerkung ?? "—";
+                while (bem.Length > 1 && g.MeasureString(bem + "…", fntTbl).Width > cBem - 10)
+                    bem = bem.Substring(0, bem.Length - 1);
+                if (bem != (a.Bemerkung ?? "—")) bem += "…";
+                g.DrawString(bem, fntTbl, brushGray,
+                    new System.Drawing.RectangleF(xBem + 4, yPos, cBem - 6, rowH), sfLeft);
+
+                yPos += rowH;
             }
 
-            // Tabellen-Abschluss
-            g.DrawLine(Pens.Black, margin, yPos, margin + pageWidth, yPos);
-            yPos += 5;
-            g.DrawString($"Gesamt: {eintrag.Artikel.Count} Artikel", smallFont, grau, margin, yPos);
+            // Abschluss-Zeile Tabelle
+            g.FillRectangle(brushAccentLt,
+                new System.Drawing.RectangleF(pageLeft, yPos, pageW, 20));
+            g.DrawRectangle(penAccent, pageLeft, yPos, pageW, 20);
+            g.DrawString($"Gesamt: {eintrag.Artikel.Count} Artikel", fntSmallBold, brushAccent,
+                new System.Drawing.RectangleF(pageLeft + 8, yPos + 2, pageW - 16, 16), sfLeft);
             yPos += 30;
 
-            // ── Unterschriftsfeld ─────────────────────────────────────
-            g.DrawLine(Pens.Black, margin, yPos, margin + pageWidth, yPos);
-            yPos += 5;
-
-            // Mitarbeiter-Unterschrift
-            float sigBoxWidth = (pageWidth - 40) / 2;
+            // ════════════════════════════════════════════════════════════
+            // [4] UNTERSCHRIFTEN — nebeneinander in Boxen
+            // ════════════════════════════════════════════════════════════
             yPos += 10;
-            g.DrawString("Unterschrift Mitarbeiter:", boldFont, schwarz, margin, yPos);
-            yPos += 35;
-            g.DrawLine(Pens.Black, margin, yPos, margin + sigBoxWidth, yPos);
-            g.DrawString(eintrag.MitarbeiterName, smallFont, grau, margin, yPos + 3);
-            g.DrawString(eintrag.Datum.ToString("dd.MM.yyyy"), smallFont, grau, margin + sigBoxWidth - 70, yPos + 3);
-            yPos += 25;
+            float sigH = 90f;
+            float sigW = (pageW - 16) / 2f;
+            float sigGap = 16f;
 
-            // Ausgabe-Person-Unterschrift
-            g.DrawString("Unterschrift Ausgabe-Person:", boldFont, schwarz, margin, yPos);
-            yPos += 35;
-            g.DrawLine(Pens.Black, margin, yPos, margin + sigBoxWidth, yPos);
-            g.DrawString(eintrag.GedrucktVon, smallFont, grau, margin, yPos + 3);
-            g.DrawString(eintrag.Datum.ToString("dd.MM.yyyy"), smallFont, grau, margin + sigBoxWidth - 70, yPos + 3);
-            yPos += 30;
+            void SignaturBox(float sx, string titel, string name, string datum)
+            {
+                var bx = new System.Drawing.RectangleF(sx, yPos, sigW, sigH);
+                g.FillRectangle(brushLight, bx);
+                g.DrawRectangle(penBorder, bx.X, bx.Y, bx.Width, bx.Height);
 
-            // ── Fußzeile ───────────────────────────────────────────────
-            g.DrawLine(Pens.LightGray, margin, e.PageBounds.Height - 50, margin + pageWidth, e.PageBounds.Height - 50);
-            g.DrawString($"Inventarverwaltung | Dok.-ID: {eintrag.Id} | Gedruckt: {eintrag.Datum:dd.MM.yyyy HH:mm}",
-                smallFont, grau, margin, e.PageBounds.Height - 42);
+                // Box-Titel
+                g.FillRectangle(brushAccentLt, sx, yPos, sigW, 20);
+                g.DrawString(titel, fntSektTitel, brushAccent,
+                    new System.Drawing.RectangleF(sx + 8, yPos + 2, sigW - 12, 16), sfLeft);
 
-            // Ressourcen freigeben
-            titelFont.Dispose();
-            subFont.Dispose();
-            boldFont.Dispose();
-            tableFont.Dispose();
-            smallFont.Dispose();
-            underlineFont.Dispose();
+                // Unterschrift-Linie
+                float lineY = yPos + 65;
+                g.DrawLine(new System.Drawing.Pen(colDark, 1f), sx + 14, lineY, sx + sigW - 14, lineY);
+
+                // Name + Datum darunter
+                g.DrawString(name, fntSmall, brushGray,
+                    new System.Drawing.RectangleF(sx + 14, lineY + 3, sigW * 0.55f, 16), sfLeft);
+                g.DrawString(datum, fntSmall, brushGray,
+                    new System.Drawing.RectangleF(sx + 14, lineY + 3, sigW - 20, 16), sfRight);
+            }
+
+            SignaturBox(pageLeft, "UNTERSCHRIFT — MITARBEITER", eintrag.MitarbeiterName, eintrag.Datum.ToString("dd.MM.yyyy"));
+            SignaturBox(pageLeft + sigW + sigGap, "UNTERSCHRIFT — AUSGABE-PERSON", eintrag.GedrucktVon, eintrag.Datum.ToString("dd.MM.yyyy"));
+
+            yPos += sigH;
+
+            // ════════════════════════════════════════════════════════════
+            // [5] FUSSZEILE
+            // ════════════════════════════════════════════════════════════
+            float footY = e.PageBounds.Height - e.MarginBounds.Bottom + e.MarginBounds.Top - 28;
+            // Sichere Fußzeile am unteren Rand
+            footY = e.PageBounds.Height - 40;
+
+            g.FillRectangle(brushAccent,
+                new System.Drawing.RectangleF(pageLeft, footY, pageW, 24));
+            g.DrawString(
+                $"Inventarverwaltung  |  Dok.-ID: {eintrag.Id}  |  Gedruckt am: {eintrag.Datum:dd.MM.yyyy HH:mm}  |  Drucker: {eintrag.DruckerName}",
+                fntSmall, brushAccentLt,
+                new System.Drawing.RectangleF(pageLeft + 8, footY + 4, pageW - 16, 16), sfLeft);
+
+            // ── Ressourcen freigeben ───────────────────────────────────
+            foreach (var obj in new System.IDisposable[] {
+                brushDark, brushAccent, brushAccentLt, brushGray, brushWhite, brushLight,
+                penAccent, penBorder, penDark, penThin, penWhiteThin,
+                fntKopf, fntSubKopf, fntSektTitel, fntLabel, fntWert,
+                fntTblHead, fntTbl, fntSmall, fntSmallBold, sfLeft, sfCenter, sfRight })
+                obj.Dispose();
         }
 
         // ═══════════════════════════════════════════════════════════════
