@@ -38,6 +38,7 @@ namespace Inventarverwaltung
                               "Übersicht · KI-Engine · Insights",
                               ConsoleColor.Cyan)
                     .Add(new SystemDashboardCommand())       // System-Kennzahlen
+                    .Add(new SystemDashboardenhanced()) 
                     .Add(new KIDashboardCommand())           // KI Control-Center
                     .Add(new KIEngineInsightsCommand())      // KI-Engine Analyse
                     .Add(new KIEngineInitCommand())          // KI neu laden
@@ -51,6 +52,7 @@ namespace Inventarverwaltung
                     .Add(new InventarNeuCommand())
                     .Add(new InventarZeigeCommand())
                     .Add(new InventarDetailCommand())
+                    .Add(new ZuweisungsVerwaltungCommand())
             );
 
             // ── [3] SCHNELLERFASSUNG ────────────────────────────────────────
@@ -155,6 +157,13 @@ namespace Inventarverwaltung
                     .Add(new BackupMasterPasswortCommand())
                     // Alle Backups anzeigen & wiederherstellen
             );
+            router.Register(
+                new MenuGroup("13", "  ℹ️ ", "Infos & Extras",
+                              "Notizen . Bugs . Vorschläge . Version",
+                               ConsoleColor.Cyan)
+                .Add(new InfosMenuCommand())
+                );
+
             return router;
         }
     }
