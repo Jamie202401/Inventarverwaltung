@@ -11,7 +11,7 @@ namespace Inventarverwaltung
     /// </summary>
     public static class LogManager
     {
-        private static string logFilePath = "System_Log.enc";  // .enc für encrypted
+        private static string logFilePath => FileManager.LogPfad;  // Pfad zentral aus FileManager
         private static string aktuellerBenutzer = "System";
 
         /// <summary>
