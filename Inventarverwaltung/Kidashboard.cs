@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing.Text;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading;
+using System.Timers;
 
 namespace Inventarverwaltung
 {
@@ -18,6 +22,9 @@ namespace Inventarverwaltung
         private static KIStatistiken stat;
         private static readonly Random rnd = new Random();
 
+        private static int _uhrzeitRow = 1;
+        private static bool _uhrzeitLauft = false;
+        private static Thread _uhrzeitThread;
         // ═══════════════════════════════════════════════════
         // FARBEN
         // ═══════════════════════════════════════════════════
@@ -43,6 +50,7 @@ namespace Inventarverwaltung
             {
                 ZeigeHauptDashboard();
                 string wahl = ConsoleHelper.GetInput("▶ Auswahl");
+                StopLiveUhr();
                 switch (wahl)
                 {
                     case "1": MenuEinstellungen(); break;
@@ -105,7 +113,7 @@ namespace Inventarverwaltung
                     Console.ForegroundColor = colors[rnd.Next(colors.Length)];
                     Console.Write(chars[rnd.Next(chars.Length)]);
                 }
-                Thread.Sleep(38);
+                Thread.Sleep(10);
             }
             Console.ResetColor();
         }
@@ -156,11 +164,11 @@ namespace Inventarverwaltung
             for (int i = 0; i < logo.Length; i++)
             {
                 Console.ForegroundColor = grad[i % grad.Length];
-                foreach (char c in "  " + logo[i]) { Console.Write(c); Thread.Sleep(2); }
+                foreach (char c in "  " + logo[i]) { Console.Write(c); Thread.Sleep(1); }
                 Console.WriteLine();
             }
             Console.ResetColor();
-            Thread.Sleep(150);
+            Thread.Sleep(40);
         }
 
         private static void PhaseBootSeq()
@@ -293,6 +301,40 @@ namespace Inventarverwaltung
                 Thread.Sleep(230);
             }
             Console.WriteLine();
+
+        }
+        private static void StartLiveUhr()
+        {
+            StopLiveUhr();
+            _uhrzeitLauft = true;
+            _uhrzeitThread = new Thread(() =>
+            {
+                while (_uhrzeitLauft)
+                {
+                    try
+                    {
+                        string zeit = DateTime.Now.ToString("HH:mm:ss");
+                        int origTop = Console.CursorTop;
+                        int origLeft = Console.CursorLeft;
+                        Console.CursorVisible = false;
+                        Console.SetCursorPosition(7, _uhrzeitRow); // 7 = nach "  ║ 🕐 "
+                        Console.ForegroundColor = ConsoleColor.DarkGray;
+                        Console.Write(zeit);
+                        Console.SetCursorPosition(origLeft, origTop);
+                        Console.ResetColor();
+                    }
+                    catch { }
+                    Thread.Sleep(1000);
+                }
+            });
+            _uhrzeitThread.IsBackground = true;
+            _uhrzeitThread.Start();
+        }
+
+        private static void StopLiveUhr()
+        {
+            _uhrzeitLauft = false;
+            _uhrzeitThread?.Join(200);
         }
 
         // ═══════════════════════════════════════════════════
@@ -314,12 +356,16 @@ namespace Inventarverwaltung
             DashLiveMetriken(w);
             Console.WriteLine();
             DashAktionen(w);
+
+            _uhrzeitRow = 1;
+            StartLiveUhr();
         }
 
-        // ── HEADER ──
+
         private static void DashHeader(int w)
         {
-            string zeit = DateTime.Now.ToString("HH:mm:ss");
+            // string zeit = DateTime.Now.ToString("HH:mm:ss");
+            StartLiveUhr();
             string datum = DateTime.Now.ToString("dd.MM.yyyy");
             ConsoleColor mc = cfg.Modus == KIModus.Performance ? CS
                             : cfg.Modus == KIModus.Eco ? CA : CD;
@@ -328,7 +374,7 @@ namespace Inventarverwaltung
             Console.ForegroundColor = ConsoleColor.DarkCyan;
             Console.WriteLine($"  ╔{new string('═', w)}╗");
             Console.Write("  ║");
-            Console.ForegroundColor = CD; Console.Write($" 🕐 {zeit}  {datum}");
+            Console.ForegroundColor = CD; Console.Write($" 🕐 {StartLiveUhr}  {datum}");
             string mid = "🤖  KI CONTROL CENTER 3.0  🤖";
             string tag = $"[{cfg.Modus.ToString().ToUpper()}]";
             int midW = w - 22 - tag.Length - 2;
