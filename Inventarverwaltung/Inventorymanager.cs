@@ -190,7 +190,7 @@ namespace Inventarverwaltung
             // ═══════════════════════════════════════════════════════════════
             // 5. ANSCHAFFUNGSDATUM (NEU!)
             // ═══════════════════════════════════════════════════════════════
-            DateTime anschaffungsdatum;
+            DateTime anschaffungsdatum = DateTime.Now;
             while (true)
             {
                 string datumEingabe = ConsoleHelper.GetInput("Anschaffungsdatum (TT.MM.JJJJ oder Enter für heute)");
@@ -383,7 +383,75 @@ namespace Inventarverwaltung
             }
 
             // ═══════════════════════════════════════════════════════════════
-            // 10. MITARBEITER ZUWEISEN
+            // 10. RECHNUNGSDATUM (NEU!)
+            // ═══════════════════════════════════════════════════════════════
+            DateTime rechnungsdatum = anschaffungsdatum;
+            while (true)
+            {
+                string eingabe = ConsoleHelper.GetInput("Rechnungsdatum (TT.MM.JJJJ oder Enter für Anschaffungsdatum)");
+
+                if (string.IsNullOrWhiteSpace(eingabe))
+                {
+                    rechnungsdatum = anschaffungsdatum;
+                    ConsoleHelper.PrintSuccess($"✓ Rechnungsdatum: {rechnungsdatum:dd.MM.yyyy} (= Anschaffungsdatum)");
+                    break;
+                }
+
+                if (DateTime.TryParseExact(eingabe, "dd.MM.yyyy", CultureInfo.InvariantCulture,
+                    DateTimeStyles.None, out rechnungsdatum))
+                {
+                    ConsoleHelper.PrintSuccess($"✓ Rechnungsdatum: {rechnungsdatum:dd.MM.yyyy}");
+                    break;
+                }
+                else
+                {
+                    ConsoleHelper.PrintError("Ungültiges Datumsformat! Verwenden Sie TT.MM.JJJJ (z.B. 15.01.2025)");
+                }
+            }
+
+            // ═══════════════════════════════════════════════════════════════
+            // 11. GARANTIE BIS (NEU!)
+            // ═══════════════════════════════════════════════════════════════
+            DateTime garantieBis = rechnungsdatum.AddYears(2);
+            while (true)
+            {
+                Console.WriteLine();
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("   💡 Tipp: Garantie läuft oft 2-3 Jahre ab Rechnungsdatum.");
+                Console.ResetColor();
+                string vorschlagGarantie = rechnungsdatum.AddYears(2).ToString("dd.MM.yyyy");
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine($"   🤖 KI-Vorschlag: {vorschlagGarantie} (+2 Jahre ab Rechnungsdatum)");
+                Console.ResetColor();
+
+                string eingabe = ConsoleHelper.GetInput("Garantie gültig bis (TT.MM.JJJJ oder Enter für Vorschlag)");
+
+                if (string.IsNullOrWhiteSpace(eingabe))
+                {
+                    garantieBis = rechnungsdatum.AddYears(2);
+                    ConsoleHelper.PrintSuccess($"✓ Garantie bis: {garantieBis:dd.MM.yyyy}");
+                    break;
+                }
+
+                if (DateTime.TryParseExact(eingabe, "dd.MM.yyyy", CultureInfo.InvariantCulture,
+                    DateTimeStyles.None, out garantieBis))
+                {
+                    if (garantieBis < rechnungsdatum)
+                    {
+                        ConsoleHelper.PrintError("Garantieende kann nicht vor dem Rechnungsdatum liegen!");
+                        continue;
+                    }
+                    ConsoleHelper.PrintSuccess($"✓ Garantie bis: {garantieBis:dd.MM.yyyy}");
+                    break;
+                }
+                else
+                {
+                    ConsoleHelper.PrintError("Ungültiges Datumsformat! Verwenden Sie TT.MM.JJJJ (z.B. 15.01.2027)");
+                }
+            }
+
+            // ═══════════════════════════════════════════════════════════════
+            // 12. MITARBEITER ZUWEISEN
             // ═══════════════════════════════════════════════════════════════
             string mitarbeiterBezeichnung;
             while (true)
@@ -449,7 +517,8 @@ namespace Inventarverwaltung
                 invNmr, geraeteName, mitarbeiterBezeichnung,
                 serienNummer, preis, anschaffungsdatum,
                 hersteller, kategorie, anzahl, mindestbestand,
-                aktuellerBenutzer, erstellZeitpunkt
+                aktuellerBenutzer, erstellZeitpunkt,
+                rechnungsdatum, garantieBis
             );
 
             DataManager.Inventar.Add(neuerArtikel);
@@ -480,6 +549,8 @@ namespace Inventarverwaltung
             Console.WriteLine($"     • Seriennummer:   {serienNummer}");
             Console.WriteLine($"     • Preis:          {preis:F2}€");
             Console.WriteLine($"     • Datum:          {anschaffungsdatum:dd.MM.yyyy}");
+            Console.WriteLine($"     • Rechnungsdatum: {rechnungsdatum:dd.MM.yyyy}");
+            Console.WriteLine($"     • Garantie bis:   {garantieBis:dd.MM.yyyy}");
             Console.WriteLine($"     • Hersteller:     {hersteller}");
             Console.WriteLine($"     • Kategorie:      {kategorie}");
             Console.WriteLine($"     • Anzahl:         {anzahl} Stück");
@@ -574,7 +645,7 @@ namespace Inventarverwaltung
             Console.WriteLine();
 
             // Statistiken
-            var stats = DataManager.GetBestandsStatistik();
+            (int gesamt, int leer, int niedrig, int ok) stats = DataManager.GetBestandsStatistik();
             ConsoleHelper.PrintInfo($"Gesamt: {stats.gesamt} Artikel");
 
             Console.ForegroundColor = ConsoleColor.Red;
@@ -871,6 +942,17 @@ namespace Inventarverwaltung
             Console.WriteLine($"  📂 Kategorie:        {artikel.Kategorie}");
             Console.WriteLine($"  💰 Anschaffungspreis: {artikel.Preis:F2}€");
             Console.WriteLine($"  📅 Anschaffungsdatum: {artikel.Anschaffungsdatum:dd.MM.yyyy}");
+            Console.WriteLine($"  🧾 Rechnungsdatum:   {artikel.Rechnungsdatum:dd.MM.yyyy}");
+
+            // Garantie mit Farbcodierung
+            bool garantieAbgelaufen = artikel.GarantieBis < DateTime.Now;
+            bool garantieBaldig = !garantieAbgelaufen && artikel.GarantieBis < DateTime.Now.AddMonths(3);
+            Console.ForegroundColor = garantieAbgelaufen ? ConsoleColor.Red : (garantieBaldig ? ConsoleColor.Yellow : ConsoleColor.Green);
+            string garantieStatus = garantieAbgelaufen ? "❌ ABGELAUFEN" : (garantieBaldig ? "⚠️  LÄUFT BALD AB" : "✓ AKTIV");
+            Console.WriteLine($"  🛡️  Garantie bis:    {artikel.GarantieBis:dd.MM.yyyy}  [{garantieStatus}]");
+            Console.ResetColor();
+
+            Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine($"  👤 Zugewiesen an:    {artikel.MitarbeiterBezeichnung}");
             Console.ResetColor();
 
