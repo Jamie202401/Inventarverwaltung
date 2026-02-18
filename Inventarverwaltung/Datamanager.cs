@@ -415,30 +415,32 @@ namespace Inventarverwaltung
                 if (line.StartsWith("#") || line.StartsWith("=") || line.StartsWith("-") ||
                     line.StartsWith("╔") || line.StartsWith("║") || line.StartsWith("╚") ||
                     line.Contains("BENUTZER-DATENBANK"))
-                {
                     continue;
-                }
 
-                if (line.Contains("[DATEN]"))
-                {
-                    inDataSection = true;
-                    continue;
-                }
-
+                if (line.Contains("[DATEN]")) { inDataSection = true; continue; }
                 if (!inDataSection && !line.Contains(";")) continue;
 
+                // Format: Benutzername;Berechtigung;PasswortHash
+                // Rückwärtskompatibel: Benutzername;Berechtigung (kein Hash)
                 string[] data = line.Split(';');
-                if (data.Length != 2) continue;
+                if (data.Length < 2) continue;
 
                 string name = data[0].Trim();
                 string rolleText = data[1].Trim();
+                string hash = data.Length >= 3 ? data[2].Trim() : string.Empty;
+
+                // Kommentar-Anteil abschneiden (# ...) — gilt für rolleText UND hash
+                if (rolleText.Contains("#"))
+                    rolleText = rolleText.Substring(0, rolleText.IndexOf('#')).Trim();
+
+                // Hash: alles ab '#' abschneiden (z.B. "abc123  # 👑" → "abc123")
+                if (hash.Contains("#"))
+                    hash = hash.Substring(0, hash.IndexOf('#')).Trim();
 
                 if (!Enum.TryParse(rolleText, out Berechtigungen rolle))
-                {
                     rolle = Berechtigungen.User;
-                }
 
-                Benutzer.Add(new Accounts(name, rolle));
+                Benutzer.Add(new Accounts(name, rolle, hash));
             }
 
             LogManager.LogDatenGeladen("Benutzer", Benutzer.Count);
@@ -475,10 +477,13 @@ namespace Inventarverwaltung
             sb.AppendLine("[DATEN]");
             sb.AppendLine();
 
+            // Format: Benutzername;Berechtigung;PasswortHash
             foreach (var acc in Benutzer)
             {
                 string icon = acc.Berechtigung == Berechtigungen.Admin ? "👑" : "👤";
-                sb.AppendLine($"{acc.Benutzername.PadRight(25)};{acc.Berechtigung.ToString().PadRight(10)}  # {icon}");
+                string hash = acc.PasswortHash ?? string.Empty;
+                // Kommentar als 4. Feld, damit der Hash sauber bleibt
+                sb.AppendLine($"{acc.Benutzername.PadRight(25)};{acc.Berechtigung.ToString().PadRight(10)};{hash};# {icon}");
             }
 
             sb.AppendLine();
@@ -571,20 +576,6 @@ namespace Inventarverwaltung
             return Inventar.Where(a => a.Anzahl <= a.Mindestbestand).ToList();
         }
 
-        public static (int gesamt, int leer, int niedrig, int ok) GetBestandsStatistik()
-        {
-            int gesamt = Inventar.Count;
-            int leer = Inventar.Count(a => a.Anzahl == 0);
-            int niedrig = Inventar.Count(a => a.Anzahl > 0 && a.Anzahl <= a.Mindestbestand);
-            int ok = Inventar.Count(a => a.Anzahl > a.Mindestbestand);
-
-            return (gesamt, leer, niedrig, ok);
-        }
-
-        #endregion
-
-        #region Lieferanten - Laden und Speichern
-
         private static readonly string LIEFERANTEN_PFAD = "lieferanten.json";
 
         /// <summary>
@@ -644,6 +635,15 @@ namespace Inventarverwaltung
             {
                 LogManager.LogFehler("SaveLieferanten", ex.Message);
             }
+        }
+        public static (int gesamt, int leer, int niedrig, int ok) GetBestandsStatistik()
+        {
+            int gesamt = Inventar.Count;
+            int leer = Inventar.Count(a => a.Anzahl == 0);
+            int niedrig = Inventar.Count(a => a.Anzahl > 0 && a.Anzahl <= a.Mindestbestand);
+            int ok = Inventar.Count(a => a.Anzahl > a.Mindestbestand);
+
+            return (gesamt, leer, niedrig, ok);
         }
 
         #endregion
