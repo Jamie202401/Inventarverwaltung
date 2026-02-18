@@ -75,7 +75,7 @@ namespace Inventarverwaltung
                     else
                     {
                         ConsoleHelper.PrintInfo("Vorgang abgebrochen.");
-                        LogManager.LogBenutzerDuplikat(benutzerName);
+                      //  LogManager.LogBenutzerDuplikat(benutzerName);
                         ConsoleHelper.PressKeyToContinue();
                         return;
                     }
@@ -198,7 +198,7 @@ namespace Inventarverwaltung
             ConsoleHelper.PrintInfo($"Gesamt: {DataManager.Benutzer.Count} Benutzer");
 
             // Logging
-            LogManager.LogBenutzerAngezeigt(DataManager.Benutzer.Count);
+           // LogManager.LogBenutzerAngezeigt(DataManager.Benutzer.Count);
 
             ConsoleHelper.PressKeyToContinue();
         }

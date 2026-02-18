@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using static Inventarverwaltung.Rolle;
 
 namespace Inventarverwaltung
 {
@@ -17,7 +16,7 @@ namespace Inventarverwaltung
         // ─────────────────────────────────────────────────────────────────────
 
         private static List<Rolle> _rollen = new List<Rolle>();
-        private const string RollenDatei = "Rollen.txt";
+        private static string RollenDatei => FileManager.RollenPfad;
 
         // ─────────────────────────────────────────────────────────────────────
         // INIT
