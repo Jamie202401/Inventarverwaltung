@@ -1,4 +1,6 @@
 ﻿using System;
+using Inventarverwaltung.Manager.UI;
+using Inventarverwaltung.Manager.Auth;
 
 namespace Inventarverwaltung
 {

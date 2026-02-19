@@ -1,4 +1,6 @@
-﻿namespace Inventarverwaltung.Commands
+﻿using Inventarverwaltung.Manager.Employee;
+using Inventarverwaltung.Manager.Auth;
+namespace Inventarverwaltung.Commands
 {
     // ══════════════════════════════════════════════════════════════════
     // MITARBEITER & BENUTZER-COMMANDS

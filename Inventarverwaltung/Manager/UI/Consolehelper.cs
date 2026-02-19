@@ -1,4 +1,5 @@
 ﻿using System;
+using Inventarverwaltung.Manager.UI;
 
 namespace Inventarverwaltung.Manager.UI
 {

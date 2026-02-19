@@ -1,4 +1,5 @@
-﻿namespace Inventarverwaltung.Commands
+﻿using Inventarverwaltung.Manager.UI;
+namespace Inventarverwaltung.Commands
 {
     // ══════════════════════════════════════════════════════════════════
     // SYSTEM-COMMANDS

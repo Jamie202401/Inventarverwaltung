@@ -6,8 +6,10 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Inventarverwaltung;
+using Inventarverwaltung.Manager.UI;
 
-namespace Inventarverwaltung
+namespace Inventarverwaltung.API
 {
     // ═══════════════════════════════════════════════════════════════════
     // BARCODE SERVER — WLAN (lokal & sicher)
@@ -238,7 +240,7 @@ namespace Inventarverwaltung
                 preis = artikel.Preis.ToString("F2"),
                 datum = artikel.Anschaffungsdatum.ToString("dd.MM.yyyy"),
                 erstelltVon = artikel.ErstelltVon,
-                bestandStatus = bestandStatus
+                bestandStatus
             });
         }
 

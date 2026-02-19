@@ -1,4 +1,5 @@
 ﻿using Inventarverwaltung.Core;
+using Inventarverwaltung.Manager.Auth;
 
 namespace Inventarverwaltung.Commands
 {

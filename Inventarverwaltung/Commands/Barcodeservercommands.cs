@@ -1,4 +1,6 @@
-﻿using Inventarverwaltung.Core;
+﻿using Inventarverwaltung.API;
+using Inventarverwaltung.Core;
+using Inventarverwaltung.Manager.UI;
 
 namespace Inventarverwaltung.Commands
 {

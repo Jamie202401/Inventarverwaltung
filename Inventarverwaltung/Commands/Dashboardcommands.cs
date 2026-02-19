@@ -1,4 +1,6 @@
-﻿namespace Inventarverwaltung.Commands
+﻿using Inventarverwaltung.Manager.AI;
+using Inventarverwaltung.Manager.UI;
+namespace Inventarverwaltung.Commands
 {
     // ══════════════════════════════════════════════════════════════════
     // DASHBOARD & KI-COMMANDS

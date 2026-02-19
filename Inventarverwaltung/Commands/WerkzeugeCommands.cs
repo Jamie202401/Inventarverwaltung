@@ -1,4 +1,5 @@
-﻿namespace Inventarverwaltung.Commands
+﻿using Inventarverwaltung.Manager.Inventory;
+namespace Inventarverwaltung.Commands
 {
     // ══════════════════════════════════════════════════════════════════
     // WERKZEUGE-COMMANDS

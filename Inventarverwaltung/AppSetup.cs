@@ -1,6 +1,9 @@
 ﻿using System;
+using Inventarverwaltung;
+using Inventarverwaltung.Manager.Data;
 using Inventarverwaltung.Commands;
 using Inventarverwaltung.Core;
+
 
 namespace Inventarverwaltung
 {
