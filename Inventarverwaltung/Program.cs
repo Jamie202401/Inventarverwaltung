@@ -29,18 +29,21 @@ namespace Inventarverwaltung
             // ── [2] Cinematic Loading Screen ────────────────────────
             LoadingScreen.Show();
 
-            // ── [3] Zurück zum Normal-Fenster ────────────────────────
+            //// ── [3] Cinematic Loading Screen ────────────────────────
+            LowStockWarning.ZeigeBestandswarnungen();
+
+            // ── [4] Zurück zum Normal-Fenster ────────────────────────
             WindowManager.ExitFullscreen();
 
-            // ── [4] Anmeldung ────────────────────────────────────────
+            // ── [5] Anmeldung ────────────────────────────────────────
             AuthManager.Anmeldung();
             ConsoleHelper.PrintWelcome();
 
-            // ── [5] Hauptschleife ────────────────────────────────────
+            // ── [6] Hauptschleife ────────────────────────────────────
             // Kehrt zurück wenn der Benutzer [0] drückt.
             AppSetup.Build().Run();
 
-            // ── [6] Abschluss ────────────────────────────────────────
+            // ── [7] Abschluss ────────────────────────────────────────
             LogManager.LogProgrammEnde();
             Verabschiedung();
         }
