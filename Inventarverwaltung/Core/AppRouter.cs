@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Inventarverwaltung.Manager.Auth;
+using Inventarverwaltung;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -41,16 +43,39 @@ namespace Inventarverwaltung.Core
                 UI.ZeigeHauptmenu(_groups);
                 string eingabe = Console.ReadLine()?.Trim() ?? "";
 
-                if (eingabe == "0") break;
+                if (eingabe == "0")
+                {
+                    Console.Clear();
+                    Console.WriteLine("\n  [1]  Programm beenden");
+                    Console.WriteLine("  [2]  Programm neu starten");
+                    Console.WriteLine("  [3]  Benutzer wechseln");
+                    Console.WriteLine("  [0]  Abbrechen");
+                    Console.Write("\n  Auswahl: ");
+                    switch (Console.ReadLine()?.Trim())
+                    {
+                        case "1":
+                            Environment.Exit(0);
+                            break;
+                        case "2":
+                            System.Diagnostics.Process.Start(Environment.ProcessPath ?? Environment.GetCommandLineArgs()[0]);
+                            Environment.Exit(0);
+                            break;
+                        case "3":
+                            Console.Write("Bitte warten Sie ein augenblick");
+                            Thread.Sleep(1000);
+                            AuthManager.Anmeldung();
+                            return;
+                            
+                    }
+                    continue;
+                }
 
                 MenuGroup gruppe = _groups.FirstOrDefault(g => g.Nr == eingabe);
-
                 if (gruppe == null)
                 {
                     UI.ZeigeUngueltigeEingabe();
                     continue;
                 }
-
                 RunGruppe(gruppe);
             }
         }
