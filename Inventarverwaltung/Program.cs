@@ -47,11 +47,14 @@ namespace Inventarverwaltung
             AuthManager.Anmeldung();
             ConsoleHelper.PrintWelcome();
 
-            // ── [6] Hauptschleife ────────────────────────────────────
+            // ── [6] Update hinweis ────────────────────────────────────
+            UpdateManager.StartupCheckStill();
+
+            // ── [7] Hauptschleife ────────────────────────────────────
             // Kehrt zurück wenn der Benutzer [0] drückt.
             AppSetup.Build().Run();
 
-            // ── [7] Abschluss ────────────────────────────────────────
+            // ── [8] Abschluss ────────────────────────────────────────
             LogManager.LogProgrammEnde();
             Verabschiedung();
         }

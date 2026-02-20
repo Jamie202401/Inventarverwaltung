@@ -118,6 +118,7 @@ namespace Inventarverwaltung
                     .Add(new SystemLogCommand())
                     .Add(new TagesreportCommand())
                     .Add(new VerschluesselungCommand())
+                    .Add(new UpdateRollbackCommand())
             );
 
             // ── [9] LIEFERANTEN ─────────────────────────────────────────────
