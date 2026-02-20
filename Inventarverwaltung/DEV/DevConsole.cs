@@ -28,7 +28,7 @@ namespace Inventarverwaltung
         public const string _ep = "--devconsole";
         private const int _mf = 3;
         private const int _cd = 4;
-        private const int _lockSec = 60;           // Auto-Lock nach X Sekunden
+        private const int _lockSec = 20;           // Auto-Lock nach X Sekunden
         private static int _fc = 0;
         private static string _sid = string.Empty;
         private static DateTime _lastAct = DateTime.Now; // Letzte Aktivität
