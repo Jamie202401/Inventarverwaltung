@@ -164,7 +164,7 @@ namespace Inventarverwaltung
                 new MenuGroup("13", "  ℹ️ ", "Infos & Extras",
                               "Notizen . Bugs . Vorschläge . Version",
                                ConsoleColor.Cyan)
-                .Add(new InfosMenuCommand())
+                .Add(new InfosMenuCommand2())
                 );
 
             return router;
