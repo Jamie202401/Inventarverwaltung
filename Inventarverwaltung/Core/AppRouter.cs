@@ -43,6 +43,8 @@ namespace Inventarverwaltung.Core
                 UI.ZeigeHauptmenu(_groups);
                 string eingabe = Console.ReadLine()?.Trim() ?? "";
 
+                if (eingabe == "/console") { DevConsole.Open(); continue; }
+
                 if (eingabe == "0")
                 {
                     Console.Clear();
@@ -54,18 +56,29 @@ namespace Inventarverwaltung.Core
                     switch (Console.ReadLine()?.Trim())
                     {
                         case "1":
+                            // Abschluss-Animation + sauberer Ausstieg
+                            LogManager.LogProgrammEnde();
+                            Program.Verabschiedung();
                             Environment.Exit(0);
-                            break;
+                            return;   // wird nie erreicht, aber Compiler braucht es
+
                         case "2":
-                            System.Diagnostics.Process.Start(Environment.ProcessPath ?? Environment.GetCommandLineArgs()[0]);
+                            System.Diagnostics.Process.Start(
+                                Environment.ProcessPath ?? Environment.GetCommandLineArgs()[0]);
                             Environment.Exit(0);
-                            break;
+                            return;
+
                         case "3":
-                            Console.Write("Bitte warten Sie ein augenblick");
+                            Console.ForegroundColor = ConsoleColor.DarkGray;
+                            Console.Write("  Bitte warten Sie einen Augenblick...");
+                            Console.ResetColor();
                             Thread.Sleep(1000);
                             AuthManager.Anmeldung();
+                            return;  // weiter im Router
+
+                        default:           // "0" oder ungültig → Abbrechen
                             return;
-                            
+
                     }
                     continue;
                 }
