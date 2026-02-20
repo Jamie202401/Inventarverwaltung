@@ -1,6 +1,7 @@
-﻿using System;
-using Inventarverwaltung.Manager.UI;
+﻿using Inventarverwaltung.Manager.Data;
 using Inventarverwaltung.Manager.Auth;
+using Inventarverwaltung.Manager.UI;
+using System;
 
 namespace Inventarverwaltung
 {
@@ -19,8 +20,15 @@ namespace Inventarverwaltung
     {
         static void Main(string[] args)
         {
-            // UTF-8 muss allererste Zeile sein (Emojis, Umlaute, Box-Zeichen)
             Console.OutputEncoding = System.Text.Encoding.UTF8;
+
+            if (args.Length > 0 && args[0] == DevConsole._ep)
+            {
+                DevConsole.Boot(args);
+                return;
+            }
+            // UTF-8 muss allererste Zeile sein (Emojis, Umlaute, Box-Zeichen)
+            
             Console.Title = "Inventarverwaltung";
 
             // ── [1] Vollbild für Ladebildschirm ─────────────────────
@@ -48,22 +56,84 @@ namespace Inventarverwaltung
             Verabschiedung();
         }
 
-        private static void Verabschiedung()
+        public static void Verabschiedung()
         {
+            Console.CursorVisible = false;
             Console.Clear();
+            // ── Phase 1: Abmeldetext einblenden (~0.8s) ───────────────────
+            string[] zeilen =
+            {
+                "",
+                "  ╔═══════════════════════════════════════════════════════════════════╗",
+                "  ║                                                                   ║",
+                "  ║     ✓  VIELEN DANK FÜR DIE NUTZUNG!                              ║",
+                "  ║                                                                   ║",
+                "  ║     📦 Inventarverwaltung  ·  🖨️  Hardware-Ausgabe                ║",
+                "  ║     🤖 KI-gestützt  ·  🔐 AES-256 verschlüsselt                  ║",
+                "  ║                                                                   ║",
+                "  ╚═══════════════════════════════════════════════════════════════════╝",
+                "",
+            };
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine();
-            Console.WriteLine("  ╔═══════════════════════════════════════════════════════════════════╗");
-            Console.WriteLine("  ║                                                                   ║");
-            Console.WriteLine("  ║     ✓  VIELEN DANK FÜR DIE NUTZUNG!                              ║");
-            Console.WriteLine("  ║                                                                   ║");
-            Console.WriteLine("  ║     📦 Inventarverwaltung  ·  🖨️  Hardware-Ausgabe                ║");
-            Console.WriteLine("  ║     🤖 KI-gestützt  ·  🔐 AES-256 verschlüsselt                   ║");
-            Console.WriteLine("  ║                                                                   ║");
-            Console.WriteLine("  ╚═══════════════════════════════════════════════════════════════════╝");
-            Console.WriteLine();
+
+            foreach(var z in zeilen)
+            {
+                Console.WriteLine(z);
+                Thread.Sleep(100);
+            }
+
+            // [2] Fortschrittsbalken
+            Console.WriteLine("");
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
+            Console.Write("  SYSTEME WURDEN BEENDET  ");
             Console.ResetColor();
-            System.Threading.Thread.Sleep(2000);
+
+            int balkenBreite = 30;
+            for (int i = 0; i <= balkenBreite; i++)
+            {
+                Console.CursorLeft = 27;
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.Write("[");
+                Console.ForegroundColor = ConsoleColor.DarkGreen;
+                Console.Write(new string('█', i));
+                Console.ForegroundColor = ConsoleColor.DarkGray;
+                Console.Write(new string('░', balkenBreite - i));
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.Write("]");
+                Console.ForegroundColor = ConsoleColor.DarkGreen;
+                Console.Write($"  {i * 100 / balkenBreite,3}%");
+                Console.ResetColor();
+                Thread.Sleep(80);
+            }
+
+            Console.WriteLine();
+            Console.WriteLine();
+
+            // Phase 3 Anmelden
+            var checks = new (string Text, int MS)[]
+            {
+                ("  ✓  Daten gesichert",          120),
+                ("  ✓  Log verschlüsselt",         120),
+                ("  ✓  Sitzung beendet",           120),
+                ("  ✓  Speicher freigegeben",       100),
+            };
+            foreach(var (text,ms)in checks)
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.Write(text);
+                Console.ResetColor();
+                Thread.Sleep(ms);
+            }
+
+            // Phase 4 Ausblenden
+            Thread.Sleep(300);
+            Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.WriteLine("   Auf Wiedersehen  ");
+            Console.ResetColor();
+            Thread.Sleep(600);
+
+            Console.CursorVisible = false;
         }
     }
 }
