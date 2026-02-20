@@ -46,6 +46,8 @@ namespace Inventarverwaltung.Manager.UI
         // ─────────────────────────────────────────────────────────────────────
 
         public static string LogPfad => Path.Combine(LogsVerzeichnis, "System_Log.enc");
+
+        public static string LogPfad2 => Path.Combine(LogsVerzeichnis, "Report_.enc");
         public static string ReportVerzeichnis => LogsVerzeichnis;  // Reports landen ebenfalls in Logs\
 
         // ─────────────────────────────────────────────────────────────────────
@@ -265,6 +267,7 @@ namespace Inventarverwaltung.Manager.UI
             BereinigeAttribute(FilePath2);
             BereinigeAttribute(FilePath3);
             BereinigeAttribute(LogPfad);
+            BereinigeAttribute(LogPfad2);
         }
 
         // ─────────────────────────────────────────────────────────────────────
