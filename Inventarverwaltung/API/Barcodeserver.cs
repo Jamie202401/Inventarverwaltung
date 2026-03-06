@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Inventarverwaltung;
 using Inventarverwaltung.Manager.UI;
+using Inventarverwaltung.Manager.Data;
 
 namespace Inventarverwaltung.API
 {

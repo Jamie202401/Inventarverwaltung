@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Inventarverwaltung.Manager.UI;
+using Inventarverwaltung.Manager.Data;
 
 namespace Inventarverwaltung
 {
