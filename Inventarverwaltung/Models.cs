@@ -76,7 +76,7 @@ namespace Inventarverwaltung
 
     /// <summary>
     /// Repräsentiert einen Inventar-Artikel mit vollständiger Bestandsführung
-    /// ERWEITERT: Tracking, Rechnungsdatum, Garantie, Zuweisungshistorie
+    /// ERWEITERT: Tracking, Rechnungsdatum, Garantie, Zuweisungshistorie, Tag-System
     /// </summary>
     public class InvId
     {
@@ -104,8 +104,11 @@ namespace Inventarverwaltung
         public DateTime Rechnungsdatum { get; set; }
         public DateTime GarantieBis { get; set; }
 
-        // Zuweisungshistorie (NEU!)
+        // Zuweisungshistorie
         public List<ZuweisungsEintrag> ZuweisungsHistorie { get; set; } = new List<ZuweisungsEintrag>();
+
+        // Tag-System (NUR DEV darf Tags bearbeiten/löschen)
+        public List<string> Tags { get; set; } = new List<string>();
 
         // Konstruktor: alle Felder inkl. Tracking + Rechnung/Garantie (14 Parameter)
         public InvId(string invNmr, string geraeteName, string mitarbeiterBezeichnung,
@@ -119,6 +122,7 @@ namespace Inventarverwaltung
             Hersteller = hersteller; Kategorie = kategorie; Anzahl = anzahl; Mindestbestand = mindestbestand;
             ErstelltVon = erstelltVon; ErstelltAm = erstelltAm;
             Rechnungsdatum = rechnungsdatum; GarantieBis = garantieBis;
+            Tags = new List<string>();
         }
 
         // Konstruktor: mit Tracking, OHNE Rechnung/Garantie (Rückwärtskompatibilität)
@@ -132,6 +136,7 @@ namespace Inventarverwaltung
             Hersteller = hersteller; Kategorie = kategorie; Anzahl = anzahl; Mindestbestand = mindestbestand;
             ErstelltVon = erstelltVon; ErstelltAm = erstelltAm;
             Rechnungsdatum = anschaffungsdatum; GarantieBis = anschaffungsdatum.AddYears(2);
+            Tags = new List<string>();
         }
 
         // Konstruktor: OHNE Tracking (Rückwärtskompatibilität)
@@ -144,6 +149,7 @@ namespace Inventarverwaltung
             Hersteller = hersteller; Kategorie = kategorie; Anzahl = anzahl; Mindestbestand = mindestbestand;
             ErstelltVon = "System"; ErstelltAm = DateTime.Now;
             Rechnungsdatum = anschaffungsdatum; GarantieBis = anschaffungsdatum.AddYears(2);
+            Tags = new List<string>();
         }
 
         // Konstruktor: nur Basis-Felder (Rückwärtskompatibilität alte Dateien)
@@ -154,6 +160,7 @@ namespace Inventarverwaltung
             Hersteller = "Unbekannt"; Kategorie = "Sonstiges"; Anzahl = 1; Mindestbestand = 1;
             ErstelltVon = "System (Migriert)"; ErstelltAm = DateTime.Now;
             Rechnungsdatum = DateTime.Now; GarantieBis = DateTime.Now.AddYears(2);
+            Tags = new List<string>();
         }
 
         public BestandsStatus GetBestandsStatus()
@@ -185,9 +192,13 @@ namespace Inventarverwaltung
         public string NName { get; set; }
         public string Abteilung { get; set; }
 
+        // Tag-System (NUR DEV darf Tags bearbeiten/löschen)
+        public List<string> Tags { get; set; } = new List<string>();
+
         public MID(string vName, string nName, string abteilung)
         {
             VName = vName; NName = nName; Abteilung = abteilung;
+            Tags = new List<string>();
         }
     }
 
@@ -224,9 +235,9 @@ namespace Inventarverwaltung
     public class Anmelder
     {
         public string Anmeldename { get; set; }
-        public Anmelder(string anmeldename) 
-        { 
-            Anmeldename = anmeldename; 
+        public Anmelder(string anmeldename)
+        {
+            Anmeldename = anmeldename;
         }
     }
 }
