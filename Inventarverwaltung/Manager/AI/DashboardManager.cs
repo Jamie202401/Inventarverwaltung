@@ -1,5 +1,6 @@
 ﻿using Inventarverwaltung.Manager.Inventory;
 using Inventarverwaltung.Manager.UI;
+using Inventarverwaltung.Manager.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;

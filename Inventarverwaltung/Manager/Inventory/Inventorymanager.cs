@@ -2,6 +2,7 @@
 using Inventarverwaltung.Manager.Auth;
 using Inventarverwaltung.Manager.Employee;
 using Inventarverwaltung.Manager.UI;
+using Inventarverwaltung.Manager.Data;
 using System;
 using System.Globalization;
 using System.Linq;

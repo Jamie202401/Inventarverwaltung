@@ -1,4 +1,5 @@
 ﻿using Inventarverwaltung.Manager.UI;
+using Inventarverwaltung.Manager.Data;
 using System;
 using System.Linq;
 using System.Security.Cryptography;
@@ -243,7 +244,6 @@ namespace Inventarverwaltung.Manager.Auth
             LogManager.LogDatenGespeichert("Passwort", $"Passwort von '{AktuellerBenutzer}' geaendert");
             ConsoleHelper.PressKeyToContinue();
         }
-
         // ─────────────────────────────────────────────────────────────────────
         // PASSWORT-EINGABE mit Show/Hide Toggle [Tab]
         // ─────────────────────────────────────────────────────────────────────

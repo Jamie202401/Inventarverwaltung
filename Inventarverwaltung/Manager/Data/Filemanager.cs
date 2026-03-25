@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace Inventarverwaltung.Manager.UI
+namespace Inventarverwaltung.Manager.Data
 {
     /// <summary>
     /// Verwaltet alle Dateipfade mit strukturierter Ordnerorganisation.

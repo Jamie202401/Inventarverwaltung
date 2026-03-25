@@ -1,5 +1,6 @@
 ﻿using Inventarverwaltung.Manager.AI;
 using Inventarverwaltung.Manager.UI;
+using Inventarverwaltung.Manager.Data;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Inventarverwaltung.Manager.Inventory
 {
-   public static class Editmanager
+    public static class Editmanager
     {
         public static void ZeigeBearbeitungsMenu()
         {
@@ -60,7 +61,7 @@ namespace Inventarverwaltung.Manager.Inventory
             Console.Clear();
             ConsoleHelper.PrintSectionHeader("Artikel bearbeiten", ConsoleColor.DarkYellow);
 
-            if(DataManager.Inventar.Count == 0)
+            if (DataManager.Inventar.Count == 0)
             {
                 ConsoleHelper.PrintWarning("Noch keine Artikel vorhanden!");
                 ConsoleHelper.PressKeyToContinue();
@@ -73,9 +74,9 @@ namespace Inventarverwaltung.Manager.Inventory
             Console.ResetColor();
             Console.WriteLine();
 
-            for(int i = 0; i < DataManager.Inventar.Count; i++)
+            for (int i = 0; i < DataManager.Inventar.Count; i++)
             {
-                var artikel  = DataManager.Inventar[i];
+                var artikel = DataManager.Inventar[i];
                 Console.WriteLine($"[{i + 1}] {artikel.InvNmr} - {artikel.GeraeteName} - {artikel.Anzahl} STK ");
             }
             Console.WriteLine("");
@@ -85,16 +86,16 @@ namespace Inventarverwaltung.Manager.Inventory
 
             InvId zuBerarbeitenderArtikel = null;
 
-            if(int.TryParse(auswahl, out int nummer) && nummer > 0 && nummer <= DataManager.Inventar.Count)
+            if (int.TryParse(auswahl, out int nummer) && nummer > 0 && nummer <= DataManager.Inventar.Count)
             {
                 zuBerarbeitenderArtikel = DataManager.Inventar[nummer - 1];
             }
             else
             {
-                zuBerarbeitenderArtikel =DataManager.Inventar.FirstOrDefault(a => a.InvNmr.Equals(auswahl, StringComparison.OrdinalIgnoreCase));
+                zuBerarbeitenderArtikel = DataManager.Inventar.FirstOrDefault(a => a.InvNmr.Equals(auswahl, StringComparison.OrdinalIgnoreCase));
             }
 
-            if(zuBerarbeitenderArtikel == null)
+            if (zuBerarbeitenderArtikel == null)
             {
                 ConsoleHelper.PrintError("Artikel nicht gefunden");
                 ConsoleHelper.PressKeyToContinue();
@@ -128,13 +129,13 @@ namespace Inventarverwaltung.Manager.Inventory
             string altWert = "";
             string neuWert = "";
 
-            switch ( feld)
+            switch (feld)
             {
                 case "1":
                     string neueInvNr = ConsoleHelper.GetInput($"Neue Inventar-NR (aktuell: {altWert}");
-                    if(!string.IsNullOrWhiteSpace(neueInvNr) && !neueInvNr.Equals(altWert))
+                    if (!string.IsNullOrWhiteSpace(neueInvNr) && !neueInvNr.Equals(altWert))
                     {
-                        if(DataManager.Inventar.Any(a => a.InvNmr.Equals(neueInvNr, StringComparison.OrdinalIgnoreCase)))
+                        if (DataManager.Inventar.Any(a => a.InvNmr.Equals(neueInvNr, StringComparison.OrdinalIgnoreCase)))
                         {
                             ConsoleHelper.PrintError("Diese Inevntar-Nr exestiert bereits!");
                             ConsoleHelper.PressKeyToContinue();
@@ -142,59 +143,59 @@ namespace Inventarverwaltung.Manager.Inventory
                         }
                         zuBerarbeitenderArtikel.InvNmr = neueInvNr;
                         neuWert = neueInvNr;
-                        geaendert =true;
-                    } 
-                    break;
-
-                    case "2":
-                    altWert = zuBerarbeitenderArtikel.GeraeteName;
-                        string neuerName = ConsoleHelper.GetInput($" Neuer Gerätename (aktuell: {altWert}");
-                    if(!string.IsNullOrWhiteSpace(neuerName) && !neuerName.Equals(altWert))
-                    {
-                        zuBerarbeitenderArtikel.GeraeteName = neuerName;
-                        neuWert = neuerName;
-                        geaendert =true;
+                        geaendert = true;
                     }
                     break;
 
-                    case "3":
+                case "2":
+                    altWert = zuBerarbeitenderArtikel.GeraeteName;
+                    string neuerName = ConsoleHelper.GetInput($" Neuer Gerätename (aktuell: {altWert}");
+                    if (!string.IsNullOrWhiteSpace(neuerName) && !neuerName.Equals(altWert))
+                    {
+                        zuBerarbeitenderArtikel.GeraeteName = neuerName;
+                        neuWert = neuerName;
+                        geaendert = true;
+                    }
+                    break;
+
+                case "3":
                     altWert = zuBerarbeitenderArtikel.MitarbeiterBezeichnung;
                     Console.WriteLine("");
                     ConsoleHelper.PrintInfo($"Verfügbare Mitarbeiter");
-                    foreach(var m in DataManager.Mitarbeiter)
+                    foreach (var m in DataManager.Mitarbeiter)
                     {
                         Console.WriteLine($"    .{m.VName} {m.NName}");
                     }
                     string neuerMitarbeiter = ConsoleHelper.GetInput($"Neuer Mitarbeiter aktuell {altWert})");
-                    if(!string.IsNullOrWhiteSpace(neuerMitarbeiter) && !neuerMitarbeiter.Equals(altWert))
+                    if (!string.IsNullOrWhiteSpace(neuerMitarbeiter) && !neuerMitarbeiter.Equals(altWert))
                     {
                         zuBerarbeitenderArtikel.MitarbeiterBezeichnung = neuerMitarbeiter;
                         neuWert = neuerMitarbeiter;
-                        geaendert =true;
-                    } 
-                    break;
-
-                    case "4":
-                    altWert = zuBerarbeitenderArtikel.SerienNummer;
-                    string neueSNR = ConsoleHelper.GetInput($"Neue Seriennummer (aktuell: {altWert})");
-                    if(!string.IsNullOrWhiteSpace(neueSNR) && !neueSNR.Equals(altWert))
-                    {
-                        zuBerarbeitenderArtikel.SerienNummer = neueSNR;
-                        neuWert = neueSNR;
-                        geaendert =true;
+                        geaendert = true;
                     }
                     break;
 
-                    case "5":
+                case "4":
+                    altWert = zuBerarbeitenderArtikel.SerienNummer;
+                    string neueSNR = ConsoleHelper.GetInput($"Neue Seriennummer (aktuell: {altWert})");
+                    if (!string.IsNullOrWhiteSpace(neueSNR) && !neueSNR.Equals(altWert))
+                    {
+                        zuBerarbeitenderArtikel.SerienNummer = neueSNR;
+                        neuWert = neueSNR;
+                        geaendert = true;
+                    }
+                    break;
+
+                case "5":
                     altWert = zuBerarbeitenderArtikel.Preis.ToString("F2");
                     string neuerPreis = ConsoleHelper.GetInput($"Neuer Preis in € (aktuell: {altWert})");
                     if (!string.IsNullOrWhiteSpace(neuerPreis))
                     {
-                        if(decimal.TryParse(neuerPreis.Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture, out decimal preis))
+                        if (decimal.TryParse(neuerPreis.Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture, out decimal preis))
                         {
                             zuBerarbeitenderArtikel.Preis = preis;
                             neuWert = preis.ToString("F2");
-                            geaendert=true;
+                            geaendert = true;
 
                         }
                         else
@@ -204,18 +205,18 @@ namespace Inventarverwaltung.Manager.Inventory
                             return;
                         }
                     }
-                    break ;
+                    break;
 
-                    case "6":
+                case "6":
                     altWert = zuBerarbeitenderArtikel.Anschaffungsdatum.ToString("dd.MM.yyyy");
                     string neuesDatum = ConsoleHelper.GetInput($"Neues Datum (TT.MM.JJJJ) (aktuell: {altWert})");
-                    if(!string.IsNullOrWhiteSpace(neuesDatum))
+                    if (!string.IsNullOrWhiteSpace(neuesDatum))
                     {
-                        if(DateTime.TryParseExact(neuesDatum, "dd.MM.yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime datum))
+                        if (DateTime.TryParseExact(neuesDatum, "dd.MM.yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime datum))
                         {
                             zuBerarbeitenderArtikel.Anschaffungsdatum = datum;
                             neuWert = datum.ToString("dd.MM.yyyy");
-                            geaendert=true;
+                            geaendert = true;
                         }
                         else
                         {
@@ -224,40 +225,40 @@ namespace Inventarverwaltung.Manager.Inventory
                             return;
                         }
                     }
-                    break ;
+                    break;
 
                 case "7":
                     altWert = zuBerarbeitenderArtikel.Kategorie;
                     string neuerHersteller = ConsoleHelper.GetInput($"Neuer Hersteller: (aktuell: {altWert})");
-                    if(!string.IsNullOrWhiteSpace (neuerHersteller) && !neuerHersteller.Equals(altWert))
+                    if (!string.IsNullOrWhiteSpace(neuerHersteller) && !neuerHersteller.Equals(altWert))
                     {
                         zuBerarbeitenderArtikel.Hersteller = neuerHersteller;
                         neuWert = neuerHersteller;
                         geaendert = true;
                     }
-                    break ;
+                    break;
 
                 case "8":
                     altWert = zuBerarbeitenderArtikel.Kategorie;
                     string neueKategorie = ConsoleHelper.GetInput($"Neue Kategorie (aktuell: {altWert})");
-                    if(!string.IsNullOrWhiteSpace(neueKategorie) && neueKategorie.Equals(altWert))
+                    if (!string.IsNullOrWhiteSpace(neueKategorie) && neueKategorie.Equals(altWert))
                     {
                         zuBerarbeitenderArtikel.Kategorie = neueKategorie;
-                        neuWert=neueKategorie;
+                        neuWert = neueKategorie;
                         geaendert = true;
                     }
-                    break ;
+                    break;
 
                 case "9":
                     altWert = zuBerarbeitenderArtikel.Anzahl.ToString();
                     string neueAnzahl = ConsoleHelper.GetInput($"Neue Anzahl (aktuell: {altWert})");
                     if (!string.IsNullOrWhiteSpace(neueAnzahl))
                     {
-                        if(int.TryParse(neueAnzahl, out int anzahl) && anzahl <= 0)
+                        if (int.TryParse(neueAnzahl, out int anzahl) && anzahl <= 0)
                         {
-                            zuBerarbeitenderArtikel.Anzahl =anzahl;
-                            neuWert = anzahl.ToString() ;
-                            geaendert=true;
+                            zuBerarbeitenderArtikel.Anzahl = anzahl;
+                            neuWert = anzahl.ToString();
+                            geaendert = true;
                         }
                         else
                         {
@@ -268,16 +269,16 @@ namespace Inventarverwaltung.Manager.Inventory
                     }
                     break;
 
-                    case "10":
+                case "10":
                     altWert = zuBerarbeitenderArtikel.Mindestbestand.ToString();
                     string neuerMindest = ConsoleHelper.GetInput($"Neuer Mindestbestand (aktuell : {altWert})");
                     if (!string.IsNullOrWhiteSpace(neuerMindest))
                     {
-                        if(int.TryParse(neuerMindest, out int mindest) && mindest >= 0)
+                        if (int.TryParse(neuerMindest, out int mindest) && mindest >= 0)
                         {
-                            zuBerarbeitenderArtikel.Mindestbestand =mindest;
+                            zuBerarbeitenderArtikel.Mindestbestand = mindest;
                             neuWert = mindest.ToString();
-                                 geaendert=true;
+                            geaendert = true;
                         }
                         else
                         {
@@ -295,15 +296,39 @@ namespace Inventarverwaltung.Manager.Inventory
                     return;
 
             }
+
             if (geaendert)
             {
+                // ── AUTO-TAG: Artikel wurde bearbeitet ──────────────────────────
+                TagManager.SetzeArtikelTag(zuBerarbeitenderArtikel, TagManager.TAG_BEARBEITET);
+
+                // Zusatz-Tag wenn Mitarbeiter-Zuweisung geändert wurde (Feld 3)
+                if (feld == "3")
+                {
+                    TagManager.SetzeArtikelTag(zuBerarbeitenderArtikel, TagManager.TAG_MITARBEITER_GEAENDERT);
+
+                    // Alten Mitarbeiter taggen (Artikel wurde entfernt)
+                    var alterMit = DataManager.Mitarbeiter.FirstOrDefault(m =>
+                        $"{m.VName} {m.NName}".Equals(altWert, StringComparison.OrdinalIgnoreCase));
+                    if (alterMit != null)
+                        TagManager.SetzeMitarbeiterTag(alterMit, TagManager.TAG_MITARBEITER_ENTFERNT);
+
+                    // Neuen Mitarbeiter taggen (Artikel wurde zugewiesen)
+                    var neuerMit = DataManager.Mitarbeiter.FirstOrDefault(m =>
+                        $"{m.VName} {m.NName}".Equals(neuWert, StringComparison.OrdinalIgnoreCase));
+                    if (neuerMit != null)
+                        TagManager.SetzeMitarbeiterTag(neuerMit, TagManager.TAG_ZUWEISUNG_GEAENDERT);
+
+                    DataManager.SaveKompletteMitarbeiter();
+                }
+                // ────────────────────────────────────────────────────────────────
+
                 DataManager.SaveKomplettesInventar();
 
                 Console.WriteLine();
                 ConsoleHelper.PrintSuccess($"✓ Artikel erfolgreich geändert!");
                 Console.WriteLine($"  Alt: {altWert}");
                 Console.WriteLine($"  Neu: {neuWert}");
-
 
                 LogManager.LogDatenGespeichert("Artikel-Beabeitung", $"{zuBerarbeitenderArtikel.InvNmr}: Feld {feld} geändert von: '{altWert}' zu: '{neuWert}'");
 
@@ -315,8 +340,8 @@ namespace Inventarverwaltung.Manager.Inventory
             }
             ConsoleHelper.PressKeyToContinue();
 
-         
-            
+
+
         }
 
         #endregion
@@ -329,7 +354,7 @@ namespace Inventarverwaltung.Manager.Inventory
             Console.Clear();
             ConsoleHelper.PrintSectionHeader("Mitarbeiter Bearbeiten", ConsoleColor.DarkYellow);
 
-            if(DataManager.Mitarbeiter.Count == 0)
+            if (DataManager.Mitarbeiter.Count == 0)
             {
                 ConsoleHelper.PrintWarning("Noch keine Mitarbeiter vorhanden");
                 ConsoleHelper.PressKeyToContinue();
@@ -341,7 +366,7 @@ namespace Inventarverwaltung.Manager.Inventory
             Console.ResetColor();
             Console.WriteLine();
 
-            for(int i= 0; i < DataManager.Mitarbeiter.Count; i++)
+            for (int i = 0; i < DataManager.Mitarbeiter.Count; i++)
             {
                 var m = DataManager.Mitarbeiter[i];
                 Console.WriteLine($" [{i + 1}] {m.VName} {m.NName} - {m.Abteilung}");
@@ -351,7 +376,7 @@ namespace Inventarverwaltung.Manager.Inventory
 
             if (auswahl.ToLower() == "X") return;
 
-            if(!int.TryParse(auswahl, out int nummer) || nummer < 1 || nummer > DataManager.Mitarbeiter.Count)
+            if (!int.TryParse(auswahl, out int nummer) || nummer < 1 || nummer > DataManager.Mitarbeiter.Count)
             {
                 ConsoleHelper.PrintError("Ungültige Auswahl");
                 ConsoleHelper.PressKeyToContinue();
@@ -386,7 +411,7 @@ namespace Inventarverwaltung.Manager.Inventory
                 case "1":
                     altWert = mitarbeiter.VName;
                     string neuerVorname = ConsoleHelper.GetInput($" Neuer Vorname (aktuell: {altWert})");
-                    if(!string.IsNullOrWhiteSpace(neuerVorname) && neuerVorname.Equals(altWert))
+                    if (!string.IsNullOrWhiteSpace(neuerVorname) && neuerVorname.Equals(altWert))
                     {
                         mitarbeiter.VName = neuerVorname;
                         neuWert = neuerVorname;
@@ -400,22 +425,22 @@ namespace Inventarverwaltung.Manager.Inventory
                     }
                     break;
 
-                    case "2":
+                case "2":
                     altWert = mitarbeiter.NName;
                     string neuerNachname = ConsoleHelper.GetInput($"Neuer Nachname (aktuell: {altWert})");
-                    if(!string.IsNullOrWhiteSpace(neuerNachname) && neuerNachname.Equals(altWert))
+                    if (!string.IsNullOrWhiteSpace(neuerNachname) && neuerNachname.Equals(altWert))
                     {
                         mitarbeiter.NName = neuerNachname;
-                        neuWert=neuerNachname;
+                        neuWert = neuerNachname;
                         geandert = true;
                     }
-                 
+
                     break;
 
-                    case "3":
+                case "3":
                     altWert = mitarbeiter.Abteilung;
                     string neueAbteilung = ConsoleHelper.GetInput($"Neue Abteilung (aktuell: {altWert}");
-                    if(!string.IsNullOrWhiteSpace(neueAbteilung) && neueAbteilung.Equals(altWert))
+                    if (!string.IsNullOrWhiteSpace(neueAbteilung) && neueAbteilung.Equals(altWert))
                     {
                         mitarbeiter.Abteilung = neueAbteilung;
                         neuWert = neueAbteilung;
@@ -437,6 +462,10 @@ namespace Inventarverwaltung.Manager.Inventory
 
             if (geandert)
             {
+                // ── AUTO-TAG: Mitarbeiter wurde bearbeitet ──────────────────────
+                TagManager.SetzeMitarbeiterTag(mitarbeiter, TagManager.TAG_MITARBEITER_BEARBEITET);
+                // ────────────────────────────────────────────────────────────────
+
                 DataManager.SaveKompletteMitarbeiter();
 
                 Console.WriteLine();
@@ -467,7 +496,7 @@ namespace Inventarverwaltung.Manager.Inventory
             Console.Clear();
             ConsoleHelper.PrintSectionHeader("Benutzer bearbeiten", ConsoleColor.DarkYellow);
 
-            if(DataManager.Benutzer.Count == 0)
+            if (DataManager.Benutzer.Count == 0)
             {
                 ConsoleHelper.PrintWarning("Noch keine Benutzer vorhanden");
                 ConsoleHelper.PressKeyToContinue();
@@ -491,7 +520,7 @@ namespace Inventarverwaltung.Manager.Inventory
 
             if (auswahl.ToLower() == "X") return;
 
-            if(!int.TryParse(auswahl, out int nummer) || nummer < 1 || nummer > DataManager.Benutzer.Count)
+            if (!int.TryParse(auswahl, out int nummer) || nummer < 1 || nummer > DataManager.Benutzer.Count)
             {
                 ConsoleHelper.PrintError("Ungültige Auswahl");
                 ConsoleHelper.PressKeyToContinue();
@@ -513,7 +542,7 @@ namespace Inventarverwaltung.Manager.Inventory
 
             string feld = ConsoleHelper.GetInput("Welches feld möchten Sie ändern ?");
 
-            if(feld.ToLower() == "X") return;
+            if (feld.ToLower() == "X") return;
 
             bool geandert = false;
             string altWert = "";
@@ -586,7 +615,7 @@ namespace Inventarverwaltung.Manager.Inventory
                 Console.WriteLine($"  Alt: {altWert}");
                 Console.WriteLine($"  Neu: {neuWert}");
 
-                
+
                 LogManager.LogDatenGespeichert("Benutzer-Bearbeitung",
                     $"{benutzer.Benutzername}: Feld {feld} geändert von '{altWert}' zu '{neuWert}'");
             }
@@ -601,4 +630,3 @@ namespace Inventarverwaltung.Manager.Inventory
 
     }
 }
-

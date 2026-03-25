@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Inventarverwaltung.Manager.UI
+namespace Inventarverwaltung.Manager.Data
 {
     /// <summary>
     /// Zentrale Datenverwaltung für Laden und Speichern aller Daten
@@ -84,20 +84,26 @@ namespace Inventarverwaltung.Manager.UI
                     }
                     catch { if (data.Length >= 3) Inventar.Add(new InvId(data[0], data[1], data[2])); }
                 }
-                // Neue Version (12 Felder mit Tracking)
+                // Neue Version (12+ Felder mit Tracking, optional Tags in Feld 12)
                 else if (data.Length >= 12)
                 {
                     try
                     {
-                        Inventar.Add(new InvId(
+                        var inv = new InvId(
                             data[0], data[1], data[2], data[3],
                             decimal.Parse(data[4], CultureInfo.InvariantCulture),
                             DateTime.ParseExact(data[5], "dd.MM.yyyy", CultureInfo.InvariantCulture),
                             data[6], data[7],
                             int.Parse(data[8]), int.Parse(data[9]),
                             data[10],
-                            DateTime.ParseExact(data[11], "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture)
-                        ));
+                            DateTime.ParseExact(data[11].Trim(), "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture)
+                        );
+                        // Tags aus Feld 12 laden (optional – Rückwärtskompatibilität)
+                        if (data.Length >= 13 && !string.IsNullOrWhiteSpace(data[12]))
+                        {
+                            inv.Tags = TagManager.DeserialisiereTagListe(data[12].Trim());
+                        }
+                        Inventar.Add(inv);
                     }
                     catch { if (data.Length >= 3) Inventar.Add(new InvId(data[0], data[1], data[2])); }
                 }
@@ -158,7 +164,7 @@ namespace Inventarverwaltung.Manager.UI
             sb.AppendLine("════════════════════════════════════════════════════════════════════════════════════");
             sb.AppendLine("  STRUKTUR DER DATEN:");
             sb.AppendLine("  InvNr;Gerätename;Mitarbeiter;SNR;Preis;Datum;Hersteller;Kategorie;");
-            sb.AppendLine("  Anzahl;Mindestbestand;ErstelltVon;ErstelltAm");
+            sb.AppendLine("  Anzahl;Mindestbestand;ErstelltVon;ErstelltAm;Tags");
             sb.AppendLine("════════════════════════════════════════════════════════════════════════════════════");
             sb.AppendLine();
             sb.AppendLine("[DATEN]");
@@ -217,12 +223,13 @@ namespace Inventarverwaltung.Manager.UI
         }
 
         /// <summary>
-        /// Formatiert eine Inventar-Zeile
+        /// Formatiert eine Inventar-Zeile (inkl. Tags als Feld 13)
         /// </summary>
         private static string FormatInventarZeile(InvId artikel)
         {
+            string tagsStr = TagManager.SerialisiereTagListe(artikel.Tags);
             return string.Format(CultureInfo.InvariantCulture,
-                "{0};{1};{2};{3};{4};{5};{6};{7};{8};{9};{10};{11}",
+                "{0};{1};{2};{3};{4};{5};{6};{7};{8};{9};{10};{11};{12}",
                 artikel.InvNmr.PadRight(10),
                 artikel.GeraeteName.PadRight(30),
                 artikel.MitarbeiterBezeichnung.PadRight(25),
@@ -234,7 +241,8 @@ namespace Inventarverwaltung.Manager.UI
                 artikel.Anzahl.ToString().PadRight(5),
                 artikel.Mindestbestand.ToString().PadRight(5),
                 artikel.ErstelltVon.PadRight(20),
-                artikel.ErstelltAm.ToString("dd.MM.yyyy HH:mm:ss")
+                artikel.ErstelltAm.ToString("dd.MM.yyyy HH:mm:ss").PadRight(20),
+                tagsStr
             );
         }
 
@@ -281,7 +289,13 @@ namespace Inventarverwaltung.Manager.UI
                 string[] data = line.Split(';');
                 if (data.Length >= 3)
                 {
-                    Mitarbeiter.Add(new MID(data[0].Trim(), data[1].Trim(), data[2].Trim()));
+                    var mit = new MID(data[0].Trim(), data[1].Trim(), data[2].Trim());
+                    // Tags aus Feld 3 laden (optional – Rückwärtskompatibilität)
+                    if (data.Length >= 4 && !string.IsNullOrWhiteSpace(data[3]))
+                    {
+                        mit.Tags = TagManager.DeserialisiereTagListe(data[3].Trim());
+                    }
+                    Mitarbeiter.Add(mit);
                 }
             }
 
@@ -334,7 +348,7 @@ namespace Inventarverwaltung.Manager.UI
             sb.AppendLine();
             sb.AppendLine("════════════════════════════════════════════════════════════════════════════════════");
             sb.AppendLine("  STRUKTUR DER DATEN:");
-            sb.AppendLine("  Vorname;Nachname;Abteilung");
+            sb.AppendLine("  Vorname;Nachname;Abteilung;Tags");
             sb.AppendLine("════════════════════════════════════════════════════════════════════════════════════");
             sb.AppendLine();
             sb.AppendLine("[DATEN]");
@@ -383,9 +397,13 @@ namespace Inventarverwaltung.Manager.UI
             }
         }
 
+        /// <summary>
+        /// Formatiert eine Mitarbeiter-Zeile (inkl. Tags als Feld 4)
+        /// </summary>
         private static string FormatMitarbeiterZeile(MID mitarbeiter)
         {
-            return $"{mitarbeiter.VName.PadRight(20)};{mitarbeiter.NName.PadRight(25)};{mitarbeiter.Abteilung.PadRight(25)}";
+            string tagsStr = TagManager.SerialisiereTagListe(mitarbeiter.Tags);
+            return $"{mitarbeiter.VName.PadRight(20)};{mitarbeiter.NName.PadRight(25)};{mitarbeiter.Abteilung.PadRight(25)};{tagsStr}";
         }
 
         #endregion
