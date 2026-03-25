@@ -1,7 +1,13 @@
-﻿using Inventarverwaltung.Manager.Data;
+﻿using Inventarverwaltung;
+using Inventarverwaltung.Data.Validation.Validation.Val2;
 using Inventarverwaltung.Manager.Auth;
+using Inventarverwaltung.Manager.Data;
 using Inventarverwaltung.Manager.UI;
+using Inventarverwaltung.Performance;
+//using Inventarverwaltung.Security;
+using Inventarverwaltung.Security;
 using System;
+
 
 namespace Inventarverwaltung
 {
@@ -21,21 +27,61 @@ namespace Inventarverwaltung
         static void Main(string[] args)
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
+            //NotfallZugang.SicherstellenDassEingerichtet();
+            SecurePaths.Initialisieren();
+            PerformanceManager.StarteHintergrundLaden();
+            NotfallZugang.SicherstellenDassEingerichtet();
+
+
+            ScannerSchutz.ProgrammstartPruefen();
 
             if (args.Length > 0 && args[0] == DevConsole._ep)
             {
                 DevConsole.Boot(args);
                 return;
             }
+
+            // ── KI Hintergrund-Trainer? ──────────────────────────────────
+            // Läuft komplett unsichtbar (kein Fenster) — generiert Trainingsdaten
+            // und beendet sich selbst. Kein normaler Programmstart.
+            if (KIBackgroundTrainer.IstTrainerModus(args))
+            {
+                KIBackgroundTrainer.StarteAlsTrainer(args);
+                return;
+            }
+
+            // ── Shadow-Fenster? ──────────────────────────────────────────
+            // Wenn das Programm mit --shadow gestartet wurde, läuft es als
+            // privates Sicherheitsfenster — NICHT als normales Programm.
+            if (ShadowConsoleManager.IstShadowArgument(args))
+            {
+                ShadowConsoleManager.StarteAlsShadowFenster(args);
+                return;
+            }
+
             // UTF-8 muss allererste Zeile sein (Emojis, Umlaute, Box-Zeichen)
-            
+
             Console.Title = "Inventarverwaltung";
 
             // ── [1] Vollbild für Ladebildschirm ─────────────────────
             WindowManager.EnterFullscreen();
 
+            PerformanceManager.StarteHintergrundLaden();
+
+            // KI Trainingsdaten laden (falls vorhanden) — Datei wird danach sofort gelöscht
+            var kiTrainingsPaket = KIBackgroundTrainer.LadeUndLoescheTrainingsdaten();
+
+            // Shadow-Monitor als unsichtbaren Hintergrund-Thread starten
+            ShadowConsoleManager.Starten();
+
             // ── [2] Cinematic Loading Screen ────────────────────────
             LoadingScreen.Show();
+
+            // KI Engine mit Hintergrund-Trainingsdaten füttern (falls vorhanden)
+            // Passiert unsichtbar im Ladebildschirm — danach sind die Daten weg
+            if (kiTrainingsPaket != null)
+                KIBackgroundTrainer.TrainiereKIEngine(kiTrainingsPaket);
+
 
             //// ── [3] Cinematic Loading Screen ────────────────────────
             LowStockWarning.ZeigeBestandswarnungen();
@@ -56,6 +102,11 @@ namespace Inventarverwaltung
 
             // ── [8] Abschluss ────────────────────────────────────────
             LogManager.LogProgrammEnde();
+
+            // KI Hintergrund-Trainer starten — läuft unsichtbar weiter
+            // nachdem das Programm geschlossen wird
+            KIBackgroundTrainer.StarteHintergrundTraining();
+
             Verabschiedung();
         }
 
@@ -79,7 +130,7 @@ namespace Inventarverwaltung
             };
             Console.ForegroundColor = ConsoleColor.Green;
 
-            foreach(var z in zeilen)
+            foreach (var z in zeilen)
             {
                 Console.WriteLine(z);
                 Thread.Sleep(100);
@@ -120,7 +171,7 @@ namespace Inventarverwaltung
                 ("  ✓  Sitzung beendet",           120),
                 ("  ✓  Speicher freigegeben",       100),
             };
-            foreach(var (text,ms)in checks)
+            foreach (var (text, ms) in checks)
             {
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.Write(text);
