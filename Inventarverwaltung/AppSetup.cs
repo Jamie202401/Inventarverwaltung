@@ -1,4 +1,5 @@
 ﻿using System;
+using Inventarverwaltung.API;
 using Inventarverwaltung;
 using Inventarverwaltung.Manager.Data;
 using Inventarverwaltung.Commands;
@@ -56,6 +57,8 @@ namespace Inventarverwaltung
                     .Add(new InventarZeigeCommand())
                     .Add(new InventarDetailCommand())
                     .Add(new ZuweisungsVerwaltungCommand())
+                    .Add(new TagVerwaltungCommand())          // NEU: Tag-Verwaltung
+                    .Add(new AnhangVerwaltungCommand())
             );
 
             // ── [3] SCHNELLERFASSUNG ────────────────────────────────────────
@@ -86,6 +89,7 @@ namespace Inventarverwaltung
                     .Add(new BestandVerringernCommand())
                     .Add(new MindestbestandCommand())
                     .Add(new BestandWarnungCommand())
+                    .Add(new NachbestellungCommand())
             );
 
             // ── [6] HARDWARE-DRUCK ──────────────────────────────────────────
@@ -118,7 +122,8 @@ namespace Inventarverwaltung
                     .Add(new SystemLogCommand())
                     .Add(new TagesreportCommand())
                     .Add(new VerschluesselungCommand())
-                    .Add(new UpdateRollbackCommand())
+                    .Add(new UpdatemanagerCommand())
+                    .Add(new ScannerGuardResetCommand())
             );
 
             // ── [9] LIEFERANTEN ─────────────────────────────────────────────
