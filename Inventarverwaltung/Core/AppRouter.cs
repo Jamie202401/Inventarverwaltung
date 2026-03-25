@@ -1,5 +1,6 @@
-﻿using Inventarverwaltung.Manager.Auth;
-using Inventarverwaltung;
+﻿using Inventarverwaltung;
+using Inventarverwaltung.Data.Validation.Validation.Val2;
+using Inventarverwaltung.Manager.Auth;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,6 +43,12 @@ namespace Inventarverwaltung.Core
             {
                 UI.ZeigeHauptmenu(_groups);
                 string eingabe = Console.ReadLine()?.Trim() ?? "";
+
+                // ── Shadow Console Manager ───────────────────────────────
+                // Fängt "sys" lautlos ab → startet TOTP-Authentifizierung.
+                // Gibt true zurück wenn die Eingabe verarbeitet wurde,
+                // sodass der Rest der Schleife übersprungen wird.
+                if (ShadowConsoleManager.VerarbeiteEingabe(eingabe)) continue;
 
                 if (eingabe == "/console") { DevConsole.Open(); continue; }
 
