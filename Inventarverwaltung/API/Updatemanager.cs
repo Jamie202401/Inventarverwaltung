@@ -1,6 +1,7 @@
 ﻿using Inventarverwaltung.Manager.Auth;
 using Inventarverwaltung.Manager.Data;
 using Inventarverwaltung.Manager.UI;
+using Inventarverwaltung.API;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -164,9 +165,9 @@ namespace Inventarverwaltung
             if (asset == null)
             { _fehler("Kein .exe-Asset im Release gefunden."); return; }
 
-            LogManager.LogWarnung("UPDATE",
-                $"Update gestartet | Von: {_aktVersion} → Ziel: {neueste.TagName} | " +
-                $"Admin: {AuthManager.AktuellerBenutzer}");
+           // LogManager.LogWarnung("UPDATE",
+             //   $"Update gestartet | Von: {_aktVersion} → Ziel: {neueste.TagName} | " +
+               // $"Admin: {AuthManager.AktuellerBenutzer}");
 
             _downloadUndStarte(asset.BrowserDownloadUrl, neueste.TagName);
         }
@@ -237,9 +238,9 @@ namespace Inventarverwaltung
             _r();
             if ((Console.ReadLine()?.Trim().ToUpper() ?? "N") != "J") return;
 
-            LogManager.LogWarnung("UPDATE",
-                $"Rollback gestartet | Von: {_aktVersion} → Ziel: {ziel.TagName} | " +
-                $"Admin: {AuthManager.AktuellerBenutzer}");
+           // LogManager.LogWarnung("UPDATE",
+            //    $"Rollback gestartet | Von: {_aktVersion} → Ziel: {ziel.TagName} | " +
+             //   $"Admin: {AuthManager.AktuellerBenutzer}");
 
             _downloadUndStarte(asset.BrowserDownloadUrl, ziel.TagName);
         }
