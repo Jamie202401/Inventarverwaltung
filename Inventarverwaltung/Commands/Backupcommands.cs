@@ -1,5 +1,6 @@
 ﻿using Inventarverwaltung.Core;
 using Inventarverwaltung.Manager.UI;
+using Inventarverwaltung.API;
 
 namespace Inventarverwaltung.Commands
 {
@@ -17,6 +18,14 @@ namespace Inventarverwaltung.Commands
         public string Label => "Backup-Übersicht & Wiederherstellen";
         public string Icon => "📋";
         public void Execute() => BackupManager.ZeigeBackupUebersicht();
+    }
+
+    public class UpdatemanagerCommand : ICommand
+    {
+        public string Key => "Rollback";
+        public string Label => "Inventarssystem Rollback";
+        public string Icon => "📋";
+        public void Execute() => UpdateManager.ZeigeUpdateMenue();
     }
 
     public class BackupMasterPasswortCommand : ICommand

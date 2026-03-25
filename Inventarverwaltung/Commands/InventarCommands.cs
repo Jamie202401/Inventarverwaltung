@@ -37,4 +37,18 @@ namespace Inventarverwaltung.Commands
         public string Icon => "🔄";
         public void Execute() => ZuweisungsManager.ZeigeZuweisungsMenu();
     }
+    public class TagVerwaltungCommand : Core.ICommand
+    {
+        public string Key => "TAG_VERWALTUNG";
+        public string Label => "Tag-Verwaltung (Bearbeitungs-Tags)";
+        public string Icon => "🏷️ ";
+        public void Execute() => TagManager.ZeigeTagUebersicht();
+    }
+    public class AnhangVerwaltungCommand : Core.ICommand
+    {
+        public string Key => "ANHAENGE_HINZUFUEGEN";
+        public string Label  => "Anhänge oder Dokus an den Artikel hängen";
+        public string Icon => "[]";
+        public void Execute() => AnhangManager.StarteAnhangMenu();
+    }
 }

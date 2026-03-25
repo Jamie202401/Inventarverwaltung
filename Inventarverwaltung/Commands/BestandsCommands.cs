@@ -1,4 +1,5 @@
 ﻿using Inventarverwaltung.Manager.Inventory;
+using Inventarverwaltung.API;
 namespace Inventarverwaltung.Commands
 {
     // ══════════════════════════════════════════════════════════════════
@@ -35,5 +36,14 @@ namespace Inventarverwaltung.Commands
         public string Label => "Artikel unter Mindestbestand anzeigen";
         public string Icon => "🔴";
         public void Execute() => InventoryManager.ZeigeArtikelUnterMindestbestand();
+    }
+
+    public class NachbestellungCommand : Core.ICommand
+    {
+        public string Key => "BEST_NACHBESTELL";
+        public string Label => "Nachbestellung - Shop-links öffnen";
+        public string Icon => "🛒";
+
+        public void Execute() => NachbestellungManager.ZeigeNachbestellungMenu();
     }
 }
